@@ -1,0 +1,15 @@
+Package: mesonet
+Type: Package
+Title: Download and Process Oklahoma Mesonet Data 
+Version: 0.0.0.9000
+Date: 2023-12-01
+Author: Phillip D. Alderman
+Maintainer: Phillip D. Alderman <phillip.alderman@okstate.edu>
+Description: A package with functions to download and process weather data from
+  the Oklahoma Mesonet. Functions are available for downloading station metadata,
+  downloading Mesonet time series (MTS) files, importing MTS files into R, and 
+  converting soil temperature change measurements into soil matric potential and
+  volumetric soil moisture.
+License: GPL-2
+Encoding: UTF-8
+RoxygenNote: 7.2.3
