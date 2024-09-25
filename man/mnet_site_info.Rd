@@ -4,7 +4,13 @@
 \alias{mnet_site_info}
 \title{Download Mesonet site and soil information for all Mesonet sites}
 \usage{
-mnet_site_info()
+mnet_site_info(
+  url = "https://api.mesonet.org/index.php/export/station_location_soil_information"
+)
+}
+\arguments{
+\item{url}{the url to the page on the Oklahoma Mesonet website where site
+and soil information are stored}
 }
 \value{
 a data frame containing site and soil information. See \\link{Details} for

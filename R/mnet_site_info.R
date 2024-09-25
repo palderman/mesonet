@@ -5,6 +5,9 @@
 #'
 #' @export
 #'
+#' @param url the url to the page on the Oklahoma Mesonet website where site
+#'   and soil information are stored
+#'
 #' @return a data frame containing site and soil information. See \\link{Details} for
 #'   definition of variable descriptions.
 #'
@@ -69,9 +72,7 @@
 #' |datc     |Date Commissioned                      |
 #' |datd     |Date De-Commissioned                   |
 #'
-mnet_site_info <- function(){
-
-  url <- "https://api.mesonet.org/index.php/export/station_location_soil_information"
+mnet_site_info <- function(url = "https://api.mesonet.org/index.php/export/station_location_soil_information"){
 
   file_name <- tempfile(fileext = "csv")
 
