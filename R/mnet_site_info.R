@@ -8,14 +8,16 @@
 #' @param url the url to the page on the Oklahoma Mesonet website where site
 #'   and soil information are stored
 #'
-#' @return a data frame containing site and soil information. See \\link{Details} for
+#' @return a data frame containing site and soil information. See \link{Details} for
 #'   definition of variable descriptions.
+#'
+#' @md
 #'
 #' @details
 #'
 #' Variable descriptions for Mesonet site and soil information.
 #'
-#' |Variable |Description                            |
+#' |**Variable** |**Description**                            |
 #' |:--------|:--------------------------------------|
 #' |stnm     |Station Number                         |
 #' |stid     |Station Identifier                     |

@@ -13,70 +13,69 @@ mnet_site_info(
 and soil information are stored}
 }
 \value{
-a data frame containing site and soil information. See \\link{Details} for
-  definition of variable descriptions.
+a data frame containing site and soil information. See \link{Details} for
+definition of variable descriptions.
 }
 \description{
 Downloads a table of Mesonet site and soil information from the Oklahoma
- Mesonet website.
+Mesonet website.
 }
 \details{
-Variable descriptions for Mesonet site and soil information.
-
-|Variable |Description                            |
-|:--------|:--------------------------------------|
-|stnm     |Station Number                         |
-|stid     |Station Identifier                     |
-|name     |Station Name                           |
-|city     |Nearest Incorporated Town              |
-|rang     |Range From Town To Station             |
-|cdir     |Compass Direction From Town To Station |
-|cnty     |County                                 |
-|nlat     |North Latitude                         |
-|elon     |East Longitude                         |
-|elev     |Elevation In Meters                    |
-|cdiv     |Oklahoma Climate Division              |
-|clas     |Station Class                          |
-|wcr05    |5 cm Residual Water Content            |
-|wcs05    |5 cm Saturated Water Content           |
-|a05      |5 cm Alpha Constant                    |
-|n05      |5 cm N Constant                        |
-|bulk5    |5 cm Soil Bulk Density                 |
-|grav5    |5 cm Soil Percentage Gravel            |
-|sand5    |5 cm Soil Percentage Sand              |
-|silt5    |5 cm Soil Percentage Silt              |
-|clay5    |5 cm Soil Percentage Clay              |
-|text5    |5 cm Soil Texture Class                |
-|wcr25    |25 cm Residual Water Content           |
-|wcs25    |25 cm Saturated Water Content          |
-|a25      |25 cm Alpha Constant                   |
-|n25      |25 cm N Constant                       |
-|bulk25   |25 cm Soil Bulk Density                |
-|grav25   |25 cm Soil Percentage Gravel           |
-|sand25   |25 cm Soil Percentage Sand             |
-|silt25   |25 cm Soil Percentage Silt             |
-|clay25   |25 cm Soil Percentage Clay             |
-|text25   |25 cm Soil Texture Class               |
-|wcr60    |60 cm Residual Water Content           |
-|wcs60    |60 cm Saturated Water Content          |
-|a60      |60 cm Alpha Constant                   |
-|n60      |60 cm N Constant                       |
-|bulk60   |60 cm Soil Bulk Density                |
-|grab60   |60 cm Soil Percentage Gravel           |
-|sand60   |60 cm Soil Percentage Sand             |
-|silt60   |60 cm Soil Percentage Silt             |
-|clay60   |60 cm Soil Percentage Clay             |
-|text60   |60 cm Soil Texture Class               |
-|wcr75    |75 cm Residual Water Content           |
-|wcs75    |75 cm Saturated Water Content          |
-|a75      |75 cm Alpha Constant                   |
-|n75      |75 cm N Constant                       |
-|bulk75   |75 cm Soil Bulk Density                |
-|grav75   |75 cm Soil Percentage Gravel           |
-|sand75   |75 cm Soil Percentage Sand             |
-|silt75   |75 cm Soil Percentage Silt             |
-|clay75   |75 cm Soil Percentage Clay             |
-|text75   |75 cm Soil Texture Class               |
-|datc     |Date Commissioned                      |
-|datd     |Date De-Commissioned                   |
+Variable descriptions for Mesonet site and soil information.\tabular{ll}{
+   \strong{Variable} \tab \strong{Description} \cr
+   stnm \tab Station Number \cr
+   stid \tab Station Identifier \cr
+   name \tab Station Name \cr
+   city \tab Nearest Incorporated Town \cr
+   rang \tab Range From Town To Station \cr
+   cdir \tab Compass Direction From Town To Station \cr
+   cnty \tab County \cr
+   nlat \tab North Latitude \cr
+   elon \tab East Longitude \cr
+   elev \tab Elevation In Meters \cr
+   cdiv \tab Oklahoma Climate Division \cr
+   clas \tab Station Class \cr
+   wcr05 \tab 5 cm Residual Water Content \cr
+   wcs05 \tab 5 cm Saturated Water Content \cr
+   a05 \tab 5 cm Alpha Constant \cr
+   n05 \tab 5 cm N Constant \cr
+   bulk5 \tab 5 cm Soil Bulk Density \cr
+   grav5 \tab 5 cm Soil Percentage Gravel \cr
+   sand5 \tab 5 cm Soil Percentage Sand \cr
+   silt5 \tab 5 cm Soil Percentage Silt \cr
+   clay5 \tab 5 cm Soil Percentage Clay \cr
+   text5 \tab 5 cm Soil Texture Class \cr
+   wcr25 \tab 25 cm Residual Water Content \cr
+   wcs25 \tab 25 cm Saturated Water Content \cr
+   a25 \tab 25 cm Alpha Constant \cr
+   n25 \tab 25 cm N Constant \cr
+   bulk25 \tab 25 cm Soil Bulk Density \cr
+   grav25 \tab 25 cm Soil Percentage Gravel \cr
+   sand25 \tab 25 cm Soil Percentage Sand \cr
+   silt25 \tab 25 cm Soil Percentage Silt \cr
+   clay25 \tab 25 cm Soil Percentage Clay \cr
+   text25 \tab 25 cm Soil Texture Class \cr
+   wcr60 \tab 60 cm Residual Water Content \cr
+   wcs60 \tab 60 cm Saturated Water Content \cr
+   a60 \tab 60 cm Alpha Constant \cr
+   n60 \tab 60 cm N Constant \cr
+   bulk60 \tab 60 cm Soil Bulk Density \cr
+   grab60 \tab 60 cm Soil Percentage Gravel \cr
+   sand60 \tab 60 cm Soil Percentage Sand \cr
+   silt60 \tab 60 cm Soil Percentage Silt \cr
+   clay60 \tab 60 cm Soil Percentage Clay \cr
+   text60 \tab 60 cm Soil Texture Class \cr
+   wcr75 \tab 75 cm Residual Water Content \cr
+   wcs75 \tab 75 cm Saturated Water Content \cr
+   a75 \tab 75 cm Alpha Constant \cr
+   n75 \tab 75 cm N Constant \cr
+   bulk75 \tab 75 cm Soil Bulk Density \cr
+   grav75 \tab 75 cm Soil Percentage Gravel \cr
+   sand75 \tab 75 cm Soil Percentage Sand \cr
+   silt75 \tab 75 cm Soil Percentage Silt \cr
+   clay75 \tab 75 cm Soil Percentage Clay \cr
+   text75 \tab 75 cm Soil Texture Class \cr
+   datc \tab Date Commissioned \cr
+   datd \tab Date De-Commissioned \cr
+}
 }
