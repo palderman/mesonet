@@ -5,10 +5,15 @@
 #'
 #' @export
 #'
+#' @inheritParams mnet_requisition_list
+#'
 #' @param url the url to the page on the Oklahoma Mesonet website where site
 #'   and soil information are stored
 #'
-#' @return a data frame containing site and soil information. See \link{Details} for
+#' @param clear_cache whether to clear cached copy of site and soil
+#'  information and redownload
+#'
+#' @return a data frame containing site and soil information. See Details for
 #'   definition of variable descriptions.
 #'
 #' @md
@@ -74,38 +79,66 @@
 #' |datc     |Date Commissioned                      |
 #' |datd     |Date De-Commissioned                   |
 #'
-mnet_site_info <- function(url = "https://api.mesonet.org/index.php/export/station_location_soil_information"){
+mnet_site_info <- function(url = "https://api.mesonet.org/index.php/export/station_location_soil_information",
+                           file_cache = NULL,
+                           refresh = FALSE){
 
-  file_name <- tempfile(fileext = "csv")
+  mesonet_cache <- local_mesonet_cache(file_cache, ask = FALSE)
 
-  download.file(url, file_name, quiet = TRUE)
+  csv_file_name <- mesonet_cache |>
+    file.path("station_location_soil_information.csv")
 
-  sta_info <- read.csv(file_name, stringsAsFactors = FALSE)
+  rds_file_name <-
+    csv_file_name |>
+    gsub("csv$", "rds", x = _)
 
-  colnames(sta_info) <-
-    sta_info |>
-    colnames() |>
-    tolower()
-
-  for(v in colnames(sta_info)){
-    if(is.numeric(sta_info[[v]])){
-      sta_info[[v]][sta_info[[v]] == -999] <- as(NA, class(sta_info[[v]]))
-    }else if(is.character(sta_info[[v]])){
-      sta_info[[v]][sta_info[[v]] == "-999"] <- as(NA, class(sta_info[[v]]))
+  if(refresh){
+    for(.f in c(csv_file_name, rds_file_name)){
+      if(file.exists(.f)) unlink(.f)
     }
   }
 
-  sta_info$datc <-
-    sta_info$datc |>
-    make_date()
+  if(file.exists(rds_file_name)){
 
-  sta_info$datd <-
-    sta_info$datd |>
-    make_date()
+    sta_info <- readRDS(rds_file_name)
+
+  }else{
+
+    if(!file.exists(csv_file_name)){
+      download.file(url, csv_file_name, quiet = TRUE)
+    }
+
+    sta_info <- read.csv(csv_file_name, stringsAsFactors = FALSE)
+
+    colnames(sta_info) <-
+      sta_info |>
+      colnames() |>
+      tolower()
+
+    for(v in colnames(sta_info)){
+      if(is.numeric(sta_info[[v]])){
+        sta_info[[v]][sta_info[[v]] == -999] <- as(NA, class(sta_info[[v]]))
+      }else if(is.character(sta_info[[v]])){
+        sta_info[[v]][sta_info[[v]] == "-999"] <- as(NA, class(sta_info[[v]]))
+      }
+    }
+
+    sta_info <-
+      sta_info |>
+      within({
+        datc = make_date(datc)
+        datc = ifelse(stid == "WEB3",
+                      as.POSIXct("2021-06-16", tz = "UTC"),
+                      datc)
+        datc = as.POSIXct(datc, tz = "UTC")
+        datd = make_date(datd)
+      })
+
+    saveRDS(sta_info, rds_file_name)
+
+  }
 
   return(sta_info)
-
-}
 
 make_date <- function(date_chr){
   date_chr |>

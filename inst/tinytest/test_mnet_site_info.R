@@ -18,9 +18,14 @@ c("stnm,stid,name,city,rang,cdir,cnty,nlat,elon,elev,cdiv,clas,WCR05,WCS05,A05,N
 ) |>
   write(site_info_path)
 
+file_cache <-
+  tempdir() |>
+  file.path(".mesonet_cache")
+
 actual <-
   paste0("file:", site_info_path) |>
-  mesonet::mnet_site_info()
+  mesonet::mnet_site_info(file_cache = file_cache,
+                          refresh = TRUE)
 
 expected <-
   structure(list(stnm = c(110L, 1L, 2L, 116L, 3L), stid = c("ACME",
@@ -73,6 +78,41 @@ expected <-
   -5L), class = "data.frame")
 
 expect_identical(actual, expected)
+
+# Check cached csv file
+
+list.files(tempdir())
+
+cached_csv_path <-
+  tempdir() |>
+  file.path(".mesonet_cache", "station_location_soil_information.csv")
+
+expect_true(file.exists(cached_csv_path))
+
+csv_actual <-
+  readLines(cached_csv_path)
+
+csv_expected <-
+  readLines(site_info_path)
+
+expect_equal(csv_actual, csv_expected)
+
+unlink(cached_csv_path)
+
+# Check cached rds file
+
+cached_rds_path <-
+  cached_csv_path |>
+  gsub("csv$", "rds", x = _)
+
+expect_true(file.exists(cached_rds_path))
+
+rds_actual <-
+  readRDS(cached_rds_path)
+
+expect_equal(rds_actual, expected)
+
+unlink(cached_rds_path)
 
 site_info_path |>
   dirname() |>

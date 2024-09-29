@@ -5,15 +5,24 @@
 \title{Download Mesonet site and soil information for all Mesonet sites}
 \usage{
 mnet_site_info(
-  url = "https://api.mesonet.org/index.php/export/station_location_soil_information"
+  url = "https://api.mesonet.org/index.php/export/station_location_soil_information",
+  file_cache = NULL,
+  refresh = FALSE
 )
 }
 \arguments{
 \item{url}{the url to the page on the Oklahoma Mesonet website where site
 and soil information are stored}
+
+\item{file_cache}{a character string providing a path to the local Mesonet
+file cache. If NULL, the function will search for the local file cache and
+if not found will prompt the user to create one.}
+
+\item{clear_cache}{whether to clear cached copy of site and soil
+information and redownload}
 }
 \value{
-a data frame containing site and soil information. See \link{Details} for
+a data frame containing site and soil information. See Details for
 definition of variable descriptions.
 }
 \description{
