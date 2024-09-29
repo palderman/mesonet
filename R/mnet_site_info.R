@@ -140,9 +140,4 @@ mnet_site_info <- function(url = "https://api.mesonet.org/index.php/export/stati
 
   return(sta_info)
 
-make_date <- function(date_chr){
-  date_chr |>
-    as.character() |>
-    as.POSIXct(format = "%Y%m%d",
-               tz = "UTC")
 }
