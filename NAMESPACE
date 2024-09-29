@@ -2,5 +2,6 @@
 
 export(mnet_download_mts)
 export(mnet_read_mts)
+export(mnet_requisition_list)
 export(mnet_root_url)
 export(mnet_site_info)
