@@ -27,11 +27,17 @@
 #'  file cache. If NULL, the function will search for the local file cache and
 #'  if not found will prompt the user to create one.
 #'
-mnet_requisition_list <- function(stid,
+mnet_requisition_list <- function(stid = NULL,
                                   start_date = NULL,
                                   end_date = NULL,
                                   site_info = NULL,
                                   file_cache = NULL){
+
+  mesonet_cache <- local_mesonet_cache(file_cache, ask = ask)
+
+  if(is.null(stid)){
+    stid <- mesonet_cache$stid
+  }
 
   if(is.null(start_date)){
     start_date <- as.POSIXct("1994-01-01", tz = "UTC")
@@ -63,8 +69,6 @@ mnet_requisition_list <- function(stid,
       pmin(Sys.time()) |>
       trunc("days")
   }
-
-  mesonet_cache <- local_mesonet_cache(file_cache, ask = ask)
 
   if(is.null(site_info)){
     site_info <- mnet_site_info() |>
@@ -105,4 +109,5 @@ mnet_requisition_list <- function(stid,
       mts_path = paste0(mesonet_cache, "/", mts_rel_path)
     })
 
+  return(mts_files)
 }
