@@ -5,11 +5,17 @@
 #'
 #' @export
 #'
-#' @param file_cache a character string providing a path to the local Mesonet
-#'  file cache. If NULL, the function will search for the local file cache and
-#'  if not found will prompt the user to create one.
+#' @inheritParams mnet_requisition_list
 #'
-mnet_subdaily_c <- function(file_cache, mc.cores = 1){
+#' @param mc.cores number of cores to use for reading/processing data
+#'
+mnet_subdaily_c <- function(stid = NULL,
+                            start_date = NULL,
+                            end_date = NULL,
+                            site_info = NULL,
+                            file_cache = NULL,
+                            mc.cores = 1){
+
   mclapply(opt$INPUTFILES,readRDS,mc.cores=20) %>%
     rbindlist(.,fill=TRUE) %>%
     arrange(.,STID,TIME) %>%
