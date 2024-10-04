@@ -75,3 +75,83 @@ T_dew_actual <- mesonet:::calc_tdew(Tair, RH) |>
   units::set_units("Fahrenheit")
 
 expect_equal(T_dew_actual, T_dew_expected, tolerance = 0.1)
+
+tmp_mts_file <-
+  tempfile(fileext = ".mts")
+
+c("  101 ! (c) 1994 Oklahoma Climatological Survey and the Oklahoma Mesonet - all rights reserved",
+  "  18 1994 01 01 00 00 00",
+  " STID  STNM  TIME   RELH   TAIR   WSPD   WVEC  WDIR   WDSD   WSSD   WMAX    RAIN     PRES  SRAD   TA9M   WS2M   TS10   TB10   TS05   TB05   TS30",
+  " STIL    89     0     31   -999    4.6    4.5   182   12.6    1.3    8.7    0.00   979.39     0   14.1    4.0    5.5    7.9    6.1    8.7    5.7"
+) |>
+  write(tmp_mts_file)
+
+expected_mts <-
+  structure(list(RELH = structure(31, units = structure(list(numerator = "percent",
+                                                             denominator = character(0)), class = "symbolic_units"), class = "units"),
+                 TAIR = structure(NA_real_, units = structure(list(numerator = "°C",
+                                                                   denominator = character(0)), class = "symbolic_units"), class = "units"),
+                 WSPD = structure(4.6, units = structure(list(numerator = "m",
+                                                              denominator = "s"), class = "symbolic_units"), class = "units"),
+                 WVEC = structure(4.5, units = structure(list(numerator = "m",
+                                                              denominator = "s"), class = "symbolic_units"), class = "units"),
+                 WDIR = 182, WDSD = 12.6, WSSD = structure(1.3, units = structure(list(
+                   numerator = "m", denominator = "s"), class = "symbolic_units"), class = "units"),
+                 WMAX = structure(8.7, units = structure(list(numerator = "m",
+                                                              denominator = "s"), class = "symbolic_units"), class = "units"),
+                 RAIN = structure(0, units = structure(list(numerator = "mm",
+                                                            denominator = character(0)), class = "symbolic_units"), class = "units"),
+                 PRES = structure(97.939, units = structure(list(numerator = "kPa",
+                                                                 denominator = character(0)), class = "symbolic_units"), class = "units"),
+                 SRAD = structure(0, units = structure(list(numerator = "W",
+                                                            denominator = c("m", "m")), class = "symbolic_units"), class = "units"),
+                 TA9M = structure(14.1, units = structure(list(numerator = "°C",
+                                                               denominator = character(0)), class = "symbolic_units"), class = "units"),
+                 WS2M = structure(4, units = structure(list(numerator = "m",
+                                                            denominator = "s"), class = "symbolic_units"), class = "units"),
+                 TS10 = structure(5.5, units = structure(list(numerator = "°C",
+                                                              denominator = character(0)), class = "symbolic_units"), class = "units"),
+                 TB10 = structure(7.9, units = structure(list(numerator = "°C",
+                                                              denominator = character(0)), class = "symbolic_units"), class = "units"),
+                 TS05 = structure(6.1, units = structure(list(numerator = "°C",
+                                                              denominator = character(0)), class = "symbolic_units"), class = "units"),
+                 TB05 = structure(8.7, units = structure(list(numerator = "°C",
+                                                              denominator = character(0)), class = "symbolic_units"), class = "units"),
+                 TS30 = structure(5.7, units = structure(list(numerator = "°C",
+                                                              denominator = character(0)), class = "symbolic_units"), class = "units"),
+                 STID = "STIL", STNM = 89L, TIME = structure(0, units = structure(list(
+                   numerator = "min", denominator = character(0)), class = "symbolic_units"), class = "units"),
+                 TS25 = structure(NA_real_, units = structure(list(numerator = "°C",
+                                                                   denominator = character(0)), class = "symbolic_units"), class = "units"),
+                 TS60 = structure(NA_real_, units = structure(list(numerator = "°C",
+                                                                   denominator = character(0)), class = "symbolic_units"), class = "units"),
+                 TR05 = structure(NA_real_, units = structure(list(numerator = "°C",
+                                                                   denominator = character(0)), class = "symbolic_units"), class = "units"),
+                 TR25 = structure(NA_real_, units = structure(list(numerator = "°C",
+                                                                   denominator = character(0)), class = "symbolic_units"), class = "units"),
+                 TR60 = structure(NA_real_, units = structure(list(numerator = "°C",
+                                                                   denominator = character(0)), class = "symbolic_units"), class = "units"),
+                 TR75 = structure(NA_real_, units = structure(list(numerator = "°C",
+                                                                   denominator = character(0)), class = "symbolic_units"), class = "units"),
+                 TS45 = structure(NA_real_, units = structure(list(numerator = "°C",
+                                                                   denominator = character(0)), class = "symbolic_units"), class = "units"),
+                 VW05 = structure(NA_real_, units = structure(list(numerator = c("cm",
+                                                                                 "cm", "cm"), denominator = c("cm", "cm", "cm")), class = "symbolic_units"), class = "units"),
+                 VW25 = structure(NA_real_, units = structure(list(numerator = c("cm",
+                                                                                 "cm", "cm"), denominator = c("cm", "cm", "cm")), class = "symbolic_units"), class = "units"),
+                 VW45 = structure(NA_real_, units = structure(list(numerator = c("cm",
+                                                                                 "cm", "cm"), denominator = c("cm", "cm", "cm")), class = "symbolic_units"), class = "units"),
+                 VDEF = structure(NA_real_, units = structure(list(numerator = c("kPa",
+                                                                                 "percent"), denominator = character(0)), class = "symbolic_units"), class = "units"),
+                 TDEW = structure(NA_real_, units = structure(list(numerator = "°C",
+                                                                   denominator = character(0)), class = "symbolic_units"), class = "units"),
+                 DATE = structure(757382400, tzone = "UTC", class = c("POSIXct",
+                                                                      "POSIXt"))), row.names = 1L, class = "data.frame")
+
+actual_mts <-
+  tmp_mts_file |>
+  mesonet::mnet_read_mts()
+
+expect_equal(actual_mts,
+             expected_mts)
+
