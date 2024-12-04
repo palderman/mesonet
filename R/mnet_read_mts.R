@@ -100,7 +100,7 @@ mnet_read_mts <- function(file_name){
       DATE = base_time + as.numeric(units::set_units(TIME, "seconds"))
       PRES = units::set_units(PRES, "kPa")
       TDEW = calc_tdew(TAIR, RELH)
-      VDEF = (units::set_units(100, "percent") - RELH)*sat_vap_pres(TAIR)
+      VDEF = sat_vap_pres(TAIR)*(100 - units::drop_units(RELH))/100
     })
 
   return(mts_data)

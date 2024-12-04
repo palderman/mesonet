@@ -141,8 +141,8 @@ expected_mts <-
                                                                                  "cm", "cm"), denominator = c("cm", "cm", "cm")), class = "symbolic_units"), class = "units"),
                  VW45 = structure(NA_real_, units = structure(list(numerator = c("cm",
                                                                                  "cm", "cm"), denominator = c("cm", "cm", "cm")), class = "symbolic_units"), class = "units"),
-                 VDEF = structure(NA_real_, units = structure(list(numerator = c("kPa",
-                                                                                 "percent"), denominator = character(0)), class = "symbolic_units"), class = "units"),
+                 VDEF = structure(NA_real_, units = structure(list(numerator = "kPa",
+                                                                   denominator = character(0)), class = "symbolic_units"), class = "units"),
                  TDEW = structure(NA_real_, units = structure(list(numerator = "°C",
                                                                    denominator = character(0)), class = "symbolic_units"), class = "units"),
                  DATE = structure(757382400, tzone = "UTC", class = c("POSIXct",
@@ -151,6 +151,8 @@ expected_mts <-
 actual_mts <-
   tmp_mts_file |>
   mesonet::mnet_read_mts()
+
+unlink(tmp_mts_file)
 
 expect_equal(actual_mts,
              expected_mts)
