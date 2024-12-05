@@ -17,9 +17,9 @@ expect_equal(
 
 # Construct reference dataset
 ref_df <- data.frame(
-  TIME = seq.POSIXt(from = as.POSIXct("1994-01-01 00:00", tz = "UTC"),
-                    to = as.POSIXct("1994-01-05 23:55", tz = "UTC"),
-                    by = as.difftime(5, units = "mins"))
+    DATE = seq.POSIXt(from = as.POSIXct("1994-01-01 00:00", tz = "UTC"),
+                      to = as.POSIXct("1994-01-05 23:55", tz = "UTC"),
+                      by = as.difftime(5, units = "mins"))
   ) |>
   within({
     RELH = units::set_units(31, units = "percent")
@@ -66,7 +66,7 @@ test_cache |>
   dir.create(recursive = TRUE, showWarnings = FALSE)
 
 all_dates <-
-  ref_df$TIME |>
+  ref_df$DATE |>
   as.Date() |>
   unique()
 
@@ -84,7 +84,7 @@ for(i in seq_along(all_dates)){
 
   ref_df |>
     with({
-      ref_df[as.Date(TIME) == all_dates[i],]
+      ref_df[as.Date(DATE) == all_dates[i],]
     }) |>
     saveRDS(date_file_name)
 
@@ -94,15 +94,15 @@ for(i in seq_along(all_dates)){
 expected_subdaily <-
   ref_df |>
   within({
-    DATE = as.Date(TIME -1)
-    for(date in unique(DATE)){
-      RAIN[DATE == as.Date(date)] <-
-        RAIN[DATE == as.Date(date)] |>
+    Date = as.Date(DATE - 1)
+    for(date in unique(Date)){
+      RAIN[Date == as.Date(date)] <-
+        RAIN[Date == as.Date(date)] |>
         c(0, .x = _) |>
         diff()
     }
     date = NULL
-    DATE = NULL
+    Date = NULL
   })
 
 # Use mnet_concatenate() to read reference data from .mesonet_cache
@@ -124,12 +124,12 @@ altu_df <-
   ref_df |>
   within({
     STID = "ALTU"
-    TIME = TIME + as.difftime(5, units = "days")
+    DATE = DATE + as.difftime(5, units = "days")
     RAIN = RAIN*2
   })
 
 all_dates <-
-  altu_df$TIME |>
+  altu_df$DATE |>
   as.Date() |>
   unique()
 
@@ -147,7 +147,7 @@ for(i in seq_along(all_dates)){
 
   altu_df |>
     with({
-      altu_df[as.Date(TIME) == all_dates[i],]
+      altu_df[as.Date(DATE) == all_dates[i],]
     }) |>
     saveRDS(date_file_name)
 
@@ -157,7 +157,7 @@ expected_subdaily <-
   expected_subdaily |>
   within({
     STID = "ALTU"
-    TIME = TIME + as.difftime(5, units = "days")
+    DATE = DATE + as.difftime(5, units = "days")
     RAIN = RAIN*2
   }) |>
   rbind.data.frame(expected_subdaily, .x = _)

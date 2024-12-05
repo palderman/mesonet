@@ -9,7 +9,8 @@ mnet_requisition_list(
   start_date = NULL,
   end_date = NULL,
   site_info = NULL,
-  file_cache = NULL
+  file_cache = NULL,
+  ask = TRUE
 )
 }
 \arguments{
@@ -34,6 +35,8 @@ information internally}
 \item{file_cache}{a character string providing a path to the local Mesonet
 file cache. If NULL, the function will search for the local file cache and
 if not found will prompt the user to create one.}
+
+\item{ask}{whether or not to ask about creating a local Mesonet file cache}
 }
 \description{
 Calculate a requisition list of Mesonet Time Series (MTS) files from the

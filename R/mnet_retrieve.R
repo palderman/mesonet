@@ -19,4 +19,61 @@ mnet_retrieve <- function(stid,
                           ask = !silent,
                           silent = FALSE){
 
+  mts_rds_df <-
+    mnet_requisition_list(stid = stid,
+                          start_date = start_date,
+                          end_date = end_date,
+                          site_info = site_info,
+                          file_cache = file_cache,
+                          ask = ask) |>
+    within({
+      rds_path = mts_to_rds_list(mts_path)
+      rds_rel_path = mts_to_rds_list(mts_rel_path)
+    })
+
+  # Download any missing MTS files
+  if(any(!file.exists(mts_rds_df$mts_path))){
+    mnet_download_mts(stid = stid,
+                      start_date = start_date,
+                      end_date = end_date,
+                      delay = delay,
+                      root_url = root_url,
+                      site_info = site_info,
+                      file_cache = file_cache,
+                      ask = ask,
+                      silent = silent)
+  }
+
+  # Convert MTS files to rds format
+  mts_rds_df |>
+    within({
+      process_mts_to_rds = file.mtime(mts_path) > file.mtime(rds_path)
+      process_mts_to_rds[is.na(process_mts_to_rds)] = TRUE
+    }) |>
+    with({
+      mts_rds_df[process_mts_to_rds, ]
+    }) |>
+    within({
+      mts_contents = lapply(mts_path, mnet_read_mts)
+    }) |>
+    with({
+      mapply(\(.contents, .file_name){
+        dir.create(dirname(.file_name),
+                   recursive = TRUE,
+                   showWarnings = FALSE)
+        saveRDS(.contents, .file_name)
+      },
+      .contents = mts_contents,
+      .file_name = rds_path)
+    })
+
+  # Concetenate daily observations
+  combined_data <-
+    mnet_concatenate(stid = stid,
+                     start_date = start_date,
+                     end_date = end_date,
+                     site_info = site_info,
+                     file_cache = file_cache)
+
+  return(combined_data)
 }

@@ -13,8 +13,6 @@
 #' @param root_url the root url from which to download MTS files (see
 #'  \link[mesonet]{mnet_root_url})
 #'
-#' @param ask whether or not to ask about creating a local Mesonet file cache
-#'
 #' @param silent whether to suppress output to terminal (TRUE) or allow output
 #'  to terminal (FALSE)
 #'

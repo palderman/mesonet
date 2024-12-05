@@ -130,3 +130,4 @@ expect_true(actual_delay > 1)
 unlink(test_remote_cache, recursive = TRUE)
 
 unlink(test_local_cache, recursive = TRUE)
+

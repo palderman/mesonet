@@ -158,19 +158,23 @@ row.names(expected_subdaily) <- 1:nrow(expected_subdaily)
 actual_subdaily <-
   test_scenario |>
   with({
-    mnet_retrieve(stid = stid,
-                  start_date = start,
-                  end_date = end,
-                  delay = 0,
-                  root_url = test_root_url,
-                  file_cache = test_local_cache)
+    mesonet::mnet_retrieve(stid = stid,
+                           start_date = start,
+                           end_date = end,
+                           delay = 0,
+                           root_url = test_root_url,
+                           file_cache = test_local_cache,
+                           silent = TRUE)
   })
 
-######################################################
-# test mnet_retrieve() all from download and mts cache
-######################################################
+expect_equal(actual_subdaily,
+             expected_subdaily)
+
+###############################################
+# test mnet_retrieve() all from local mts cache
+###############################################
 
 
-##########################################################
-# test mnet_retrieve() all from download and mts/rds cache
-##########################################################
+###############################################
+# test mnet_retrieve() all from local rds cache
+###############################################

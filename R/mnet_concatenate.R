@@ -60,16 +60,16 @@ mnet_concatenate <- function(stid = NULL,
     }) |>
     lapply(readRDS) |>
     do.call(rbind.data.frame, args = _) |>
-    (\(.x) with(.x, .x[order(STID, TIME),]))()
+    sort_by(~list(STID, DATE))
 
-  row.names(rds_df) <- 1:nrow(rds_df)
+    row.names(rds_df) <- 1:nrow(rds_df)
 
-    DATE <- as.Date(rds_df$TIME - 1)
+    Date <- as.Date(rds_df$DATE + as.difftime(-1, units = "secs"))
 
     for(stid in unique(rds_df$STID)){
-      for(date in unique(DATE)){
-        rds_df$RAIN[rds_df$STID == stid & DATE == as.Date(date)] <-
-          rds_df$RAIN[rds_df$STID == stid & DATE == as.Date(date)] |>
+      for(date in unique(Date)){
+        rds_df$RAIN[rds_df$STID == stid & Date == as.Date(date)] <-
+          rds_df$RAIN[rds_df$STID == stid & Date == as.Date(date)] |>
             c(0, .x = _) |>
             diff()
       }

@@ -27,11 +27,14 @@
 #'  file cache. If NULL, the function will search for the local file cache and
 #'  if not found will prompt the user to create one.
 #'
+#' @param ask whether or not to ask about creating a local Mesonet file cache
+#'
 mnet_requisition_list <- function(stid = NULL,
                                   start_date = NULL,
                                   end_date = NULL,
                                   site_info = NULL,
-                                  file_cache = NULL){
+                                  file_cache = NULL,
+                                  ask = TRUE){
 
   mesonet_cache <- local_mesonet_cache(file_cache, ask = ask)
 
