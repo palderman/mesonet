@@ -101,7 +101,9 @@ mnet_read_mts <- function(file_name){
       PRES = units::set_units(PRES, "kPa")
       TDEW = calc_tdew(TAIR, RELH)
       VDEF = sat_vap_pres(TAIR)*(100 - units::drop_units(RELH))/100
-    })
+      TIME = NULL
+    }) |>
+    standardize_column_order()
 
   return(mts_data)
 }

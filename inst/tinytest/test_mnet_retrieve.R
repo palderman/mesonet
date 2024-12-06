@@ -71,7 +71,7 @@ test_files |>
                "    89",
                sprintf("%6i", seq(0, 1435, by = 5)),
                "     31   -999    4.6    4.5   182   12.6    1.3    8.7",
-               sprintf("%9.2f", 1:288),
+               sprintf("%9.2f", c(288,1:287)),
                "   979.39     0   14.1    4.0    5.5    7.9    6.1    8.7    5.7")
       ) |>
       write(.path)
@@ -104,54 +104,53 @@ mesonet:::create_test_site_info(test_local_cache)
 
 # Construct reference dataset
 ref_df <- data.frame(
-    TIME = seq.POSIXt(from = as.POSIXct("1994-02-01 00:00", tz = "UTC"),
+    DATE = seq.POSIXt(from = as.POSIXct("1994-02-01 00:00", tz = "UTC"),
                       to = as.POSIXct("1994-02-03 23:55", tz = "UTC"),
                       by = as.difftime(5, units = "mins"))
   ) |>
   within({
-    RELH = units::set_units(31, units = "percent")
-    TAIR = units::set_units(NA_real_, units = "°C")
-    WSPD = units::set_units(4.6, units = "m/s")
-    WVEC = units::set_units(4.5, units = "m/s")
-    WDIR = 182
-    WDSD = 12.6
-    WSSD = units::set_units(1.3, units = "m/s")
-    WMAX = units::set_units(8.7, units = "m/s")
-    RAIN = units::set_units(1, units = "mm")
-    PRES = units::set_units(97.939, units = "kPa")
-    SRAD = units::set_units(0, units = "W/m^2")
-    TA9M = units::set_units(14.1, units = "°C")
-    WS2M = units::set_units(4, units = "m/s")
-    TS10 = units::set_units(5.5, units = "°C")
-    TB10 = units::set_units(7.9, units = "°C")
-    TS05 = units::set_units(6.1, units = "°C")
-    TB05 = units::set_units(8.7, units = "°C")
-    TS30 = units::set_units(5.7, units = "°C")
+    RELH = units::set_units(31, "percent")
+    TAIR = units::set_units(NA_real_, "°C")
+    WSPD = units::set_units(4.6, "m/s")
+    WVEC = units::set_units(4.5, "m/s")
+    WDIR = units::set_units(182, "degrees")
+    WDSD = units::set_units(12.6, "degrees")
+    WSSD = units::set_units(1.3, "m/s")
+    WMAX = units::set_units(8.7, "m/s")
+    RAIN = units::set_units(c(288,rep(1, 287+288*2)), "mm")
+    PRES = units::set_units(97.939, "kPa")
+    SRAD = units::set_units(0, "W/m^2")
+    TA9M = units::set_units(14.1, "°C")
+    WS2M = units::set_units(4, "m/s")
+    TS10 = units::set_units(5.5, "°C")
+    TB10 = units::set_units(7.9, "°C")
+    TS05 = units::set_units(6.1, "°C")
+    TB05 = units::set_units(8.7, "°C")
+    TS30 = units::set_units(5.7, "°C")
     STID = "ACME"
     STNM = 89L
-    TS25 = units::set_units(NA_real_, units = "°C")
-    TS60 = units::set_units(NA_real_, units = "°C")
-    TR05 = units::set_units(NA_real_, units = "°C")
-    TR25 = units::set_units(NA_real_, units = "°C")
-    TR60 = units::set_units(NA_real_, units = "°C")
-    TR75 = units::set_units(NA_real_, units = "°C")
-    TS45 = units::set_units(NA_real_, units = "°C")
-    VW05 = units::set_units(NA_real_, units = "cm^3/cm^3")
-    VW25 = units::set_units(NA_real_, units = "cm^3/cm^3")
-    VW45 = units::set_units(NA_real_, units = "cm^3/cm^3")
-    VDEF = units::set_units(NA_real_, units = "kPa")
-    TDEW = units::set_units(NA_real_, units = "°C")
+    TS25 = units::set_units(NA_real_, "°C")
+    TS60 = units::set_units(NA_real_, "°C")
+    TR05 = units::set_units(NA_real_, "°C")
+    TR25 = units::set_units(NA_real_, "°C")
+    TR60 = units::set_units(NA_real_, "°C")
+    TR75 = units::set_units(NA_real_, "°C")
+    TS45 = units::set_units(NA_real_, "°C")
+    VW05 = units::set_units(NA_real_, "cm^3/cm^3")
+    VW25 = units::set_units(NA_real_, "cm^3/cm^3")
+    VW45 = units::set_units(NA_real_, "cm^3/cm^3")
+    VDEF = units::set_units(NA_real_, "kPa")
+    TDEW = units::set_units(NA_real_, "°C")
   })
-
-ref_df$RAIN[1] <- 288
 
 expected_subdaily <-
   ref_df |>
   within({
     STID = "ALTU"
-    TIME = TIME + as.difftime(1, units = "days")
+    DATE = DATE + as.difftime(1, units = "days")
   }) |>
-  rbind.data.frame(ref_df, .x = _)
+  rbind.data.frame(ref_df, .x = _) |>
+  mesonet:::standardize_column_order()
 
 row.names(expected_subdaily) <- 1:nrow(expected_subdaily)
 
@@ -167,6 +166,10 @@ actual_subdaily <-
                            silent = TRUE)
   })
 
+
+expect_equal(colnames(actual_subdaily),
+             colnames(expected_subdaily))
+
 expect_equal(actual_subdaily,
              expected_subdaily)
 
@@ -174,7 +177,36 @@ expect_equal(actual_subdaily,
 # test mnet_retrieve() all from local mts cache
 ###############################################
 
+# Clear test cache
+unlink(test_remote_cache, recursive = TRUE)
 
-###############################################
-# test mnet_retrieve() all from local rds cache
-###############################################
+# Delete local rds files
+test_scenario |>
+  with({
+    mesonet::mnet_requisition_list(stid = stid,
+                                   start_date = start,
+                                   end_date = end,
+                                   file_cache = test_local_cache)
+  }) |>
+  with({
+    file.remove(mesonet:::mts_to_rds_list(mts_path))
+  })
+
+actual_subdaily <-
+  test_scenario |>
+  with({
+    mesonet::mnet_retrieve(stid = stid,
+                           start_date = start,
+                           end_date = end,
+                           delay = 0,
+                           root_url = test_root_url,
+                           file_cache = test_local_cache,
+                           silent = TRUE)
+  })
+
+expect_equal(colnames(actual_subdaily),
+             colnames(expected_subdaily))
+
+expect_equal(actual_subdaily,
+             expected_subdaily)
+

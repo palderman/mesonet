@@ -6,6 +6,20 @@ make_date <- function(date_chr){
                tz = "UTC")
 }
 
+standardize_column_order <- function(df){
+
+  col_ord <-
+    c("STID", "STNM", "DATE",
+      "RELH", "TAIR", "WSPD", "WVEC", "WDIR", "WDSD", "WSSD", "WMAX",
+      "RAIN", "PRES", "SRAD", "TA9M", "WS2M", "TS10", "TB10", "TS05",
+      "TB05", "TS30", "TS25", "TS60", "TR05", "TR25",
+      "TR60", "TR75", "TS45", "VW05", "VW25", "VW45", "VDEF", "TDEW")
+
+  col_ord <- col_ord[col_ord %in% colnames(df)]
+
+  df[, col_ord]
+}
+
 mts_unit <- function(x, .name){
   if(.name %in% c("TA9M", "TAIR", "TB05", "TB10",
                   "TR05", "TR25", "TR60", "TR75",
@@ -15,6 +29,8 @@ mts_unit <- function(x, .name){
     return(units::set_units(x, "cm^3/cm^3"))
   }else if(.name %in% c("WMAX", "WS2M", "WSPD", "WSSD", "WVEC")){
     return(units::set_units(x, "m/s"))
+  }else if(.name %in% c("WDIR", "WDSD")){
+    return(units::set_units(x, "degrees"))
   }else if(.name %in% "SRAD"){
     return(units::set_units(x, "W/m^2"))
   }else if(.name %in% "RELH"){
