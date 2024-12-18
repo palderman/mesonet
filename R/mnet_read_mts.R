@@ -7,8 +7,9 @@
 #' @param file_path file path to a single Oklahoma Mesonet time series (MTS)
 #'  file
 #'
-#' @return A data frame with Oklahoma Mesonet data. See below for a list of
-#'  variables including column ID, name, unit and description:
+#' @return A data frame with Oklahoma Mesonet data.  See
+#'  [mnet_variable_definition()] or the table below for the ID, variable name,
+#'  unit and description for each column.
 #'
 #' |**ID** |**Name**                                    |**Unit**                |**Description**                                                                                                                                                                                           |
 #' |:------|:-------------------------------------------|:-----------------------|:---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|

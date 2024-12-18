@@ -11,8 +11,9 @@ mnet_read_mts(file_name)
 file}
 }
 \value{
-A data frame with Oklahoma Mesonet data. See below for a list of
-variables including column ID, name, unit and description:\tabular{llll}{
+A data frame with Oklahoma Mesonet data.  See
+\code{\link[=mnet_variable_definition]{mnet_variable_definition()}} or the table below for the ID, variable name,
+unit and description for each column.\tabular{llll}{
    \strong{ID} \tab \strong{Name} \tab \strong{Unit} \tab \strong{Description} \cr
    PRES \tab Station Atmospheric Pressure \tab kPa \tab 5-minute averaged atmospheric pressure. \cr
    RAIN \tab Precipitation \tab millimeters \tab Liquid precipitation accumulation since 0000 UTC. Frozen precipitation cannot be recorded until it melts; therefore, precipitation from snow may not be recorded until several days after the snow event. \cr
