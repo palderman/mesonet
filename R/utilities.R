@@ -9,7 +9,7 @@ make_date <- function(date_chr){
 standardize_column_order <- function(df){
 
   col_ord <-
-    c("STID", "STNM", "DATE",
+    c("STNM", "STID", "DATE",
       "RELH", "TAIR", "WSPD", "WVEC", "WDIR", "WDSD", "WSSD", "WMAX",
       "RAIN", "PRES", "SRAD", "TA9M", "WS2M", "TS10", "TB10", "TS05",
       "TB05", "TS30", "TS25", "TS60", "TR05", "TR25",

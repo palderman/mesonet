@@ -77,7 +77,7 @@ T_dew_actual <- mesonet:::calc_tdew(Tair, RH) |>
 expect_equal(T_dew_actual, T_dew_expected, tolerance = 0.1)
 
 standard_column_order <-
-  c("STID", "STNM", "DATE",
+  c("STNM", "STID", "DATE",
     "RELH", "TAIR", "WSPD", "WVEC", "WDIR", "WDSD", "WSSD", "WMAX",
     "RAIN", "PRES", "SRAD", "TA9M", "WS2M", "TS10", "TB10", "TS05",
     "TB05", "TS30", "TS25", "TS60", "TR05", "TR25",
