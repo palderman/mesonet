@@ -76,3 +76,5 @@ expect_error(
     end_date = end_dates,
     file_cache = test_cache)
 )
+
+unlink(test_cache, recursive = TRUE)

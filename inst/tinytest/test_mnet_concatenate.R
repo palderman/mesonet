@@ -170,3 +170,5 @@ actual_subdaily <- mesonet::mnet_concatenate(stid = c("ACME", "ALTU"),
 
 expect_equal(actual_subdaily,
              expected_subdaily)
+
+unlink(test_cache, recursive = TRUE)

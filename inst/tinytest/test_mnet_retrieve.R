@@ -210,3 +210,4 @@ expect_equal(colnames(actual_subdaily),
 expect_equal(actual_subdaily,
              expected_subdaily)
 
+unlink(test_local_cache, recursive = TRUE)

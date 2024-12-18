@@ -71,8 +71,6 @@ expect_identical(actual, expected)
 
 # Check cached csv file
 
-list.files(tempdir())
-
 cached_csv_path <-
   tempdir() |>
   file.path(".mesonet_cache", "station_location_soil_information.csv")
@@ -107,3 +105,5 @@ unlink(cached_rds_path)
 site_info_path |>
   dirname() |>
   unlink(recursive = TRUE)
+
+unlink(file_cache, recursive = TRUE)
