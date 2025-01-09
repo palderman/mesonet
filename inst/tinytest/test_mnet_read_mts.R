@@ -81,7 +81,7 @@ standard_column_order <-
     "RELH", "TAIR", "WSPD", "WVEC", "WDIR", "WDSD", "WSSD", "WMAX",
     "RAIN", "PRES", "SRAD", "TA9M", "WS2M", "TS10", "TB10", "TS05",
     "TB05", "TS30", "TS25", "TS60", "TR05", "TR25",
-    "TR60", "TR75", "TS45", "VW05", "VW25", "VW45", "VDEF", "TDEW")
+    "TR60", "TR75", "VW05", "VW25", "VW45", "VDEF", "TDEW")
 
 temp_df <-
   lapply(1:33, \(.x) NA_real_) |>
