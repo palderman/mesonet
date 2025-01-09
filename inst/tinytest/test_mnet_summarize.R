@@ -410,7 +410,7 @@ expected_avg <-
 
 actual_avg <-
   subdaily_df |>
-  mesonet::mnet_daily_summary(include_qc_variables = TRUE)
+  mesonet::mnet_summarize(include_qc_variables = TRUE)
 
 expect_equal(colnames(actual_avg),
              colnames(expected_avg),

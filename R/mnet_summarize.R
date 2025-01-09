@@ -136,8 +136,10 @@
 #'
 #' @export
 #'
-mnet_daily_summary <- function(sub_daily, tz = "Etc/GMT+6",
-                               include_qc_variables = FALSE){
+mnet_summarize <- function(sub_daily,
+                           tz = "Etc/GMT+6",
+                           interval = "1 day",
+                           include_qc_variables = FALSE){
 
   threshold_temperature <-
     units::set_units(65, "Fahrenheit") |>
