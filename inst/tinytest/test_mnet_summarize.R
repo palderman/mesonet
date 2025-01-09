@@ -178,7 +178,7 @@ expect_equal(actual_avg,
 expected_avg <-
   subdaily_df[,c("STID", "DATE")] |>
   within({
-    DATE = as.Date(DATE, tz = "Etc/GMT+6")
+    DATE = as.POSIXct(as.Date(DATE, tz = "Etc/GMT+6"), tz = "Etc/GMT+6")
   }) |>
   unique() |>
   within({
@@ -198,7 +198,7 @@ for(.i in 1:nrow(expected_avg)){
   subdaily_df_subset <-
     subdaily_df |>
     within({
-      DATE = as.Date(DATE, tz = "Etc/GMT+6")
+      DATE = as.POSIXct(as.Date(DATE, tz = "Etc/GMT+6"), tz = "Etc/GMT+6")
     }) |>
     with({
       subdaily_df[STID == expected_avg$STID[.i] &
@@ -249,7 +249,7 @@ for(.i in 1:nrow(expected_avg)){
 actual_avg <-
   subdaily_df |>
   within({
-    DATE = as.Date(DATE, tz = "Etc/GMT+6")
+    DATE = as.POSIXct(as.Date(DATE, tz = "Etc/GMT+6"), tz = "Etc/GMT+6")
   }) |>
   mesonet:::summarize_across(
   .data = _,
@@ -297,7 +297,7 @@ expected_avg <-
   data.frame(
     STNM = 89L,
     STID = rep(c("ACME", "ALTU"), each = 4),
-    DATE = rep(as.Date(c("1994-01-31", "1994-02-01", "1994-02-02", "1994-02-03")), 2),
+    DATE = rep(as.POSIXct(c("1994-01-31", "1994-02-01", "1994-02-02", "1994-02-03"), tz = "Etc/GMT+6"), 2),
     TMIN = units::set_units(rep(c(NA, 1, 2, NA), 2), "°C"),
     TAVG = units::set_units(rep(c(NA, 1.25, 2.25, NA), 2), "°C"),
     TMAX = units::set_units(rep(c(NA, 2, 3, NA), 2), "°C"),

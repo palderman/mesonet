@@ -6,6 +6,10 @@
 #' @param tz a length-one character vector specifying which time zone to use for daily summary. Use
 #'  [base::OlsonNames()] to obtain a listing of valid available time zones.
 #'
+#' @param interval the interval over which to summarize data. May be defined as
+#'  a difftime object (see [base::difftime()]) or a character value compatible
+#'  with [units::as_units()]
+#'
 #' @param include_qc_variables a length-one logical vector specifying whether or
 #'  or not to include quality control variables (e.g. number of errant
 #'  observations) in the output
@@ -141,15 +145,25 @@ mnet_summarize <- function(sub_daily,
                            interval = "1 day",
                            include_qc_variables = FALSE){
 
+  stopifnot(any(c("character", "difftime") %in% class(interval)))
+
+  if(is.character(interval)){
+    interval <-
+      units::as_units(interval) |>
+      units::set_units("sec") |>
+      units::drop_units() |>
+      as.difftime(units = "secs")
+  }
+
   threshold_temperature <-
     units::set_units(65, "Fahrenheit") |>
     units::set_units("Celsius")
 
   sub_daily <-
     sub_daily |>
-      within({
-        DATE = as.Date(DATE, tz = tz)
-      })
+    within({
+      DATE = round_date(DATE, interval, tz)
+    })
 
   daily <- list(
     # TAIR to TDEW
@@ -561,3 +575,19 @@ calc_sdir <- function(wdir, na.rm = TRUE){
     tail(1)
 }
 
+round_date <- function(time, interval, tz = ""){
+
+  if(tz == "") tz <- attr(time, "tzone")
+
+  if(interval == as.difftime(1, units = "days")){
+    t_offset <- c(as.POSIXct("1970-01-01", tz = attr(time, "tzone")),
+                  as.POSIXct("1970-01-01", tz = tz)) |>
+      diff()
+    time_out <- as.POSIXct(as.Date(time, tz = tz), tz = tz) + t_offset
+  }else{
+    int_dbl <- as.double(interval, units = "secs")
+    time_out <- as.POSIXct((as.numeric(time) %/% int_dbl + 1)*int_dbl)
+  }
+
+  return(time_out)
+}
