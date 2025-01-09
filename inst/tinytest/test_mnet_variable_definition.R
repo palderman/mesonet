@@ -8,7 +8,7 @@ expected <-
                              "Liquid precipitation measured each day.  Frozen precipitation cannot be recorded until it melts; therefore, precipitation from snow may not be recorded until several days after the snow event."),
              check.names = FALSE)
 
-actual <- mnet_variable_definition("RAIN")
+actual <- mesonet::mnet_variable_definition("RAIN")
 
 row.names(actual) <- 1:nrow(actual)
 
@@ -33,7 +33,7 @@ expected <-
                              "Number of errant 5-minute 2m wind speed observations each day."),
              check.names = FALSE)
 
-actual <- mnet_variable_definition("^2")
+actual <- mesonet::mnet_variable_definition("^2")
 
 row.names(actual) <- 1:nrow(actual)
 
@@ -78,7 +78,7 @@ expected <-
                     "Highest 15-minute averaged soil temperature observation each day."),
     check.names = FALSE)
 
-actual <- mnet_variable_definition("MAX$")
+actual <- mesonet::mnet_variable_definition("MAX$")
 
 row.names(actual) <- 1:nrow(actual)
 

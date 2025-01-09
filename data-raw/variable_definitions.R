@@ -29,6 +29,9 @@ variable_definitions <-
     Unit = gsub("inches", "millimeters", Unit)
     Unit = gsub("miles per hour", "meters per second", Unit)
     Unit = gsub("watts", "Watts", Unit)
+    ID = ifelse(ID == "S3MNO" & grepl("25cm", `Variable Name`),
+                "S25NO",
+                ID)
   })
 
 # variable_definitions <-
