@@ -6,14 +6,98 @@ make_date <- function(date_chr){
                tz = "UTC")
 }
 
+standardize_column_names <- function(df){
+  cnames <- colnames(df)
+  replacement <- c(
+    "_avg$" = "AVG",
+    "_max$" = "MAX",
+    "_max_count$" = "MAXO",
+    "_min$" = "MIN",
+    "_maxo$" = "MAXO",
+    "_mino$" = "MINO",
+    "_sd$" = "DEV",
+    "_bad$" = "BAD",
+    "^(VW.*)AVG" = "\\1",
+    "^RELH" = "H",
+    "^TAIR" = "T",
+    "^TDEW" = "D",
+    "^SRAD_sum$" = "ATOT",
+    "^SRAD" = "A",
+    "^RAIN" = "R",
+    "^PRES" = "P",
+    "^TA9M" = "9",
+    "^WS2M" = "2",
+    "WDIR_([sp]dir)" = "\\U\\1",
+    "WDIR_([sp]dfq)" = "\\U\\1",
+    "^R_sum" = "RAIN",
+    "^R_gt0" = "RNUM",
+    "^WSPD" = "WS",
+    "^WSM([AI])" = "WSM",
+    "^WSAVG" = "WSPD",
+    "WSDEV" = "WDEV",
+    "WMAXMAX" = "WMAX",
+    "VDEFAVG" = "VDEF",
+    "^T([SB])([0-9])" = "\\1\\2",
+    "10" = "",
+    "30" = "3",
+    "([SB])05" = "\\15",
+    "([035]AV)G" = "\\1",
+    "^([SB].+)M([AI])" = "\\1M",
+    "^(TR.+)AV" = "\\1",
+    "WSBAD" = "WBAD",
+    "WDIRBAD" = "IBAD",
+    "([SB])([0-9]+)BAD" = "\\1\\2BD",
+    "TR([0-9]+)BAD" = "R\\1BD",
+    "(S[0-9]{2})M([XN]O)" = "\\1\\2"
+  )
+  regex <- names(replacement)
+  for(.i in seq_along(replacement)){
+    cnames <- gsub(regex[.i], replacement[.i], cnames, perl = TRUE)
+  }
+  colnames(df) <- cnames
+  df
+}
+
 standardize_column_order <- function(df){
 
   col_ord <-
     c("STNM", "STID", "DATE",
-      "RELH", "TAIR", "WSPD", "WVEC", "WDIR", "WDSD", "WSSD", "WMAX",
-      "RAIN", "PRES", "SRAD", "TA9M", "WS2M", "TS10", "TB10", "TS05",
-      "TB05", "TS30", "TS25", "TS60", "TR05", "TR25",
-      "TR60", "TR75", "TS45", "VW05", "VW25", "VW45", "VDEF", "TDEW")
+      "RELH", "HAVG", "HMAX", "HMIN",
+      "DAVG", "DMAX", "DMIN",
+      "TAIR", "TAVG", "TMAX", "TMIN",
+      "WSPD", "WSMX", "WSMN", "WDEV",
+      "WVEC", "WDIR", "WDSD", "WSSD", "PDIR", "PDFQ", "SDIR", "SDFQ",
+      "WMAX",
+      "RAIN", "RMAX",
+      "PRES", "PAVG", "PMAX", "PMIN", "MSLP",
+      "SRAD", "ATOT", "AMAX",
+      "TA9M", "9AVG",
+      "WS2M", "2AVG", "2MAX", "2MIN", "2DEV",
+      "TS10", "SAVG", "SMAX", "SMIN",
+      "TB10", "BAVG", "BMAX", "BMIN",
+      "TS05", "S5AV", "S5MX", "S5MN",
+      "TB05", "B5AV", "B5MX", "B5MN",
+      "TS30", "S3AV", "S3MX", "S3MN",
+      "TS25", "S25AV", "S25MX", "S25MN",
+      "TS60", "S60AV", "S60MX", "S60MN",
+      "TR05", "TR25", "TR60", "TR75",
+      "VW05", "VW25", "VW45", "VDEF", "TDEW",
+      "HMAXO", "HMINO", "HBAD",
+      "DMAXO", "DMINO", "DBAD",
+      "TMAXO", "TMINO", "TBAD", "9BAD",
+      "WSMXO", "WSMNO", "WMAXO", "WBAD", "IBAD", "2BAD",
+      "RNUM", "RBAD",
+      "PMAXO", "PMINO", "PBAD",
+      "AMAXO", "ABAD",
+      "B5MXO", "B5MNO", "B5BD",
+      "BMAXO", "BMINO", "BBAD",
+      "S5MXO", "S5MNO", "S5BD",
+      "SMAXO", "SMINO", "SBAD",
+      "S25XO", "S25NO", "S25BD",
+      "S3MXO", "S3MNO", "S3BD",
+      "S60XO", "S60NO", "S60BD",
+      "R05BD", "R25BD", "R60BD", "R75BD"
+    )
 
   col_ord <- col_ord[col_ord %in% colnames(df)]
 

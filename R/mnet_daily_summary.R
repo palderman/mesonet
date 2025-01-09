@@ -136,7 +136,8 @@
 #'
 #' @export
 #'
-mnet_daily_summary <- function(sub_daily, tz = "Etc/GMT+6", include_qc_variables = FALSE){
+mnet_daily_summary <- function(sub_daily, tz = "Etc/GMT+6",
+                               include_qc_variables = FALSE){
 
   threshold_temperature <-
     units::set_units(65, "Fahrenheit") |>
@@ -152,13 +153,22 @@ mnet_daily_summary <- function(sub_daily, tz = "Etc/GMT+6", include_qc_variables
     # TAIR to TDEW
     mesonet:::summarize_across(
       .data = sub_daily,
-      .cols = c("TAIR", "RELH", "WSPD", "WDIR", "WDSD", "WSSD", "PRES", "WS2M",
-                "TDEW"),
+      .cols = c("TAIR", "RELH", "WSPD", "PRES", "WS2M", "TDEW"),
       .fns = list(
         # 260 is at least 90% of the 288 5-minute observations per day
         min = \(.x) qc_summary(.x, min, 260),
         avg = \(.x) qc_summary(.x, mean, 260),
         max = \(.x) qc_summary(.x, max, 260)),
+      .groups = c("STNM", "STID", "DATE")),
+
+    # WDIR
+    mesonet:::summarize_across(
+      .data = sub_daily,
+      .cols = c("WDIR"),
+      .fns = list(
+        # 260 is at least 90% of the 288 5-minute observations per day
+        pdir = \(.x) qc_summary(.x, calc_pdir, 260),
+        sdir = \(.x) qc_summary(.x, calc_sdir, 260)),
       .groups = c("STNM", "STID", "DATE")),
 
     # RAIN
@@ -168,17 +178,7 @@ mnet_daily_summary <- function(sub_daily, tz = "Etc/GMT+6", include_qc_variables
       .fns = list(
         # 260 is at least 90% of the 288 5-minute observations per day
         sum = \(.x) qc_summary(.x, sum, 260),
-        gt0 = \(.x) qc_summary(.x, gt0_count, 260),
         max = \(.x) qc_summary(.x, max, 260)),
-      .groups = c("STNM", "STID", "DATE")),
-
-    # sd_vars
-    mesonet:::summarize_across(
-      .data = sub_daily,
-      .cols = c("WSPD", "WS2M"),
-      .fns = list(
-        # 260 is at least 90% of the 288 5-minute observations per day
-        sd = \(.x) qc_summary(.x, sd, 260)),
       .groups = c("STNM", "STID", "DATE")),
 
     # SRAD sum
@@ -199,13 +199,13 @@ mnet_daily_summary <- function(sub_daily, tz = "Etc/GMT+6", include_qc_variables
         max = \(.x) qc_summary(.x, max, 260)),
       .groups = c("STNM", "STID", "DATE")),
 
-    # TA9M and VDEF max and max_count
+    # TA9M and VDEF avg
     mesonet:::summarize_across(
       .data = sub_daily,
       .cols = c("TA9M", "VDEF"),
       .fns = list(
         # 260 is at least 90% of the 288 5-minute observations per day
-        max = \(.x) qc_summary(.x, max, 260)),
+        avg = \(.x) qc_summary(.x, mean, 260)),
       .groups = c("STNM", "STID", "DATE")),
 
     # Soil temperature
@@ -221,25 +221,18 @@ mnet_daily_summary <- function(sub_daily, tz = "Etc/GMT+6", include_qc_variables
     # Soil moisture
     mesonet:::summarize_across(
       .data = sub_daily,
-      .cols = c("TR05", "TR25", "TR60", "TR75"),
+      .cols = c("TR05", "TR25", "TR60", "TR75", "VW05", "VW25", "VW45"),
       .fns = list(# 44 is at least 90% of the 48 30-minute observations per day
         avg = \(.x) qc_summary(.x, mean, 44)),
       .groups = c("STNM", "STID", "DATE"))
-  ) |>
-    do.call(cbind.data.frame, args = _) |>
-    within({
-      CDEG = max(TAIR_avg - threshold_temperature, 0)
-      HDEG = max(threshold_temperature - TAIR_avg, 0)
-    })
-
+  )
   if(include_qc_variables){
-    qc_daily <- list(
+    daily_qc <- list(
 
       # TAIR to TDEW
       mesonet:::summarize_across(
         .data = sub_daily,
-        .cols = c("TAIR", "RELH", "WSPD", "WDIR", "WDSD", "WSSD", "PRES", "WS2M",
-                  "TDEW"),
+        .cols = c("TAIR", "RELH", "WSPD", "PRES"),
         .fns = list(
           # 260 is at least 90% of the 288 5-minute observations per day
           maxo = \(.x) qc_summary(.x, max_count, 260),
@@ -255,6 +248,16 @@ mnet_daily_summary <- function(sub_daily, tz = "Etc/GMT+6", include_qc_variables
           max_count = \(.x) qc_summary(.x, max_count, 260)),
         .groups = c("STNM", "STID", "DATE")),
 
+      # PDFQ and SDFQ
+      mesonet:::summarize_across(
+        .data = sub_daily,
+        .cols = c("WDIR"),
+        .fns = list(
+          # 260 is at least 90% of the 288 5-minute observations per day
+          pdfq = \(.x) qc_summary(.x, calc_pdir_freq, 260),
+          sdfq = \(.x) qc_summary(.x, calc_sdir_freq, 260)),
+        .groups = c("STNM", "STID", "DATE")),
+
       # RAIN
       mesonet:::summarize_across(
         .data = sub_daily,
@@ -264,94 +267,81 @@ mnet_daily_summary <- function(sub_daily, tz = "Etc/GMT+6", include_qc_variables
           gt0 = \(.x) qc_summary(.x, gt0_count, 260)),
         .groups = c("STNM", "STID", "DATE")),
 
-      # TA9M and VDEF max and max_count
-      mesonet:::summarize_across(
-        .data = sub_daily,
-        .cols = c("TA9M", "VDEF"),
-        .fns = list(
-          # 260 is at least 90% of the 288 5-minute observations per day
-          max_count = \(.x) qc_summary(.x, max_count, 260)),
-        .groups = c("STNM", "STID", "DATE")),
-
       # Number of bad/missing observations for TAIR through SRAD
       mesonet:::summarize_across(
         .data = sub_daily,
-        .cols = c("TAIR", "RELH", "WSPD", "WDIR", "WDSD", "WSSD", "PRES", "WS2M",
-                  "TDEW", "TA9M", "RAIN", "WMAX", "SRAD"),
-        .fns = list(bad = \(.x) sum(is.na(.x))),
+        .cols = c("TAIR", "RELH", "WSPD", "WDIR", "PRES", "WS2M",
+                  "TDEW", "TA9M", "RAIN", "SRAD"),
+        .fns = list(bad = \(.x) 288 - sum(!is.na(.x))),
         .groups = c("STNM", "STID", "DATE")),
 
       # Number of bad/missing observations for soil temperature
       mesonet:::summarize_across(
         .data = sub_daily,
         .cols = c("TS05", "TS10", "TS25", "TS30", "TS60", "TB05", "TB10"),
-        .fns = list(# Soil moisture are 30-min observations so 240 are expected
-          #  to be missing and should not count as errant:
-          bad = \(.x) sum(is.na(.x)) - 192,
-          maxo = \(.x) qc_summary(.x, max_count, 0),
-          mino = \(.x) qc_summary(.x, min_count, 0))),
+        .fns = list(# Soil temperature are 15-min observations so 96 would be
+          #  no missing data, 87 would be > 90% complete data:
+          bad = \(.x) 96 - sum(!is.na(.x)),
+          maxo = \(.x) qc_summary(.x, max_count, 87),
+          mino = \(.x) qc_summary(.x, min_count, 87)),
+        .groups = c("STNM", "STID", "DATE")),
 
       # Number of bad/missing observations for soil moisture
       mesonet:::summarize_across(
         .data = sub_daily,
         .cols = c("TR05", "TR25", "TR60", "TR75"),
-        .fns = list(# Soil moisture are 30-min observations so 240 are expected
-          #  to be missing and should not count as errant:
-          bad = \(.x) sum(is.na(.x)) - 240),
+        .fns = list(# Soil moisture are 30-min observations so 48 would be
+          #  no missing data
+          bad = \(.x) 48 - sum(!is.na(.x))),
         .groups = c("STNM", "STID", "DATE"))
-    ) |>
-      do.call(cbind.data.frame, args = _)
+    )
+
+    daily <- c(daily, daily_qc)
 
   }
 
-  return(daily)
+  daily <- daily[!sapply(daily, is.null)]
 
-  #   group_by(STID, DATE) |>
-  #             `9AVG` = qc_summary(TA9M, mean, 260),
-  #             WMAX = qc_summary(WMAX, max, 260),
-  #             WMAXO = qc_summary(WMAX, max_count, 260),
-  #             WDEV = qc_summary(WSPD, sd, 260),
-  #             `2DEV` = qc_summary(WS2M, sd, 260),
-  #             VDEF = qc_summary(VDEF, mean, 260),
-  #             # 285 is at least 99% of the 288 5-minute observations per day
-  #             ATOT = qc_summary(SRAD, sum, 285),
-  #             AMAX = qc_summary(SRAD, max, 260),
-  #             AMAXO = qc_summary(SRAD, max_count, 260),
-  #             RAIN = qc_summary(RAIN, sum, 260),
-  #             RMAX = qc_summary(RAIN, max, 260),
-  #             RNUM = qc_summary(RAIN, gt0_count, 260),
-  #             HDEG = max((65-32)*5/9 - TAIR_avg, 0),
-  #             CDEG = max(TAIR_avg - (65-32)*5/9, 0),
-  #             across(c(TAIR, RELH, WSPD, WDIR, WDSD, WSSD, PRES, WS2M, TDEW,
-  #                      TA9M, RAIN, WMAX, SRAD),
-  #                    .fns = list(bad = ~sum(is.na(.)))),
-  #             across(c(TS05, TS10, TS25, TS30, TS60, TB05, TB10),
-  #                    .fns = list(# 87 is at least 90% of the 96 15-minute observations per day
-  #                                min = ~qc_summary(., min, 87),
-  #                                avg = ~qc_summary(., mean, 87),
-  #                                max = ~qc_summary(., max, 87),
-  #                                # Soil temp/moisture are 15-min observations so 192 are expected
-  #                                #  to be missing and should not count as errant:
-  #                                bad = ~{sum(is.na(.)) - 192},
-  #                                maxo = ~qc_summary(., max_count, 0),
-  #                                mino = ~qc_summary(., min_count, 0))),
-  #             across(c(TR05, TR25, TR60, TR75),
-  #                    .fns = list(# 44 is at least 90% of the 48 30-minute observations per day
-  #                                avg = ~qc_summary(., mean, 44),
-  #                                # Soil moisture are 30-min observations so 240 are expected
-  #                                #  to be missing and should not count as errant:
-  #                                bad = ~{sum(is.na(.)) - 240}))
-  #   ) |>
-  #   filter(DATE >= as.Date("1994-01-01")) |>
-  #   ungroup() |>
-  #   rename_with(.fn = rename_daily_columns) |>
-  #   select(-matches("O$"), matches("O$"))
+  # Drop STNM, STID, and DATE to avoid column name duplications
+  if(length(daily) > 1){
+    for(i in 2:length(daily)){
+      keep_cols <- grep("(^STNM$)|(^STID$)|(^DATE$)",
+                        colnames(daily[[i]]),
+                        invert = TRUE)
+      daily[[i]] <- daily[[i]][, keep_cols, drop = FALSE]
+    }
+  }
+
+  daily <-
+    daily |>
+    do.call(cbind.data.frame, args = _) |>
+    within({
+      CDEG = max(TAIR_avg - threshold_temperature,
+                 units::set_units(0, "Celsius"))
+      HDEG = max(threshold_temperature - TAIR_avg,
+                 units::set_units(0, "Celsius"))
+      # Convert mm per 5 min to mm per h
+      RAIN_max = units::set_units(units::drop_units(RAIN_max)*60/5, "mm/h")
+    }) |>
+    standardize_column_names() |>
+    standardize_column_order()
 
   return(daily)
 
 }
 
 summarize_across <- function(.data, .cols, .fns, .groups = NULL){
+
+  if(any(!.cols %in% colnames(.data))){
+    .cols[!.cols %in% colnames(.data)] |>
+      paste0(collapse = ", ") |>
+      paste0("The following variables were missing from dataset and will not be summarized:\n  ", .x = _) |>
+      warning()
+  }
+
+  .cols <- .cols[.cols %in% colnames(.data)]
+
+  if(length(.cols) == 0) return(NULL)
 
   data_out <-
     .data[, .groups] |>
@@ -382,9 +372,10 @@ summarize_across <- function(.data, .cols, .fns, .groups = NULL){
       for(.fn in names(.fns)){
         .cname <- paste0(.col, "_", .fn)
         if(!.cname %in% names(data_out)){
-          data_out[[.cname]] <- .data_sub[[.col]][1]
+          data_out[[.cname]] <- .fns[[.fn]](.data_sub[[.col]])
+        }else{
+          data_out[[.cname]][.row] <- .fns[[.fn]](.data_sub[[.col]])
         }
-        data_out[[.cname]][.row] <- .fns[[.fn]](.data_sub[[.col]])
       }
     }
   }
@@ -402,12 +393,12 @@ filter_by_groups <- function(df, filter_df){
   df[Reduce(`&`, ind_list), ]
 }
 
-qc_summary <- function(x, FUN, min_n_obs = 260){
+qc_summary <- function(x, FUN, min_n_obs = 260, ...){
 
   n_obs <- sum(!is.na(x))
 
   if(n_obs < min_n_obs){
-    value <- x[1]
+    value <- suppressWarnings(FUN(x, na.rm=TRUE))
     value[] <- NA
   }else{
     value <- FUN(x, na.rm=TRUE)
@@ -418,7 +409,7 @@ qc_summary <- function(x, FUN, min_n_obs = 260){
 
 max_count <- function(x, na.rm = FALSE){
   if(any(!is.na(x))){
-    sum(x == max(x, na.rm = na.rm))
+    sum(x[!is.na(x)] == max(x, na.rm = na.rm))
   }else{
     NA_real_
   }
@@ -426,7 +417,7 @@ max_count <- function(x, na.rm = FALSE){
 
 min_count <- function(x, na.rm = FALSE){
   if(any(!is.na(x))){
-    sum(x == min(x, na.rm = na.rm))
+    sum(x[!is.na(x)] == min(x, na.rm = na.rm))
   }else{
     NA_real_
   }
@@ -434,7 +425,11 @@ min_count <- function(x, na.rm = FALSE){
 
 gt0_count <- function(x, na.rm = FALSE){
   if(any(!is.na(x))){
-    sum(x > 0, na.rm = na.rm)
+    if("units" %in% class(x)){
+      sum(units::drop_units(x) > 0, na.rm = na.rm)
+    }else{
+      sum(x > 0, na.rm = na.rm)
+    }
   }else{
     NA_real_
   }
@@ -446,6 +441,10 @@ srad_sum <- function(x, na.rm = FALSE){
   }else{
     units::set_units(NA_real_, "megajoule/m2/d")
   }
+}
+
+units_sd <- function(x, na.rm = FALSE){
+  units::keep_units(sd, x, na.rm = na.rm)
 }
 
 rename_daily_columns <- function(col_names){
@@ -495,7 +494,8 @@ wdir_to_cardinal <- function(wdir){
   begin_threshold <- seq(0, 360, by = increment) |>
     head(-1) |>
     (\(.x) .x - increment/2)() |>
-    (\(.x) ifelse(.x < 0, 360 + .x, .x))()
+    (\(.x) ifelse(.x < 0, 360 + .x, .x))() |>
+    units::set_units("degrees")
 
   end_threshold <- c(
     tail(begin_threshold, -1),
@@ -512,9 +512,50 @@ wdir_to_cardinal <- function(wdir){
   return(cdir_out)
 }
 
-calc_pdir <- function(wdir){
-  pdir <- wdir_to_cardinal(wdir) |>
+calc_pdir <- function(wdir, na.rm = TRUE){
+  if(na.rm) wdir <- wdir[!is.na(wdir)]
+  wdir_to_cardinal(wdir) |>
     table() |>
-    (\(.x) .x[which.max(.x)])()
+    sort(decreasing = TRUE) |>
+    names() |>
+    head(1)
+}
+
+calc_pdir_freq <- function(wdir, na.rm = TRUE){
+
+  if(na.rm) wdir <- wdir[!is.na(wdir)]
+
+  wdir_tab <-
+    wdir_to_cardinal(wdir) |>
+    table() |>
+    sort(decreasing = TRUE)
+
+  units::set_units(wdir_tab[1]/sum(wdir_tab)*100, "percent")
+}
+
+calc_sdir_freq <- function(wdir, na.rm = TRUE){
+
+  if(na.rm) wdir <- wdir[!is.na(wdir)]
+
+  wdir_tab <-
+    wdir_to_cardinal(wdir) |>
+    table() |>
+    sort(decreasing = TRUE)
+
+  if(length(wdir_tab) > 1){
+    return(units::set_units(wdir_tab[2]/sum(wdir_tab)*100, "percent"))
+  }else{
+    return(units::set_units(wdir_tab[1]/sum(wdir_tab)*100, "percent"))
+  }
+}
+
+calc_sdir <- function(wdir, na.rm = TRUE){
+  if(na.rm) wdir <- wdir[!is.na(wdir)]
+  wdir_to_cardinal(wdir) |>
+    table() |>
+    sort(decreasing = TRUE) |>
+    names() |>
+    head(2) |>
+    tail(1)
 }
 
