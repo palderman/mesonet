@@ -289,9 +289,9 @@ expect_equal(actual_avg,
              expected_avg,
              info = "Test summarize_across() missing TAIR column")
 
-###########################
-# Test mnet_daily_summary()
-###########################
+##########################################
+# Test mnet_summarize() for daily interval
+##########################################
 
 expected_avg <-
   data.frame(
@@ -414,11 +414,96 @@ actual_avg <-
 
 expect_equal(colnames(actual_avg),
              colnames(expected_avg),
-             info = "Test mnet_daily_summary() - check column names")
+             info = "Test mnet_summarize() - daily interval without QC variables, check column names")
 
 if(ncol(actual_avg) == ncol(expected_avg) &
    all(colnames(actual_avg) == colnames(expected_avg))){
   expect_equal(actual_avg,
                expected_avg,
-               info = "Test mnet_daily_summary() - check data frame contents")
+               info = "Test mnet_summarize() - daily interval without QC variables, check data frame contents")
+}
+
+
+##########################################
+# Test mnet_summarize() for daily interval without QC variables
+##########################################
+
+expected_avg <-
+  data.frame(
+    STNM = 89L,
+    STID = rep(c("ACME", "ALTU"), each = 4),
+    DATE = rep(as.POSIXct(c("1994-01-31", "1994-02-01", "1994-02-02", "1994-02-03"), tz = "Etc/GMT+6"), 2),
+    TMIN = units::set_units(rep(c(NA, 1, 2, NA), 2), "°C"),
+    TAVG = units::set_units(rep(c(NA, 1.25, 2.25, NA), 2), "°C"),
+    TMAX = units::set_units(rep(c(NA, 2, 3, NA), 2), "°C"),
+    HMIN = units::set_units(rep(c(NA, 31, 32, NA), 2), "percent"),
+    HAVG = units::set_units(rep(c(NA, 31.25, 32.25, NA), 2), "percent"),
+    HMAX = units::set_units(rep(c(NA, 32, 33, NA), 2), "percent"),
+    WSMN = units::set_units(rep(c(NA, 1, 2, NA), 2), "m/s"),
+    WSPD = units::set_units(rep(c(NA, 1.25, 2.25, NA), 2), "m/s"),
+    WSMX = units::set_units(rep(c(NA, 2, 3, NA), 2), "m/s"),
+    PDIR = rep(c(NA, "SSW", "SSW", NA), 2),
+    SDIR = rep(c(NA, "SSW", "SSW", NA), 2),
+    PMIN = units::set_units(rep(c(NA, 101, 102, NA), 2), "kPa"),
+    PAVG = units::set_units(rep(c(NA, 101.25, 102.25, NA), 2), "kPa"),
+    PMAX = units::set_units(rep(c(NA, 102, 103, NA), 2), "kPa"),
+    `2MIN` = units::set_units(rep(c(NA, 1, 2, NA), 2), "m/s"),
+    `2AVG` = units::set_units(rep(c(NA, 1.25, 2.25, NA), 2), "m/s"),
+    `2MAX` = units::set_units(rep(c(NA, 2, 3, NA), 2), "m/s"),
+    DMIN = units::set_units(rep(NA_real_, 8), "°C"),
+    DAVG = units::set_units(rep(NA_real_, 8), "°C"),
+    DMAX = units::set_units(rep(NA_real_, 8), "°C"),
+    WMAX = units::set_units(rep(c(NA, 2:3, NA), 2), "m/s"),
+    RAIN = units::set_units(rep(c(NA, 216*1 + 72*2, 216*2 + 72*3 , NA), 2), "mm"),
+    RMAX = units::set_units(rep(c(NA, 2, 3, NA)*60/5, 2), "mm/hour"),
+    ATOT = units::set_units(rep(c(NA, (201*18+202*6), (202*18+203*6), NA)*60*60*1e-6, 2), "MJ/d/m2"),
+    AMAX = units::set_units(rep(c(NA, 202, 203, NA), 2), "W/m2"),
+    `9AVG` = units::set_units(rep(c(NA, (18*1 + 6*2)/24, (18*2 + 6*3)/24, NA), 2), "°C"),
+    SAVG = units::set_units(rep(c(NA, rep(5.5, 2), NA), 2), "°C"),
+    SMAX = units::set_units(rep(c(NA, rep(5.5, 2), NA), 2), "°C"),
+    SMIN = units::set_units(rep(c(NA, rep(5.5, 2), NA), 2), "°C"),
+    BAVG = units::set_units(rep(c(NA, rep(7.9, 2), NA), 2), "°C"),
+    BMAX = units::set_units(rep(c(NA, rep(7.9, 2), NA), 2), "°C"),
+    BMIN = units::set_units(rep(c(NA, rep(7.9, 2), NA), 2), "°C"),
+    S5AV = units::set_units(rep(c(NA, rep(6.1, 2), NA), 2), "°C"),
+    S5MX = units::set_units(rep(c(NA, rep(6.1, 2), NA), 2), "°C"),
+    S5MN = units::set_units(rep(c(NA, rep(6.1, 2), NA), 2), "°C"),
+    B5AV = units::set_units(rep(c(NA, rep(8.7, 2), NA), 2), "°C"),
+    B5MX = units::set_units(rep(c(NA, rep(8.7, 2), NA), 2), "°C"),
+    B5MN = units::set_units(rep(c(NA, rep(8.7, 2), NA), 2), "°C"),
+    S3AV = units::set_units(rep(c(NA, rep(5.7, 2), NA), 2), "°C"),
+    S3MX = units::set_units(rep(c(NA, rep(5.7, 2), NA), 2), "°C"),
+    S3MN = units::set_units(rep(c(NA, rep(5.7, 2), NA), 2), "°C"),
+    S25AV = units::set_units(rep(NA_real_, 8), "°C"),
+    S25MX = units::set_units(rep(NA_real_, 8), "°C"),
+    S25MN = units::set_units(rep(NA_real_, 8), "°C"),
+    S60AV = units::set_units(rep(NA_real_, 8), "°C"),
+    S60MX = units::set_units(rep(NA_real_, 8), "°C"),
+    S60MN = units::set_units(rep(NA_real_, 8), "°C"),
+    TR05 = units::set_units(rep(NA_real_, 8), "°C"),
+    TR25 = units::set_units(rep(NA_real_, 8), "°C"),
+    TR60 = units::set_units(rep(NA_real_, 8), "°C"),
+    TR75 = units::set_units(rep(NA_real_, 8), "°C"),
+    TS45 = units::set_units(rep(NA_real_, 8), "°C"),
+    VW05 = units::set_units(rep(NA_real_, 8), "cm^3/cm^3"),
+    VW25 = units::set_units(rep(NA_real_, 8), "cm^3/cm^3"),
+    VW45 = units::set_units(rep(NA_real_, 8), "cm^3/cm^3"),
+    VDEF = units::set_units(rep(NA_real_, 8), "kPa"),
+    check.names = FALSE
+  ) |>
+  mesonet:::standardize_column_order()
+
+actual_avg <-
+  subdaily_df |>
+  mesonet::mnet_summarize(include_qc_variables = FALSE)
+
+expect_equal(colnames(actual_avg),
+             colnames(expected_avg),
+             info = "Test mnet_summarize() - daily interval without QC variables, check column names")
+
+if(ncol(actual_avg) == ncol(expected_avg) &
+   all(colnames(actual_avg) == colnames(expected_avg))){
+  expect_equal(actual_avg,
+               expected_avg,
+               info = "Test mnet_summarize() - daily interval without QC variables, check data frame contents")
 }
