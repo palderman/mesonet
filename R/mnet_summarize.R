@@ -185,7 +185,7 @@ mnet_summarize <- function(sub_daily,
 
   daily <- list(
     # TAIR to TDEW
-    mesonet:::summarize_across(
+    summarize_across(
       .data = sub_daily,
       .cols = c("TAIR", "RELH", "WSPD", "PRES", "WS2M", "TDEW"),
       .fns = list(
@@ -196,7 +196,7 @@ mnet_summarize <- function(sub_daily,
       .groups = c("STNM", "STID", "DATE")),
 
     # WDIR
-    mesonet:::summarize_across(
+    summarize_across(
       .data = sub_daily,
       .cols = c("WDIR"),
       .fns = list(
@@ -206,7 +206,7 @@ mnet_summarize <- function(sub_daily,
       .groups = c("STNM", "STID", "DATE")),
 
     # RAIN
-    mesonet:::summarize_across(
+    summarize_across(
       .data = sub_daily,
       .cols = c("RAIN"),
       .fns = list(
@@ -216,7 +216,7 @@ mnet_summarize <- function(sub_daily,
       .groups = c("STNM", "STID", "DATE")),
 
     # SRAD sum
-    mesonet:::summarize_across(
+    summarize_across(
       .data = sub_daily,
       .cols = c("SRAD"),
       .fns = list(
@@ -225,7 +225,7 @@ mnet_summarize <- function(sub_daily,
       .groups = c("STNM", "STID", "DATE")),
 
     # WMAX and SRAD max and max_count
-    mesonet:::summarize_across(
+    summarize_across(
       .data = sub_daily,
       .cols = c("WMAX", "SRAD"),
       .fns = list(
@@ -234,7 +234,7 @@ mnet_summarize <- function(sub_daily,
       .groups = c("STNM", "STID", "DATE")),
 
     # TA9M and VDEF avg
-    mesonet:::summarize_across(
+    summarize_across(
       .data = sub_daily,
       .cols = c("TA9M", "VDEF"),
       .fns = list(
@@ -243,7 +243,7 @@ mnet_summarize <- function(sub_daily,
       .groups = c("STNM", "STID", "DATE")),
 
     # Soil temperature
-    mesonet:::summarize_across(
+    summarize_across(
       .data = sub_daily,
       .cols = c("TS05", "TS10", "TS25", "TS30", "TS60", "TB05", "TB10"),
       .fns = list(# 87 is at least 90% of the 96 15-minute observations per day
@@ -253,7 +253,7 @@ mnet_summarize <- function(sub_daily,
       .groups = c("STNM", "STID", "DATE")),
 
     # Soil moisture
-    mesonet:::summarize_across(
+    summarize_across(
       .data = sub_daily,
       .cols = c("TR05", "TR25", "TR60", "TR75", "VW05", "VW25", "VW45"),
       .fns = list(# 44 is at least 90% of the 48 30-minute observations per day
@@ -264,7 +264,7 @@ mnet_summarize <- function(sub_daily,
     daily_qc <- list(
 
       # TAIR to TDEW
-      mesonet:::summarize_across(
+      summarize_across(
         .data = sub_daily,
         .cols = c("TAIR", "RELH", "WSPD", "PRES"),
         .fns = list(
@@ -274,7 +274,7 @@ mnet_summarize <- function(sub_daily,
         .groups = c("STNM", "STID", "DATE")),
 
       # WMAX and SRAD max and max_count
-      mesonet:::summarize_across(
+      summarize_across(
         .data = sub_daily,
         .cols = c("WMAX", "SRAD"),
         .fns = list(
@@ -283,7 +283,7 @@ mnet_summarize <- function(sub_daily,
         .groups = c("STNM", "STID", "DATE")),
 
       # PDFQ and SDFQ
-      mesonet:::summarize_across(
+      summarize_across(
         .data = sub_daily,
         .cols = c("WDIR"),
         .fns = list(
@@ -293,7 +293,7 @@ mnet_summarize <- function(sub_daily,
         .groups = c("STNM", "STID", "DATE")),
 
       # RAIN
-      mesonet:::summarize_across(
+      summarize_across(
         .data = sub_daily,
         .cols = c("RAIN"),
         .fns = list(
@@ -302,7 +302,7 @@ mnet_summarize <- function(sub_daily,
         .groups = c("STNM", "STID", "DATE")),
 
       # Number of bad/missing observations for TAIR through SRAD
-      mesonet:::summarize_across(
+      summarize_across(
         .data = sub_daily,
         .cols = c("TAIR", "RELH", "WSPD", "WDIR", "PRES", "WS2M",
                   "TDEW", "TA9M", "RAIN", "SRAD"),
@@ -310,7 +310,7 @@ mnet_summarize <- function(sub_daily,
         .groups = c("STNM", "STID", "DATE")),
 
       # Number of bad/missing observations for soil temperature
-      mesonet:::summarize_across(
+      summarize_across(
         .data = sub_daily,
         .cols = c("TS05", "TS10", "TS25", "TS30", "TS60", "TB05", "TB10"),
         .fns = list(# Soil temperature are 15-min observations so 96 would be
@@ -321,7 +321,7 @@ mnet_summarize <- function(sub_daily,
         .groups = c("STNM", "STID", "DATE")),
 
       # Number of bad/missing observations for soil moisture
-      mesonet:::summarize_across(
+      summarize_across(
         .data = sub_daily,
         .cols = c("TR05", "TR25", "TR60", "TR75"),
         .fns = list(# Soil moisture are 30-min observations so 48 would be
