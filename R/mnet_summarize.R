@@ -221,7 +221,7 @@ mnet_summarize <- function(sub_daily,
       .cols = c("SRAD"),
       .fns = list(
         # 260 is at least 90% of the 288 5-minute observations per day
-        sum = \(.x) qc_summary(.x, srad_sum, thrsh["srad"])),
+        sum = \(.x) qc_summary(.x, srad_sum, thrsh["srad"], interval = interval)),
       .groups = c("STNM", "STID", "DATE")),
 
     # WMAX and SRAD max and max_count
@@ -441,10 +441,10 @@ qc_summary <- function(x, FUN, min_n_obs = 260, ...){
   n_obs <- sum(!is.na(x))
 
   if(n_obs < min_n_obs){
-    value <- suppressWarnings(FUN(x, na.rm=TRUE))
+    value <- suppressWarnings(FUN(x, na.rm=TRUE, ...))
     value[] <- NA
   }else{
-    value <- FUN(x, na.rm=TRUE)
+    value <- FUN(x, na.rm=TRUE, ...)
   }
 
   return(value)
@@ -478,11 +478,11 @@ gt0_count <- function(x, na.rm = FALSE){
   }
 }
 
-srad_sum <- function(x, na.rm = FALSE){
+srad_sum <- function(x, na.rm = FALSE, interval = as.difftime(1, units = "days")){
   if(any(!is.na(x))){
-    mean(units::set_units(x, "megajoule/m2/d"), na.rm = na.rm)
+    mean(units::set_units(x, "megajoule/m2/d"), na.rm = na.rm)*units::as_units(interval)
   }else{
-    units::set_units(NA_real_, "megajoule/m2/d")
+    units::set_units(NA_real_, "megajoule/m2/d")*units::as_units(interval)
   }
 }
 
