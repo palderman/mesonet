@@ -289,9 +289,9 @@ expect_equal(actual_avg,
              expected_avg,
              info = "Test summarize_across() missing TAIR column")
 
-##########################################
-# Test mnet_summarize() for daily interval
-##########################################
+############################################################
+# Test mnet_summarize() for daily interval with QC variables
+############################################################
 
 expected_avg <-
   data.frame(
@@ -414,19 +414,19 @@ actual_avg <-
 
 expect_equal(colnames(actual_avg),
              colnames(expected_avg),
-             info = "Test mnet_summarize() - daily interval without QC variables, check column names")
+             info = "Test mnet_summarize() - daily interval with QC variables, check column names")
 
 if(ncol(actual_avg) == ncol(expected_avg) &
    all(colnames(actual_avg) == colnames(expected_avg))){
   expect_equal(actual_avg,
                expected_avg,
-               info = "Test mnet_summarize() - daily interval without QC variables, check data frame contents")
+               info = "Test mnet_summarize() - daily interval with QC variables, check data frame contents")
 }
 
 
-##########################################
+###############################################################
 # Test mnet_summarize() for daily interval without QC variables
-##########################################
+###############################################################
 
 expected_avg <-
   data.frame(
@@ -507,3 +507,122 @@ if(ncol(actual_avg) == ncol(expected_avg) &
                expected_avg,
                info = "Test mnet_summarize() - daily interval without QC variables, check data frame contents")
 }
+
+#############################################################
+# Test mnet_summarize() for hourly interval with QC variables
+#############################################################
+
+expected_avg <-
+  data.frame(
+    STID = rep(c("ACME", "ALTU"), each = 3*24),
+    DATE = rep(seq(as.POSIXct("1994-01-31 19:00", tz = "Etc/GMT+6"),
+                   as.POSIXct("1994-02-03 18:00", tz = "Etc/GMT+6"),
+                   by = as.difftime(1, units = "hours")), 2),
+    TMIN = units::set_units(rep(c(1:3, 1:3), each = 24), "°C"),
+    TAVG = units::set_units(rep(c(1:3, 1:3), each = 24), "°C"),
+    TMAX = units::set_units(rep(c(1:3, 1:3), each = 24), "°C"),
+    WSMN = units::set_units(rep(c(1:3, 1:3), each = 24), "m/s"),
+    WSPD = units::set_units(rep(c(1:3, 1:3), each = 24), "m/s"),
+    WSMX = units::set_units(rep(c(1:3, 1:3), each = 24), "m/s"),
+    PDIR = rep("SSW", 2*3*24),
+    SDIR = rep("SSW", 2*3*24),
+    PDFQ = units::set_units(rep(100, 2*3*24), "percent"),
+    SDFQ = units::set_units(rep(100, 2*3*24), "percent"),
+    RAIN = units::set_units(rep(c(1:3*12, 1:3*12), each = 24), "mm"),
+    RNUM = rep(12, 2*3*24),
+    RMAX = units::set_units(rep(c(1:3*12, 1:3*12), each = 24), "mm/hour"),
+    ATOT = units::set_units(units::set_units(rep(c(201:203, 201:203), each = 24), "W/m2"), "MJ/d/m2"),
+    AMAX = units::set_units(rep(c(201:203, 201:203), each = 24), "W/m2"),
+    SAVG = units::set_units(rep(5.5, 2*3*24), "°C"),
+    SMAX = units::set_units(rep(5.5, 2*3*24), "°C"),
+    SMIN = units::set_units(rep(5.5, 2*3*24), "°C"),
+    TR05 = units::set_units(rep(NA_real_, 2*3*24), "°C"),
+    TMINO = rep(12, 2*3*24),
+    TMAXO = rep(12, 2*3*24),
+    TBAD = rep(0, 2*3*24),
+    WSMNO = rep(12, 2*3*24),
+    WSMXO = rep(12, 2*3*24),
+    WBAD = rep(0, 2*3*24),
+    IBAD = rep(0, 2*3*24),
+    RBAD = rep(0, 2*3*24),
+    AMAXO = rep(12, 2*3*24),
+    ABAD = rep(0, 2*3*24),
+    SMINO = rep(4, 2*3*24),
+    SMAXO = rep(4, 2*3*24),
+    SBAD = rep(0, 2*3*24),
+    R05BD = rep(2, 2*3*24),
+    check.names = FALSE
+  ) |>
+  mesonet:::standardize_column_order()
+
+expect_warning({
+  actual_avg <-
+    subdaily_df |>
+    subset(select = c("STID", "DATE", "TAIR", "WSPD", "WDIR", "RAIN", "SRAD",
+                      "TS10", "TR05")) |>
+    mesonet::mnet_summarize(interval = "1 hour",
+                            include_qc_variables = TRUE)
+})
+
+expect_equal(colnames(actual_avg),
+             colnames(expected_avg),
+             info = "Test mnet_summarize() - hourly interval with QC variables, check column names")
+
+if(ncol(actual_avg) == ncol(expected_avg) &
+   all(colnames(actual_avg) == colnames(expected_avg))){
+  expect_equal(actual_avg,
+               expected_avg,
+               info = "Test mnet_summarize() - hourly interval with QC variables, check data frame contents")
+}
+
+
+################################################################
+# Test mnet_summarize() for hourly interval without QC variables
+################################################################
+
+expected_avg <-
+  data.frame(
+    STID = rep(c("ACME", "ALTU"), each = 3*24),
+    DATE = rep(seq(as.POSIXct("1994-01-31 19:00", tz = "Etc/GMT+6"),
+                   as.POSIXct("1994-02-03 18:00", tz = "Etc/GMT+6"),
+                   by = as.difftime(1, units = "hours")), 2),
+    TMIN = units::set_units(rep(c(1:3, 1:3), each = 24), "°C"),
+    TAVG = units::set_units(rep(c(1:3, 1:3), each = 24), "°C"),
+    TMAX = units::set_units(rep(c(1:3, 1:3), each = 24), "°C"),
+    WSMN = units::set_units(rep(c(1:3, 1:3), each = 24), "m/s"),
+    WSPD = units::set_units(rep(c(1:3, 1:3), each = 24), "m/s"),
+    WSMX = units::set_units(rep(c(1:3, 1:3), each = 24), "m/s"),
+    PDIR = rep("SSW", 2*3*24),
+    SDIR = rep("SSW", 2*3*24),
+    RAIN = units::set_units(rep(c(1:3*12, 1:3*12), each = 24), "mm"),
+    RMAX = units::set_units(rep(c(1:3*12, 1:3*12), each = 24), "mm/hour"),
+    ATOT = units::set_units(units::set_units(rep(c(201:203, 201:203), each = 24), "W/m2"), "MJ/d/m2"),
+    AMAX = units::set_units(rep(c(201:203, 201:203), each = 24), "W/m2"),
+    SAVG = units::set_units(rep(5.5, 2*3*24), "°C"),
+    SMAX = units::set_units(rep(5.5, 2*3*24), "°C"),
+    SMIN = units::set_units(rep(5.5, 2*3*24), "°C"),
+    TR05 = units::set_units(rep(NA_real_, 2*3*24), "°C"),
+    check.names = FALSE
+  ) |>
+  mesonet:::standardize_column_order()
+
+expect_warning({
+  actual_avg <-
+    subdaily_df |>
+    subset(select = c("STID", "DATE", "TAIR", "WSPD", "WDIR", "RAIN", "SRAD",
+                      "TS10", "TR05")) |>
+    mesonet::mnet_summarize(interval = "1 hour",
+                            include_qc_variables = FALSE)
+})
+
+expect_equal(colnames(actual_avg),
+             colnames(expected_avg),
+             info = "Test mnet_summarize() - hourly interval without QC variables, check column names")
+
+if(ncol(actual_avg) == ncol(expected_avg) &
+   all(colnames(actual_avg) == colnames(expected_avg))){
+  expect_equal(actual_avg,
+               expected_avg,
+               info = "Test mnet_summarize() - hourly interval without QC variables, check data frame contents")
+}
+

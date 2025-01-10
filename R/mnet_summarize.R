@@ -8,7 +8,8 @@
 #'
 #' @param interval the interval over which to summarize data. May be defined as
 #'  a difftime object (see [base::difftime()]) or a character value compatible
-#'  with [units::as_units()]
+#'  with [units::as_units()]. Tested intervals include "1 day" (the default),
+#'  "30 min", and "1 hour", although other intervals may work (e.g. "3 hours").
 #'
 #' @param include_qc_variables a length-one logical vector specifying whether or
 #'  or not to include quality control variables (e.g. number of errant
@@ -155,6 +156,23 @@ mnet_summarize <- function(sub_daily,
       as.difftime(units = "secs")
   }
 
+  int_adj <-
+    {units::as_units(interval)/units::set_units(1, "day")} |>
+    units::drop_units()
+
+  num <- c(
+    obs = floor(288*int_adj),
+    srad = floor(288*int_adj),
+    stemp = floor(96*int_adj),
+    smoist = floor(48*int_adj)
+  )
+
+  thrsh <- floor(num*.9)
+
+  if(interval == as.difftime(1, units = "days")){
+    thrsh["srad"] <- floor(num["srad"]*0.95)
+  }
+
   threshold_temperature <-
     units::set_units(65, "Fahrenheit") |>
     units::set_units("Celsius")
@@ -172,9 +190,9 @@ mnet_summarize <- function(sub_daily,
       .cols = c("TAIR", "RELH", "WSPD", "PRES", "WS2M", "TDEW"),
       .fns = list(
         # 260 is at least 90% of the 288 5-minute observations per day
-        min = \(.x) qc_summary(.x, min, 260),
-        avg = \(.x) qc_summary(.x, mean, 260),
-        max = \(.x) qc_summary(.x, max, 260)),
+        min = \(.x) qc_summary(.x, min, thrsh["obs"]),
+        avg = \(.x) qc_summary(.x, mean, thrsh["obs"]),
+        max = \(.x) qc_summary(.x, max, thrsh["obs"])),
       .groups = c("STNM", "STID", "DATE")),
 
     # WDIR
@@ -183,8 +201,8 @@ mnet_summarize <- function(sub_daily,
       .cols = c("WDIR"),
       .fns = list(
         # 260 is at least 90% of the 288 5-minute observations per day
-        pdir = \(.x) qc_summary(.x, calc_pdir, 260),
-        sdir = \(.x) qc_summary(.x, calc_sdir, 260)),
+        pdir = \(.x) qc_summary(.x, calc_pdir, thrsh["obs"]),
+        sdir = \(.x) qc_summary(.x, calc_sdir, thrsh["obs"])),
       .groups = c("STNM", "STID", "DATE")),
 
     # RAIN
@@ -193,8 +211,8 @@ mnet_summarize <- function(sub_daily,
       .cols = c("RAIN"),
       .fns = list(
         # 260 is at least 90% of the 288 5-minute observations per day
-        sum = \(.x) qc_summary(.x, sum, 260),
-        max = \(.x) qc_summary(.x, max, 260)),
+        sum = \(.x) qc_summary(.x, sum, thrsh["obs"]),
+        max = \(.x) qc_summary(.x, max, thrsh["obs"])),
       .groups = c("STNM", "STID", "DATE")),
 
     # SRAD sum
@@ -203,7 +221,7 @@ mnet_summarize <- function(sub_daily,
       .cols = c("SRAD"),
       .fns = list(
         # 260 is at least 90% of the 288 5-minute observations per day
-        sum = \(.x) qc_summary(.x, srad_sum, 285)),
+        sum = \(.x) qc_summary(.x, srad_sum, thrsh["srad"])),
       .groups = c("STNM", "STID", "DATE")),
 
     # WMAX and SRAD max and max_count
@@ -212,7 +230,7 @@ mnet_summarize <- function(sub_daily,
       .cols = c("WMAX", "SRAD"),
       .fns = list(
         # 260 is at least 90% of the 288 5-minute observations per day
-        max = \(.x) qc_summary(.x, max, 260)),
+        max = \(.x) qc_summary(.x, max, thrsh["obs"])),
       .groups = c("STNM", "STID", "DATE")),
 
     # TA9M and VDEF avg
@@ -221,7 +239,7 @@ mnet_summarize <- function(sub_daily,
       .cols = c("TA9M", "VDEF"),
       .fns = list(
         # 260 is at least 90% of the 288 5-minute observations per day
-        avg = \(.x) qc_summary(.x, mean, 260)),
+        avg = \(.x) qc_summary(.x, mean, thrsh["obs"])),
       .groups = c("STNM", "STID", "DATE")),
 
     # Soil temperature
@@ -229,9 +247,9 @@ mnet_summarize <- function(sub_daily,
       .data = sub_daily,
       .cols = c("TS05", "TS10", "TS25", "TS30", "TS60", "TB05", "TB10"),
       .fns = list(# 87 is at least 90% of the 96 15-minute observations per day
-        min = \(.x) qc_summary(.x, min, 87),
-        avg = \(.x) qc_summary(.x, mean, 87),
-        max = \(.x) qc_summary(.x, max, 87)),
+        min = \(.x) qc_summary(.x, min, thrsh["stemp"]),
+        avg = \(.x) qc_summary(.x, mean, thrsh["stemp"]),
+        max = \(.x) qc_summary(.x, max, thrsh["stemp"])),
       .groups = c("STNM", "STID", "DATE")),
 
     # Soil moisture
@@ -239,7 +257,7 @@ mnet_summarize <- function(sub_daily,
       .data = sub_daily,
       .cols = c("TR05", "TR25", "TR60", "TR75", "VW05", "VW25", "VW45"),
       .fns = list(# 44 is at least 90% of the 48 30-minute observations per day
-        avg = \(.x) qc_summary(.x, mean, 44)),
+        avg = \(.x) qc_summary(.x, mean, thrsh["smoist"])),
       .groups = c("STNM", "STID", "DATE"))
   )
   if(include_qc_variables){
@@ -251,8 +269,8 @@ mnet_summarize <- function(sub_daily,
         .cols = c("TAIR", "RELH", "WSPD", "PRES"),
         .fns = list(
           # 260 is at least 90% of the 288 5-minute observations per day
-          maxo = \(.x) qc_summary(.x, max_count, 260),
-          mino = \(.x) qc_summary(.x, min_count, 260)),
+          maxo = \(.x) qc_summary(.x, max_count, thrsh["obs"]),
+          mino = \(.x) qc_summary(.x, min_count, thrsh["obs"])),
         .groups = c("STNM", "STID", "DATE")),
 
       # WMAX and SRAD max and max_count
@@ -261,7 +279,7 @@ mnet_summarize <- function(sub_daily,
         .cols = c("WMAX", "SRAD"),
         .fns = list(
           # 260 is at least 90% of the 288 5-minute observations per day
-          max_count = \(.x) qc_summary(.x, max_count, 260)),
+          max_count = \(.x) qc_summary(.x, max_count, thrsh["obs"])),
         .groups = c("STNM", "STID", "DATE")),
 
       # PDFQ and SDFQ
@@ -270,8 +288,8 @@ mnet_summarize <- function(sub_daily,
         .cols = c("WDIR"),
         .fns = list(
           # 260 is at least 90% of the 288 5-minute observations per day
-          pdfq = \(.x) qc_summary(.x, calc_pdir_freq, 260),
-          sdfq = \(.x) qc_summary(.x, calc_sdir_freq, 260)),
+          pdfq = \(.x) qc_summary(.x, calc_pdir_freq, thrsh["obs"]),
+          sdfq = \(.x) qc_summary(.x, calc_sdir_freq, thrsh["obs"])),
         .groups = c("STNM", "STID", "DATE")),
 
       # RAIN
@@ -280,7 +298,7 @@ mnet_summarize <- function(sub_daily,
         .cols = c("RAIN"),
         .fns = list(
           # 260 is at least 90% of the 288 5-minute observations per day
-          gt0 = \(.x) qc_summary(.x, gt0_count, 260)),
+          gt0 = \(.x) qc_summary(.x, gt0_count, thrsh["obs"])),
         .groups = c("STNM", "STID", "DATE")),
 
       # Number of bad/missing observations for TAIR through SRAD
@@ -288,7 +306,7 @@ mnet_summarize <- function(sub_daily,
         .data = sub_daily,
         .cols = c("TAIR", "RELH", "WSPD", "WDIR", "PRES", "WS2M",
                   "TDEW", "TA9M", "RAIN", "SRAD"),
-        .fns = list(bad = \(.x) 288 - sum(!is.na(.x))),
+        .fns = list(bad = \(.x) num["obs"] - sum(!is.na(.x))),
         .groups = c("STNM", "STID", "DATE")),
 
       # Number of bad/missing observations for soil temperature
@@ -297,9 +315,9 @@ mnet_summarize <- function(sub_daily,
         .cols = c("TS05", "TS10", "TS25", "TS30", "TS60", "TB05", "TB10"),
         .fns = list(# Soil temperature are 15-min observations so 96 would be
           #  no missing data, 87 would be > 90% complete data:
-          bad = \(.x) 96 - sum(!is.na(.x)),
-          maxo = \(.x) qc_summary(.x, max_count, 87),
-          mino = \(.x) qc_summary(.x, min_count, 87)),
+          bad = \(.x) num["stemp"] - sum(!is.na(.x)),
+          maxo = \(.x) qc_summary(.x, max_count, thrsh["stemp"]),
+          mino = \(.x) qc_summary(.x, min_count, thrsh["stemp"])),
         .groups = c("STNM", "STID", "DATE")),
 
       # Number of bad/missing observations for soil moisture
@@ -308,7 +326,7 @@ mnet_summarize <- function(sub_daily,
         .cols = c("TR05", "TR25", "TR60", "TR75"),
         .fns = list(# Soil moisture are 30-min observations so 48 would be
           #  no missing data
-          bad = \(.x) 48 - sum(!is.na(.x))),
+          bad = \(.x) num["smoist"] - sum(!is.na(.x))),
         .groups = c("STNM", "STID", "DATE"))
     )
 
@@ -318,7 +336,7 @@ mnet_summarize <- function(sub_daily,
 
   daily <- daily[!sapply(daily, is.null)]
 
-  # Drop STNM, STID, and DATE to avoid column name duplications
+  # Drop STNM, STID, and DATE to avoid column name duplication
   if(length(daily) > 1){
     for(i in 2:length(daily)){
       keep_cols <- grep("(^STNM$)|(^STID$)|(^DATE$)",
@@ -356,6 +374,15 @@ summarize_across <- function(.data, .cols, .fns, .groups = NULL){
   }
 
   .cols <- .cols[.cols %in% colnames(.data)]
+
+  if(any(!.groups %in% colnames(.data))){
+    .groups[!.groups %in% colnames(.data)] |>
+      paste0(collapse = ", ") |>
+      paste0("The following grouping variables were missing from dataset and will not be used:\n  ", .x = _) |>
+      warning()
+  }
+
+  .groups <- .groups[.groups %in% colnames(.data)]
 
   if(length(.cols) == 0) return(NULL)
 
@@ -503,29 +530,13 @@ wdir_to_cardinal <- function(wdir){
             "S", "SSW", "SW", "WSW",
             "W", "WNW", "NW", "NNW")
 
-  cdir_out <- vector(mode = "character", length = length(wdir))
-
   increment <- 360/length(cdir)
 
-  begin_threshold <- seq(0, 360, by = increment) |>
-    head(-1) |>
-    (\(.x) .x - increment/2)() |>
-    (\(.x) ifelse(.x < 0, 360 + .x, .x))() |>
-    units::set_units("degrees")
+  wdir_tmp <- units::drop_units(wdir) + increment/2
+  wdir_tmp[wdir_tmp >= 360] <- wdir_tmp[wdir_tmp >= 360] - 360
 
-  end_threshold <- c(
-    tail(begin_threshold, -1),
-    head(begin_threshold, 1))
+  cdir[floor(wdir_tmp / increment + 1)]
 
-  for(i in seq_along(cdir)){
-    if(i == 1){
-      cdir_out[(wdir >= begin_threshold[i]) | (wdir < end_threshold[i])] <- cdir[i]
-    }else{
-      cdir_out[(wdir >= begin_threshold[i]) & (wdir < end_threshold[i])] <- cdir[i]
-    }
-  }
-
-  return(cdir_out)
 }
 
 calc_pdir <- function(wdir, na.rm = TRUE){
@@ -586,7 +597,7 @@ round_date <- function(time, interval, tz = ""){
     time_out <- as.POSIXct(as.Date(time, tz = tz), tz = tz) + t_offset
   }else{
     int_dbl <- as.double(interval, units = "secs")
-    time_out <- as.POSIXct((as.numeric(time) %/% int_dbl + 1)*int_dbl)
+    time_out <- as.POSIXct((as.numeric(time) %/% int_dbl + 1)*int_dbl, tz = tz)
   }
 
   return(time_out)

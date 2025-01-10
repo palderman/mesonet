@@ -20,7 +20,8 @@ such as that produced by \code{\link[=mnet_read_mts]{mnet_read_mts()}}.}
 
 \item{interval}{the interval over which to summarize data. May be defined as
 a difftime object (see \code{\link[base:difftime]{base::difftime()}}) or a character value compatible
-with \code{\link[units:units]{units::as_units()}}}
+with \code{\link[units:units]{units::as_units()}}. Tested intervals include "1 day" (the default),
+"30 min", and "1 hour", although other intervals may work (e.g. "3 hours").}
 
 \item{include_qc_variables}{a length-one logical vector specifying whether or
 or not to include quality control variables (e.g. number of errant
