@@ -1,8 +1,8 @@
 Package: mesonet
 Type: Package
 Title: Download and Process Oklahoma Mesonet Data 
-Version: 0.0.0.9000
-Date: 2023-12-01
+Version: 0.0.1
+Date: 2025-02-10
 Author: Phillip D. Alderman
 Maintainer: Phillip D. Alderman <phillip.alderman@okstate.edu>
 Description: A package with functions to download and process weather data from
