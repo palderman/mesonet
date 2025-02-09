@@ -1,3 +1,6 @@
+# To handle "no visible binding for global variable" NOTEs during checking:
+utils::globalVariables(c("RELH", "TAIR"))
+
 #' Read an Oklahoma Mesonet time series file
 #'
 #' @export
@@ -45,7 +48,7 @@
 #' |WSSD   |Wind Speed Standard Deviation               |meters per second       |Standard deviation of wind speed during the 5-minute interval.                                                                                                                                            |
 #' |WVEC   |Wind Vector                                 |meters per second       |5-minute averaged wind velocity (speed and direction accounted for) at 10m.                                                                                                                               |
 #'
-mnet_read_mts <- function(file_name){
+mnet_read_mts <- function(file_path){
 
   expected_cols <- data.frame(
     RELH = NA_real_, TAIR = NA_real_, WSPD = NA_real_,
@@ -60,7 +63,7 @@ mnet_read_mts <- function(file_name){
     VW05 = NA_real_, VW25 = NA_real_, VW45 = NA_real_)  |>
     subset(!is.na(RELH))
 
-  file_raw <- readLines(file_name)
+  file_raw <- readLines(file_path)
 
   base_time <-
     file_raw |>
@@ -81,18 +84,18 @@ mnet_read_mts <- function(file_name){
     col_names |>
     length() |>
     rep("numeric", times = _) |>
-    setNames(nm = col_names)
+    stats::setNames(nm = col_names)
 
   col_classes[col_names == "STID"] <- "character"
   col_classes[col_names == "STNM"] <- "integer"
 
   mts_data <-
     file_raw |>
-    tail(-3) |>
-    read.table(text = _,
-               col.names = col_names,
-               colClasses = col_classes,
-               header = FALSE) |>
+    utils::tail(-3) |>
+    utils::read.table(text = _,
+                      col.names = col_names,
+                      colClasses = col_classes,
+                      header = FALSE) |>
     merge(expected_cols, all = TRUE) |>
     sort_by(~TIME) |>
     set_missing() |>

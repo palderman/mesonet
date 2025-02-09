@@ -166,7 +166,7 @@ set_missing <- function(.data){
 }
 
 lag_units <- function(.x, n = 1, default = NA_real_){
-  units::keep_units(\(.y) c(rep(default, n), head(.y, -n)),
+  units::keep_units(\(.y) c(rep(default, n), utils::head(.y, -n)),
                     x = .x)
 }
 

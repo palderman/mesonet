@@ -8,12 +8,14 @@ site_info_path |>
   dirname() |>
   mesonet:::create_test_site_info()
 
+print(list.files(dirname(site_info_path), full.names = TRUE))
+
 file_cache <-
   tempdir() |>
   file.path(".mesonet_cache")
 
 actual <-
-  paste0("file:", site_info_path) |>
+  paste0("file://", site_info_path) |>
   mesonet::mnet_site_info(file_cache = file_cache)
 
 expected <-

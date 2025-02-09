@@ -51,7 +51,7 @@ mnet_download_mts <- function(stid,
       }
       for(.i in seq_along(url)){
         if(!file.exists(mts_path[.i])){
-          download.file(url[.i], mts_path[.i], quiet = TRUE)
+          utils::download.file(url[.i], mts_path[.i], quiet = TRUE)
           Sys.sleep(delay/1000)
         }
         if(!silent) setTxtProgressBar(pb, .i/length(url))

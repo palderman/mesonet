@@ -7,7 +7,7 @@
 mnet_site_info(
   url = "https://api.mesonet.org/index.php/export/station_location_soil_information",
   file_cache = NULL,
-  refresh = FALSE
+  clear_cache = FALSE
 )
 }
 \arguments{
@@ -19,7 +19,7 @@ file cache. If NULL, the function will search for the local file cache and
 if not found will prompt the user to create one.}
 
 \item{clear_cache}{whether to clear cached copy of site and soil
-information and redownload}
+information and re-download}
 }
 \value{
 a data frame containing site and soil information. See Details for

@@ -1,3 +1,6 @@
+# To handle "no visible binding for global variable" NOTEs during checking:
+utils::globalVariables(c("mts_path", "mts_rel_path"))
+
 #' Retrieve Oklahoma Mesonet subdaily data
 #'
 #' Retrieves data from the Oklahoma Mesonet for

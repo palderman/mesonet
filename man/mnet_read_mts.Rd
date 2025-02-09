@@ -4,7 +4,7 @@
 \alias{mnet_read_mts}
 \title{Read an Oklahoma Mesonet time series file}
 \usage{
-mnet_read_mts(file_name)
+mnet_read_mts(file_path)
 }
 \arguments{
 \item{file_path}{file path to a single Oklahoma Mesonet time series (MTS)

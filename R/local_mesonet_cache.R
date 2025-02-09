@@ -15,7 +15,7 @@ local_mesonet_cache <- function(mesonet_cache_dir = NULL,
       mesonet_cache_dir
     ) |>
       paste0(collapse = "")
-    create_cache_dir <- askYesNo(msg)
+    create_cache_dir <- utils::askYesNo(msg)
     if(!is.na(create_cache_dir) & create_cache_dir){
       dir.create(mesonet_cache_dir, recursive = TRUE, showWarnings = FALSE)
     }else{

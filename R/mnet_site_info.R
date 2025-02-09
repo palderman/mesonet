@@ -1,3 +1,6 @@
+# To handle "no visible binding for global variable" NOTEs during checking:
+utils::globalVariables("stid")
+
 #' Download Mesonet site and soil information for all Mesonet sites
 #'
 #' Downloads a table of Mesonet site and soil information from the Oklahoma
@@ -11,7 +14,7 @@
 #'   and soil information are stored
 #'
 #' @param clear_cache whether to clear cached copy of site and soil
-#'  information and redownload
+#'  information and re-download
 #'
 #' @return a data frame containing site and soil information. See Details for
 #'   definition of variable descriptions.
@@ -81,7 +84,7 @@
 #'
 mnet_site_info <- function(url = "https://api.mesonet.org/index.php/export/station_location_soil_information",
                            file_cache = NULL,
-                           refresh = FALSE){
+                           clear_cache = FALSE){
 
   mesonet_cache <- local_mesonet_cache(file_cache, ask = FALSE)
 
@@ -92,7 +95,7 @@ mnet_site_info <- function(url = "https://api.mesonet.org/index.php/export/stati
     csv_file_name |>
     gsub("csv$", "rds", x = _)
 
-  if(refresh){
+  if(clear_cache){
     for(.f in c(csv_file_name, rds_file_name)){
       if(file.exists(.f)) unlink(.f)
     }
@@ -105,10 +108,10 @@ mnet_site_info <- function(url = "https://api.mesonet.org/index.php/export/stati
   }else{
 
     if(!file.exists(csv_file_name)){
-      download.file(url, csv_file_name, quiet = TRUE)
+      utils::download.file(url, csv_file_name, quiet = TRUE)
     }
 
-    sta_info <- read.csv(csv_file_name, stringsAsFactors = FALSE)
+    sta_info <- utils::read.csv(csv_file_name, stringsAsFactors = FALSE)
 
     colnames(sta_info) <-
       sta_info |>
@@ -117,9 +120,11 @@ mnet_site_info <- function(url = "https://api.mesonet.org/index.php/export/stati
 
     for(v in colnames(sta_info)){
       if(is.numeric(sta_info[[v]])){
-        sta_info[[v]][sta_info[[v]] == -999] <- as(NA, class(sta_info[[v]]))
+        sta_info[[v]][sta_info[[v]] == -999] <-
+          methods::as(NA, class(sta_info[[v]]))
       }else if(is.character(sta_info[[v]])){
-        sta_info[[v]][sta_info[[v]] == "-999"] <- as(NA, class(sta_info[[v]]))
+        sta_info[[v]][sta_info[[v]] == "-999"] <-
+          methods::as(NA, class(sta_info[[v]]))
       }
     }
 

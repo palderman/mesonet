@@ -1,3 +1,6 @@
+# To handle "no visible binding for global variable" NOTEs during checking:
+utils::globalVariables(c("datc", "datd"))
+
 #' Calculate a requisition list for Oklahoma Mesonet MTS files
 #'
 #' Calculate a requisition list of Mesonet Time Series (MTS) files from the

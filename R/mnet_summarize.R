@@ -1,3 +1,6 @@
+# To handle "no visible binding for global variable" NOTEs during checking:
+utils::globalVariables("TAIR_avg")
+
 #' Produce a daily summary of Oklahoma Mesonet subdaily data
 #'
 #' @param sub_daily a data frame with subdaily measurements from the Oklahoma Mesonet
@@ -487,7 +490,7 @@ srad_sum <- function(x, na.rm = FALSE, interval = as.difftime(1, units = "days")
 }
 
 units_sd <- function(x, na.rm = FALSE){
-  units::keep_units(sd, x, na.rm = na.rm)
+  units::keep_units(stats::sd, x, na.rm = na.rm)
 }
 
 rename_daily_columns <- function(col_names){
@@ -545,7 +548,7 @@ calc_pdir <- function(wdir, na.rm = TRUE){
     table() |>
     sort(decreasing = TRUE) |>
     names() |>
-    head(1)
+    utils::head(1)
 }
 
 calc_pdir_freq <- function(wdir, na.rm = TRUE){
@@ -582,8 +585,8 @@ calc_sdir <- function(wdir, na.rm = TRUE){
     table() |>
     sort(decreasing = TRUE) |>
     names() |>
-    head(2) |>
-    tail(1)
+    utils::head(2) |>
+    utils::tail(1)
 }
 
 round_date <- function(time, interval, tz = ""){
