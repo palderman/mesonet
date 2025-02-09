@@ -36,18 +36,18 @@
 #' |elev     |Elevation In Meters                    |
 #' |cdiv     |Oklahoma Climate Division              |
 #' |clas     |Station Class                          |
-#' |wcr05    |5 cm Residual Water Content            |
-#' |wcs05    |5 cm Saturated Water Content           |
-#' |a05      |5 cm Alpha Constant                    |
-#' |n05      |5 cm N Constant                        |
-#' |bulk5    |5 cm Soil Bulk Density                 |
+#' |wcr05    |5 cm Residual Water Content (cm3/cm3)  |
+#' |wcs05    |5 cm Saturated Water Content (cm3/cm3) |
+#' |a05      |5 cm Alpha Constant (1/kPa)            |
+#' |n05      |5 cm N Constant (dimensionless)        |
+#' |bulk5    |5 cm Soil Bulk Density (g/cm3)         |
 #' |grav5    |5 cm Soil Percentage Gravel            |
 #' |sand5    |5 cm Soil Percentage Sand              |
 #' |silt5    |5 cm Soil Percentage Silt              |
 #' |clay5    |5 cm Soil Percentage Clay              |
 #' |text5    |5 cm Soil Texture Class                |
-#' |wcr25    |25 cm Residual Water Content           |
-#' |wcs25    |25 cm Saturated Water Content          |
+#' |wcr25    |25 cm Residual Water Content (cm3/cm3) |
+#' |wcs25    |25 cm Saturated Water Content (cm3/cm3)|
 #' |a25      |25 cm Alpha Constant                   |
 #' |n25      |25 cm N Constant                       |
 #' |bulk25   |25 cm Soil Bulk Density                |
@@ -56,8 +56,8 @@
 #' |silt25   |25 cm Soil Percentage Silt             |
 #' |clay25   |25 cm Soil Percentage Clay             |
 #' |text25   |25 cm Soil Texture Class               |
-#' |wcr60    |60 cm Residual Water Content           |
-#' |wcs60    |60 cm Saturated Water Content          |
+#' |wcr60    |60 cm Residual Water Content (cm3/cm3) |
+#' |wcs60    |60 cm Saturated Water Content (cm3/cm3)|
 #' |a60      |60 cm Alpha Constant                   |
 #' |n60      |60 cm N Constant                       |
 #' |bulk60   |60 cm Soil Bulk Density                |
@@ -66,8 +66,8 @@
 #' |silt60   |60 cm Soil Percentage Silt             |
 #' |clay60   |60 cm Soil Percentage Clay             |
 #' |text60   |60 cm Soil Texture Class               |
-#' |wcr75    |75 cm Residual Water Content           |
-#' |wcs75    |75 cm Saturated Water Content          |
+#' |wcr75    |75 cm Residual Water Content (cm3/cm3) |
+#' |wcs75    |75 cm Saturated Water Content (cm3/cm3)|
 #' |a75      |75 cm Alpha Constant                   |
 #' |n75      |75 cm N Constant                       |
 #' |bulk75   |75 cm Soil Bulk Density                |
@@ -125,6 +125,7 @@ mnet_site_info <- function(url = "https://api.mesonet.org/index.php/export/stati
 
     sta_info <-
       sta_info |>
+      set_mts_units() |>
       within({
         datc = make_date(datc)
         datc = ifelse(stid == "WEB3",

@@ -44,18 +44,18 @@ Variable descriptions for Mesonet site and soil information.\tabular{ll}{
    elev \tab Elevation In Meters \cr
    cdiv \tab Oklahoma Climate Division \cr
    clas \tab Station Class \cr
-   wcr05 \tab 5 cm Residual Water Content \cr
-   wcs05 \tab 5 cm Saturated Water Content \cr
-   a05 \tab 5 cm Alpha Constant \cr
-   n05 \tab 5 cm N Constant \cr
-   bulk5 \tab 5 cm Soil Bulk Density \cr
+   wcr05 \tab 5 cm Residual Water Content (cm3/cm3) \cr
+   wcs05 \tab 5 cm Saturated Water Content (cm3/cm3) \cr
+   a05 \tab 5 cm Alpha Constant (1/kPa) \cr
+   n05 \tab 5 cm N Constant (dimensionless) \cr
+   bulk5 \tab 5 cm Soil Bulk Density (g/cm3) \cr
    grav5 \tab 5 cm Soil Percentage Gravel \cr
    sand5 \tab 5 cm Soil Percentage Sand \cr
    silt5 \tab 5 cm Soil Percentage Silt \cr
    clay5 \tab 5 cm Soil Percentage Clay \cr
    text5 \tab 5 cm Soil Texture Class \cr
-   wcr25 \tab 25 cm Residual Water Content \cr
-   wcs25 \tab 25 cm Saturated Water Content \cr
+   wcr25 \tab 25 cm Residual Water Content (cm3/cm3) \cr
+   wcs25 \tab 25 cm Saturated Water Content (cm3/cm3) \cr
    a25 \tab 25 cm Alpha Constant \cr
    n25 \tab 25 cm N Constant \cr
    bulk25 \tab 25 cm Soil Bulk Density \cr
@@ -64,8 +64,8 @@ Variable descriptions for Mesonet site and soil information.\tabular{ll}{
    silt25 \tab 25 cm Soil Percentage Silt \cr
    clay25 \tab 25 cm Soil Percentage Clay \cr
    text25 \tab 25 cm Soil Texture Class \cr
-   wcr60 \tab 60 cm Residual Water Content \cr
-   wcs60 \tab 60 cm Saturated Water Content \cr
+   wcr60 \tab 60 cm Residual Water Content (cm3/cm3) \cr
+   wcs60 \tab 60 cm Saturated Water Content (cm3/cm3) \cr
    a60 \tab 60 cm Alpha Constant \cr
    n60 \tab 60 cm N Constant \cr
    bulk60 \tab 60 cm Soil Bulk Density \cr
@@ -74,8 +74,8 @@ Variable descriptions for Mesonet site and soil information.\tabular{ll}{
    silt60 \tab 60 cm Soil Percentage Silt \cr
    clay60 \tab 60 cm Soil Percentage Clay \cr
    text60 \tab 60 cm Soil Texture Class \cr
-   wcr75 \tab 75 cm Residual Water Content \cr
-   wcs75 \tab 75 cm Saturated Water Content \cr
+   wcr75 \tab 75 cm Residual Water Content (cm3/cm3) \cr
+   wcs75 \tab 75 cm Saturated Water Content (cm3/cm3) \cr
    a75 \tab 75 cm Alpha Constant \cr
    n75 \tab 75 cm N Constant \cr
    bulk75 \tab 75 cm Soil Bulk Density \cr

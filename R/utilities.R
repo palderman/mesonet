@@ -109,11 +109,30 @@ mts_unit <- function(x, .name){
                   "TR05", "TR25", "TR60", "TR75",
                   "TS05", "TS10", "TS25", "TS30", "TS45", "TS60")){
     return(units::set_units(x, "Celsius"))
-  }else if(.name %in% c("VW05", "VW25", "VW45")){
+  }else if(.name %in% c("VW05", "VW25", "VW45",
+                        "wcr05", "wcs05", "wcr10", "wcs10", "wcr25", "wcs25",
+                        "wcr60", "wcs60", "wcr75", "wcs75")){
     return(units::set_units(x, "cm^3/cm^3"))
+  }else if(.name %in% c("STID", "name", "city", "cdir", "cnty", "cdiv", "clas",
+                        "text05", "text10", "text25", "text60", "text75")){
+    return(as.character(x))
+  }else if(.name %in% c("a05", "a10", "a25", "a60", "a75")){
+    return(units::set_units(x, "1/kPa"))
+  }else if(.name %in% c("n05", "n10", "n25", "n60", "n75")){
+    return(units::set_units(x, "1"))
+  }else if(.name %in% c("bulk5", "bulk10", "bulk25", "bulk60", "bulk75")){
+    return(units::set_units(x, "g/cm3"))
+  }else if(.name %in% "elev"){
+    return(units::set_units(x, "m"))
+  }else if(.name %in% c("grav5", "sand5", "silt5", "clay5",
+                        "grav10", "sand10", "silt10", "clay10",
+                        "grav25", "sand25", "silt25", "clay25",
+                        "grav60", "sand60", "silt60", "clay60",
+                        "grav75", "sand75", "silt75", "clay75")){
+    return(units::set_units(x, "percent"))
   }else if(.name %in% c("WMAX", "WS2M", "WSPD", "WSSD", "WVEC")){
     return(units::set_units(x, "m/s"))
-  }else if(.name %in% c("WDIR", "WDSD")){
+  }else if(.name %in% c("WDIR", "WDSD", "nlat", "elon")){
     return(units::set_units(x, "degrees"))
   }else if(.name %in% "SRAD"){
     return(units::set_units(x, "W/m^2"))
