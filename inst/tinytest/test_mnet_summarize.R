@@ -30,7 +30,6 @@ expect_equal(mesonet:::wdir_to_cardinal(dir_deg),
              info = "wdir_to_cardinal()")
 
 # rename_daily_columns
-
 expect_equal(
   mesonet:::rename_daily_columns(c("TAIR_max", "TAIR_min", "TAIR_avg",
                                    "TAIR_maxo", "TAIR_mino",
@@ -292,137 +291,137 @@ expect_equal(actual_avg,
 ############################################################
 # Test mnet_summarize() for daily interval with QC variables
 ############################################################
+if(tinytest::at_home()){
+  expected_avg <-
+    data.frame(
+      STNM = 89L,
+      STID = rep(c("ACME", "ALTU"), each = 4),
+      DATE = rep(as.POSIXct(c("1994-01-31", "1994-02-01", "1994-02-02", "1994-02-03"), tz = "Etc/GMT+6"), 2),
+      TMIN = units::set_units(rep(c(NA, 1, 2, NA), 2), "°C"),
+      TAVG = units::set_units(rep(c(NA, 1.25, 2.25, NA), 2), "°C"),
+      TMAX = units::set_units(rep(c(NA, 2, 3, NA), 2), "°C"),
+      HMIN = units::set_units(rep(c(NA, 31, 32, NA), 2), "percent"),
+      HAVG = units::set_units(rep(c(NA, 31.25, 32.25, NA), 2), "percent"),
+      HMAX = units::set_units(rep(c(NA, 32, 33, NA), 2), "percent"),
+      WSMN = units::set_units(rep(c(NA, 1, 2, NA), 2), "m/s"),
+      WSPD = units::set_units(rep(c(NA, 1.25, 2.25, NA), 2), "m/s"),
+      WSMX = units::set_units(rep(c(NA, 2, 3, NA), 2), "m/s"),
+      PDIR = rep(c(NA, "SSW", "SSW", NA), 2),
+      SDIR = rep(c(NA, "SSW", "SSW", NA), 2),
+      PDFQ = units::set_units(rep(c(NA, 100, 100, NA), 2), "percent"),
+      SDFQ = units::set_units(rep(c(NA, 100, 100, NA), 2), "percent"),
+      PMIN = units::set_units(rep(c(NA, 101, 102, NA), 2), "kPa"),
+      PAVG = units::set_units(rep(c(NA, 101.25, 102.25, NA), 2), "kPa"),
+      PMAX = units::set_units(rep(c(NA, 102, 103, NA), 2), "kPa"),
+      `2MIN` = units::set_units(rep(c(NA, 1, 2, NA), 2), "m/s"),
+      `2AVG` = units::set_units(rep(c(NA, 1.25, 2.25, NA), 2), "m/s"),
+      `2MAX` = units::set_units(rep(c(NA, 2, 3, NA), 2), "m/s"),
+      DMIN = units::set_units(rep(NA_real_, 8), "°C"),
+      DAVG = units::set_units(rep(NA_real_, 8), "°C"),
+      DMAX = units::set_units(rep(NA_real_, 8), "°C"),
+      WMAX = units::set_units(rep(c(NA, 2:3, NA), 2), "m/s"),
+      RAIN = units::set_units(rep(c(NA, 216*1 + 72*2, 216*2 + 72*3 , NA), 2), "mm"),
+      RNUM = rep(c(NA, 288, 288, NA), 2),
+      RMAX = units::set_units(rep(c(NA, 2, 3, NA)*60/5, 2), "mm/hour"),
+      ATOT = units::set_units(rep(c(NA, (201*18+202*6), (202*18+203*6), NA)*60*60*1e-6, 2), "MJ/d/m2")*units::set_units(1, "day"),
+      AMAX = units::set_units(rep(c(NA, 202, 203, NA), 2), "W/m2"),
+      `9AVG` = units::set_units(rep(c(NA, (18*1 + 6*2)/24, (18*2 + 6*3)/24, NA), 2), "°C"),
+      SAVG = units::set_units(rep(c(NA, rep(5.5, 2), NA), 2), "°C"),
+      SMAX = units::set_units(rep(c(NA, rep(5.5, 2), NA), 2), "°C"),
+      SMIN = units::set_units(rep(c(NA, rep(5.5, 2), NA), 2), "°C"),
+      BAVG = units::set_units(rep(c(NA, rep(7.9, 2), NA), 2), "°C"),
+      BMAX = units::set_units(rep(c(NA, rep(7.9, 2), NA), 2), "°C"),
+      BMIN = units::set_units(rep(c(NA, rep(7.9, 2), NA), 2), "°C"),
+      S5AV = units::set_units(rep(c(NA, rep(6.1, 2), NA), 2), "°C"),
+      S5MX = units::set_units(rep(c(NA, rep(6.1, 2), NA), 2), "°C"),
+      S5MN = units::set_units(rep(c(NA, rep(6.1, 2), NA), 2), "°C"),
+      B5AV = units::set_units(rep(c(NA, rep(8.7, 2), NA), 2), "°C"),
+      B5MX = units::set_units(rep(c(NA, rep(8.7, 2), NA), 2), "°C"),
+      B5MN = units::set_units(rep(c(NA, rep(8.7, 2), NA), 2), "°C"),
+      S3AV = units::set_units(rep(c(NA, rep(5.7, 2), NA), 2), "°C"),
+      S3MX = units::set_units(rep(c(NA, rep(5.7, 2), NA), 2), "°C"),
+      S3MN = units::set_units(rep(c(NA, rep(5.7, 2), NA), 2), "°C"),
+      S25AV = units::set_units(rep(NA_real_, 8), "°C"),
+      S25MX = units::set_units(rep(NA_real_, 8), "°C"),
+      S25MN = units::set_units(rep(NA_real_, 8), "°C"),
+      S60AV = units::set_units(rep(NA_real_, 8), "°C"),
+      S60MX = units::set_units(rep(NA_real_, 8), "°C"),
+      S60MN = units::set_units(rep(NA_real_, 8), "°C"),
+      TR05 = units::set_units(rep(NA_real_, 8), "°C"),
+      TR25 = units::set_units(rep(NA_real_, 8), "°C"),
+      TR60 = units::set_units(rep(NA_real_, 8), "°C"),
+      TR75 = units::set_units(rep(NA_real_, 8), "°C"),
+      TS45 = units::set_units(rep(NA_real_, 8), "°C"),
+      VW05 = units::set_units(rep(NA_real_, 8), "cm^3/cm^3"),
+      VW25 = units::set_units(rep(NA_real_, 8), "cm^3/cm^3"),
+      VW45 = units::set_units(rep(NA_real_, 8), "cm^3/cm^3"),
+      VDEF = units::set_units(rep(NA_real_, 8), "kPa"),
+      TMINO = rep(c(NA, 216, 216, NA), 2),
+      TMAXO = rep(c(NA, 72, 72, NA), 2),
+      TBAD = rep(c(288*18/24, 0, 0, 288*6/24), 2),
+      HMINO = rep(c(NA, 216, 216, NA), 2),
+      HMAXO = rep(c(NA, 72, 72, NA), 2),
+      HBAD = rep(c(288*18/24, 0, 0, 288*6/24), 2),
+      `9BAD` = rep(c(288*18/24, 0, 0, 288*6/24), 2),
+      WSMNO = rep(c(NA, 216, 216, NA), 2),
+      WSMXO = rep(c(NA, 72, 72, NA), 2),
+      WBAD = rep(c(288*18/24, 0, 0, 288*6/24), 2),
+      WMAXO = rep(c(NA, 72, 72, NA), 2),
+      IBAD = rep(c(288*18/24, 0, 0, 288*6/24), 2),
+      RBAD = rep(c(288*18/24, 0, 0, 288*6/24), 2),
+      PMINO = rep(c(NA, 216, 216, NA), 2),
+      PMAXO = rep(c(NA, 72, 72, NA), 2),
+      PBAD = rep(c(288*18/24, 0, 0, 288*6/24), 2),
+      `2MINO` = rep(c(NA, 216, 216, NA), 2),
+      `2MAXO` = rep(c(NA, 72, 72, NA), 2),
+      `2BAD` = rep(c(288*18/24, 0, 0, 288*6/24), 2),
+      AMAXO = rep(c(NA, 72, 72, NA), 2),
+      ABAD = rep(c(288*18/24, 0, 0, 288*6/24), 2),
+      DBAD = rep(288, 8),
+      B5MNO = rep(c(NA, 96, 96, NA), 2),
+      BMINO = rep(c(NA, 96, 96, NA), 2),
+      S5MNO = rep(c(NA, 96, 96, NA), 2),
+      SMINO = rep(c(NA, 96, 96, NA), 2),
+      S25NO = rep(NA_real_, 8),
+      S3MNO = rep(c(NA, 96, 96, NA), 2),
+      S60NO = rep(NA_real_, 8),
+      B5MXO = rep(c(NA, 96, 96, NA), 2),
+      BMAXO = rep(c(NA, 96, 96, NA), 2),
+      S5MXO = rep(c(NA, 96, 96, NA), 2),
+      SMAXO = rep(c(NA, 96, 96, NA), 2),
+      S25XO = rep(NA_real_, 8),
+      S3MXO = rep(c(NA, 96, 96, NA), 2),
+      S60XO = rep(NA_real_, 8),
+      B5BD = rep(c(72, 0, 0, 24), 2),
+      BBAD = rep(c(72, 0, 0, 24), 2),
+      S5BD = rep(c(72, 0, 0, 24), 2),
+      SBAD = rep(c(72, 0, 0, 24), 2),
+      S25BD = rep(96, 8),
+      S3BD = rep(c(72, 0, 0, 24), 2),
+      S60BD = rep(96, 8),
+      R05BD = rep(48, 8),
+      R25BD = rep(48, 8),
+      R60BD = rep(48, 8),
+      R75BD = rep(48, 8),
+      check.names = FALSE
+    ) |>
+    mesonet:::standardize_column_order()
 
-expected_avg <-
-  data.frame(
-    STNM = 89L,
-    STID = rep(c("ACME", "ALTU"), each = 4),
-    DATE = rep(as.POSIXct(c("1994-01-31", "1994-02-01", "1994-02-02", "1994-02-03"), tz = "Etc/GMT+6"), 2),
-    TMIN = units::set_units(rep(c(NA, 1, 2, NA), 2), "°C"),
-    TAVG = units::set_units(rep(c(NA, 1.25, 2.25, NA), 2), "°C"),
-    TMAX = units::set_units(rep(c(NA, 2, 3, NA), 2), "°C"),
-    HMIN = units::set_units(rep(c(NA, 31, 32, NA), 2), "percent"),
-    HAVG = units::set_units(rep(c(NA, 31.25, 32.25, NA), 2), "percent"),
-    HMAX = units::set_units(rep(c(NA, 32, 33, NA), 2), "percent"),
-    WSMN = units::set_units(rep(c(NA, 1, 2, NA), 2), "m/s"),
-    WSPD = units::set_units(rep(c(NA, 1.25, 2.25, NA), 2), "m/s"),
-    WSMX = units::set_units(rep(c(NA, 2, 3, NA), 2), "m/s"),
-    PDIR = rep(c(NA, "SSW", "SSW", NA), 2),
-    SDIR = rep(c(NA, "SSW", "SSW", NA), 2),
-    PDFQ = units::set_units(rep(c(NA, 100, 100, NA), 2), "percent"),
-    SDFQ = units::set_units(rep(c(NA, 100, 100, NA), 2), "percent"),
-    PMIN = units::set_units(rep(c(NA, 101, 102, NA), 2), "kPa"),
-    PAVG = units::set_units(rep(c(NA, 101.25, 102.25, NA), 2), "kPa"),
-    PMAX = units::set_units(rep(c(NA, 102, 103, NA), 2), "kPa"),
-    `2MIN` = units::set_units(rep(c(NA, 1, 2, NA), 2), "m/s"),
-    `2AVG` = units::set_units(rep(c(NA, 1.25, 2.25, NA), 2), "m/s"),
-    `2MAX` = units::set_units(rep(c(NA, 2, 3, NA), 2), "m/s"),
-    DMIN = units::set_units(rep(NA_real_, 8), "°C"),
-    DAVG = units::set_units(rep(NA_real_, 8), "°C"),
-    DMAX = units::set_units(rep(NA_real_, 8), "°C"),
-    WMAX = units::set_units(rep(c(NA, 2:3, NA), 2), "m/s"),
-    RAIN = units::set_units(rep(c(NA, 216*1 + 72*2, 216*2 + 72*3 , NA), 2), "mm"),
-    RNUM = rep(c(NA, 288, 288, NA), 2),
-    RMAX = units::set_units(rep(c(NA, 2, 3, NA)*60/5, 2), "mm/hour"),
-    ATOT = units::set_units(rep(c(NA, (201*18+202*6), (202*18+203*6), NA)*60*60*1e-6, 2), "MJ/d/m2")*units::set_units(1, "day"),
-    AMAX = units::set_units(rep(c(NA, 202, 203, NA), 2), "W/m2"),
-    `9AVG` = units::set_units(rep(c(NA, (18*1 + 6*2)/24, (18*2 + 6*3)/24, NA), 2), "°C"),
-    SAVG = units::set_units(rep(c(NA, rep(5.5, 2), NA), 2), "°C"),
-    SMAX = units::set_units(rep(c(NA, rep(5.5, 2), NA), 2), "°C"),
-    SMIN = units::set_units(rep(c(NA, rep(5.5, 2), NA), 2), "°C"),
-    BAVG = units::set_units(rep(c(NA, rep(7.9, 2), NA), 2), "°C"),
-    BMAX = units::set_units(rep(c(NA, rep(7.9, 2), NA), 2), "°C"),
-    BMIN = units::set_units(rep(c(NA, rep(7.9, 2), NA), 2), "°C"),
-    S5AV = units::set_units(rep(c(NA, rep(6.1, 2), NA), 2), "°C"),
-    S5MX = units::set_units(rep(c(NA, rep(6.1, 2), NA), 2), "°C"),
-    S5MN = units::set_units(rep(c(NA, rep(6.1, 2), NA), 2), "°C"),
-    B5AV = units::set_units(rep(c(NA, rep(8.7, 2), NA), 2), "°C"),
-    B5MX = units::set_units(rep(c(NA, rep(8.7, 2), NA), 2), "°C"),
-    B5MN = units::set_units(rep(c(NA, rep(8.7, 2), NA), 2), "°C"),
-    S3AV = units::set_units(rep(c(NA, rep(5.7, 2), NA), 2), "°C"),
-    S3MX = units::set_units(rep(c(NA, rep(5.7, 2), NA), 2), "°C"),
-    S3MN = units::set_units(rep(c(NA, rep(5.7, 2), NA), 2), "°C"),
-    S25AV = units::set_units(rep(NA_real_, 8), "°C"),
-    S25MX = units::set_units(rep(NA_real_, 8), "°C"),
-    S25MN = units::set_units(rep(NA_real_, 8), "°C"),
-    S60AV = units::set_units(rep(NA_real_, 8), "°C"),
-    S60MX = units::set_units(rep(NA_real_, 8), "°C"),
-    S60MN = units::set_units(rep(NA_real_, 8), "°C"),
-    TR05 = units::set_units(rep(NA_real_, 8), "°C"),
-    TR25 = units::set_units(rep(NA_real_, 8), "°C"),
-    TR60 = units::set_units(rep(NA_real_, 8), "°C"),
-    TR75 = units::set_units(rep(NA_real_, 8), "°C"),
-    TS45 = units::set_units(rep(NA_real_, 8), "°C"),
-    VW05 = units::set_units(rep(NA_real_, 8), "cm^3/cm^3"),
-    VW25 = units::set_units(rep(NA_real_, 8), "cm^3/cm^3"),
-    VW45 = units::set_units(rep(NA_real_, 8), "cm^3/cm^3"),
-    VDEF = units::set_units(rep(NA_real_, 8), "kPa"),
-    TMINO = rep(c(NA, 216, 216, NA), 2),
-    TMAXO = rep(c(NA, 72, 72, NA), 2),
-    TBAD = rep(c(288*18/24, 0, 0, 288*6/24), 2),
-    HMINO = rep(c(NA, 216, 216, NA), 2),
-    HMAXO = rep(c(NA, 72, 72, NA), 2),
-    HBAD = rep(c(288*18/24, 0, 0, 288*6/24), 2),
-    `9BAD` = rep(c(288*18/24, 0, 0, 288*6/24), 2),
-    WSMNO = rep(c(NA, 216, 216, NA), 2),
-    WSMXO = rep(c(NA, 72, 72, NA), 2),
-    WBAD = rep(c(288*18/24, 0, 0, 288*6/24), 2),
-    WMAXO = rep(c(NA, 72, 72, NA), 2),
-    IBAD = rep(c(288*18/24, 0, 0, 288*6/24), 2),
-    RBAD = rep(c(288*18/24, 0, 0, 288*6/24), 2),
-    PMINO = rep(c(NA, 216, 216, NA), 2),
-    PMAXO = rep(c(NA, 72, 72, NA), 2),
-    PBAD = rep(c(288*18/24, 0, 0, 288*6/24), 2),
-    `2MINO` = rep(c(NA, 216, 216, NA), 2),
-    `2MAXO` = rep(c(NA, 72, 72, NA), 2),
-    `2BAD` = rep(c(288*18/24, 0, 0, 288*6/24), 2),
-    AMAXO = rep(c(NA, 72, 72, NA), 2),
-    ABAD = rep(c(288*18/24, 0, 0, 288*6/24), 2),
-    DBAD = rep(288, 8),
-    B5MNO = rep(c(NA, 96, 96, NA), 2),
-    BMINO = rep(c(NA, 96, 96, NA), 2),
-    S5MNO = rep(c(NA, 96, 96, NA), 2),
-    SMINO = rep(c(NA, 96, 96, NA), 2),
-    S25NO = rep(NA_real_, 8),
-    S3MNO = rep(c(NA, 96, 96, NA), 2),
-    S60NO = rep(NA_real_, 8),
-    B5MXO = rep(c(NA, 96, 96, NA), 2),
-    BMAXO = rep(c(NA, 96, 96, NA), 2),
-    S5MXO = rep(c(NA, 96, 96, NA), 2),
-    SMAXO = rep(c(NA, 96, 96, NA), 2),
-    S25XO = rep(NA_real_, 8),
-    S3MXO = rep(c(NA, 96, 96, NA), 2),
-    S60XO = rep(NA_real_, 8),
-    B5BD = rep(c(72, 0, 0, 24), 2),
-    BBAD = rep(c(72, 0, 0, 24), 2),
-    S5BD = rep(c(72, 0, 0, 24), 2),
-    SBAD = rep(c(72, 0, 0, 24), 2),
-    S25BD = rep(96, 8),
-    S3BD = rep(c(72, 0, 0, 24), 2),
-    S60BD = rep(96, 8),
-    R05BD = rep(48, 8),
-    R25BD = rep(48, 8),
-    R60BD = rep(48, 8),
-    R75BD = rep(48, 8),
-    check.names = FALSE
-  ) |>
-  mesonet:::standardize_column_order()
+  actual_avg <-
+    subdaily_df |>
+    mesonet::mnet_summarize(include_qc_variables = TRUE)
 
-actual_avg <-
-  subdaily_df |>
-  mesonet::mnet_summarize(include_qc_variables = TRUE)
+  expect_equal(colnames(actual_avg),
+               colnames(expected_avg),
+               info = "Test mnet_summarize() - daily interval with QC variables, check column names")
 
-expect_equal(colnames(actual_avg),
-             colnames(expected_avg),
-             info = "Test mnet_summarize() - daily interval with QC variables, check column names")
-
-if(ncol(actual_avg) == ncol(expected_avg) &
-   all(colnames(actual_avg) == colnames(expected_avg))){
-  expect_equal(actual_avg,
-               expected_avg,
-               info = "Test mnet_summarize() - daily interval with QC variables, check data frame contents")
+  if(ncol(actual_avg) == ncol(expected_avg) &
+     all(colnames(actual_avg) == colnames(expected_avg))){
+    expect_equal(actual_avg,
+                 expected_avg,
+                 info = "Test mnet_summarize() - daily interval with QC variables, check data frame contents")
+  }
 }
-
 
 ###############################################################
 # Test mnet_summarize() for daily interval without QC variables
@@ -511,75 +510,74 @@ if(ncol(actual_avg) == ncol(expected_avg) &
 #############################################################
 # Test mnet_summarize() for hourly interval with QC variables
 #############################################################
+if(tinytest::at_home()){
+  expected_avg <-
+    data.frame(
+      STID = rep(c("ACME", "ALTU"), each = 3*24),
+      DATE = rep(seq(as.POSIXct("1994-01-31 19:00", tz = "Etc/GMT+6"),
+                     as.POSIXct("1994-02-03 18:00", tz = "Etc/GMT+6"),
+                     by = as.difftime(1, units = "hours")), 2),
+      TMIN = units::set_units(rep(c(1:3, 1:3), each = 24), "°C"),
+      TAVG = units::set_units(rep(c(1:3, 1:3), each = 24), "°C"),
+      TMAX = units::set_units(rep(c(1:3, 1:3), each = 24), "°C"),
+      WSMN = units::set_units(rep(c(1:3, 1:3), each = 24), "m/s"),
+      WSPD = units::set_units(rep(c(1:3, 1:3), each = 24), "m/s"),
+      WSMX = units::set_units(rep(c(1:3, 1:3), each = 24), "m/s"),
+      PDIR = rep("SSW", 2*3*24),
+      SDIR = rep("SSW", 2*3*24),
+      PDFQ = units::set_units(rep(100, 2*3*24), "percent"),
+      SDFQ = units::set_units(rep(100, 2*3*24), "percent"),
+      RAIN = units::set_units(rep(c(1:3*12, 1:3*12), each = 24), "mm"),
+      RNUM = rep(12, 2*3*24),
+      RMAX = units::set_units(rep(c(1:3*12, 1:3*12), each = 24), "mm/hour"),
+      ATOT = units::set_units(units::set_units(rep(c(201:203, 201:203), each = 24), "W/m2"), "MJ/d/m2")*units::set_units(1, "hour"),
+      AMAX = units::set_units(rep(c(201:203, 201:203), each = 24), "W/m2"),
+      SAVG = units::set_units(rep(5.5, 2*3*24), "°C"),
+      SMAX = units::set_units(rep(5.5, 2*3*24), "°C"),
+      SMIN = units::set_units(rep(5.5, 2*3*24), "°C"),
+      TR05 = units::set_units(rep(NA_real_, 2*3*24), "°C"),
+      TMINO = rep(12, 2*3*24),
+      TMAXO = rep(12, 2*3*24),
+      TBAD = rep(0, 2*3*24),
+      WSMNO = rep(12, 2*3*24),
+      WSMXO = rep(12, 2*3*24),
+      WBAD = rep(0, 2*3*24),
+      IBAD = rep(0, 2*3*24),
+      RBAD = rep(0, 2*3*24),
+      AMAXO = rep(12, 2*3*24),
+      ABAD = rep(0, 2*3*24),
+      SMINO = rep(4, 2*3*24),
+      SMAXO = rep(4, 2*3*24),
+      SBAD = rep(0, 2*3*24),
+      R05BD = rep(2, 2*3*24),
+      check.names = FALSE
+    ) |>
+    mesonet:::standardize_column_order()
 
-expected_avg <-
-  data.frame(
-    STID = rep(c("ACME", "ALTU"), each = 3*24),
-    DATE = rep(seq(as.POSIXct("1994-01-31 19:00", tz = "Etc/GMT+6"),
-                   as.POSIXct("1994-02-03 18:00", tz = "Etc/GMT+6"),
-                   by = as.difftime(1, units = "hours")), 2),
-    TMIN = units::set_units(rep(c(1:3, 1:3), each = 24), "°C"),
-    TAVG = units::set_units(rep(c(1:3, 1:3), each = 24), "°C"),
-    TMAX = units::set_units(rep(c(1:3, 1:3), each = 24), "°C"),
-    WSMN = units::set_units(rep(c(1:3, 1:3), each = 24), "m/s"),
-    WSPD = units::set_units(rep(c(1:3, 1:3), each = 24), "m/s"),
-    WSMX = units::set_units(rep(c(1:3, 1:3), each = 24), "m/s"),
-    PDIR = rep("SSW", 2*3*24),
-    SDIR = rep("SSW", 2*3*24),
-    PDFQ = units::set_units(rep(100, 2*3*24), "percent"),
-    SDFQ = units::set_units(rep(100, 2*3*24), "percent"),
-    RAIN = units::set_units(rep(c(1:3*12, 1:3*12), each = 24), "mm"),
-    RNUM = rep(12, 2*3*24),
-    RMAX = units::set_units(rep(c(1:3*12, 1:3*12), each = 24), "mm/hour"),
-    ATOT = units::set_units(units::set_units(rep(c(201:203, 201:203), each = 24), "W/m2"), "MJ/d/m2")*units::set_units(1, "hour"),
-    AMAX = units::set_units(rep(c(201:203, 201:203), each = 24), "W/m2"),
-    SAVG = units::set_units(rep(5.5, 2*3*24), "°C"),
-    SMAX = units::set_units(rep(5.5, 2*3*24), "°C"),
-    SMIN = units::set_units(rep(5.5, 2*3*24), "°C"),
-    TR05 = units::set_units(rep(NA_real_, 2*3*24), "°C"),
-    TMINO = rep(12, 2*3*24),
-    TMAXO = rep(12, 2*3*24),
-    TBAD = rep(0, 2*3*24),
-    WSMNO = rep(12, 2*3*24),
-    WSMXO = rep(12, 2*3*24),
-    WBAD = rep(0, 2*3*24),
-    IBAD = rep(0, 2*3*24),
-    RBAD = rep(0, 2*3*24),
-    AMAXO = rep(12, 2*3*24),
-    ABAD = rep(0, 2*3*24),
-    SMINO = rep(4, 2*3*24),
-    SMAXO = rep(4, 2*3*24),
-    SBAD = rep(0, 2*3*24),
-    R05BD = rep(2, 2*3*24),
-    check.names = FALSE
-  ) |>
-  mesonet:::standardize_column_order()
+  expect_warning({
+    actual_avg <-
+      subdaily_df |>
+      subset(select = c("STID", "DATE", "TAIR", "WSPD", "WDIR", "RAIN", "SRAD",
+                        "TS10", "TR05")) |>
+      mesonet::mnet_summarize(interval = "1 hour",
+                              include_qc_variables = TRUE)
+  })
 
-expect_warning({
-  actual_avg <-
-    subdaily_df |>
-    subset(select = c("STID", "DATE", "TAIR", "WSPD", "WDIR", "RAIN", "SRAD",
-                      "TS10", "TR05")) |>
-    mesonet::mnet_summarize(interval = "1 hour",
-                            include_qc_variables = TRUE)
-})
+  expect_equal(colnames(actual_avg),
+               colnames(expected_avg),
+               info = "Test mnet_summarize() - hourly interval with QC variables, check column names")
 
-expect_equal(colnames(actual_avg),
-             colnames(expected_avg),
-             info = "Test mnet_summarize() - hourly interval with QC variables, check column names")
-
-if(ncol(actual_avg) == ncol(expected_avg) &
-   all(colnames(actual_avg) == colnames(expected_avg))){
-  expect_equal(actual_avg,
-               expected_avg,
-               info = "Test mnet_summarize() - hourly interval with QC variables, check data frame contents")
+  if(ncol(actual_avg) == ncol(expected_avg) &
+     all(colnames(actual_avg) == colnames(expected_avg))){
+    expect_equal(actual_avg,
+                 expected_avg,
+                 info = "Test mnet_summarize() - hourly interval with QC variables, check data frame contents")
+  }
 }
-
 
 ################################################################
 # Test mnet_summarize() for hourly interval without QC variables
 ################################################################
-
 expected_avg <-
   data.frame(
     STID = rep(c("ACME", "ALTU"), each = 3*24),
@@ -629,119 +627,119 @@ if(ncol(actual_avg) == ncol(expected_avg) &
 #############################################################
 # Test mnet_summarize() for 30 min interval with QC variables
 #############################################################
+if(tinytest::at_home()){
+  expected_avg <-
+    data.frame(
+      STID = rep(c("ACME", "ALTU"), each = 3*24*2),
+      DATE = rep(seq(as.POSIXct("1994-01-31 18:30", tz = "Etc/GMT+6"),
+                     as.POSIXct("1994-02-03 18:00", tz = "Etc/GMT+6"),
+                     by = as.difftime(30, units = "mins")), 2),
+      TMIN = units::set_units(rep(c(1:3, 1:3), each = 24*2), "°C"),
+      TAVG = units::set_units(rep(c(1:3, 1:3), each = 24*2), "°C"),
+      TMAX = units::set_units(rep(c(1:3, 1:3), each = 24*2), "°C"),
+      WSMN = units::set_units(rep(c(1:3, 1:3), each = 24*2), "m/s"),
+      WSPD = units::set_units(rep(c(1:3, 1:3), each = 24*2), "m/s"),
+      WSMX = units::set_units(rep(c(1:3, 1:3), each = 24*2), "m/s"),
+      PDIR = rep("SSW", 2*3*24*2),
+      SDIR = rep("SSW", 2*3*24*2),
+      PDFQ = units::set_units(rep(100, 2*3*24*2), "percent"),
+      SDFQ = units::set_units(rep(100, 2*3*24*2), "percent"),
+      RAIN = units::set_units(rep(c(1:3*6, 1:3*6), each = 24*2), "mm"),
+      RNUM = rep(6, 2*3*24*2),
+      RMAX = units::set_units(rep(c(1:3*12, 1:3*12), each = 24*2), "mm/hour"),
+      ATOT = units::set_units(units::set_units(rep(c(201:203, 201:203), each = 24*2), "W/m2"), "MJ/d/m2")*units::set_units(30, "min"),
+      AMAX = units::set_units(rep(c(201:203, 201:203), each = 24*2), "W/m2"),
+      SAVG = units::set_units(rep(5.5, 2*3*24*2), "°C"),
+      SMAX = units::set_units(rep(5.5, 2*3*24*2), "°C"),
+      SMIN = units::set_units(rep(5.5, 2*3*24*2), "°C"),
+      TR05 = units::set_units(rep(NA_real_, 2*3*24*2), "°C"),
+      TMINO = rep(6, 2*3*24*2),
+      TMAXO = rep(6, 2*3*24*2),
+      TBAD = rep(0, 2*3*24*2),
+      WSMNO = rep(6, 2*3*24*2),
+      WSMXO = rep(6, 2*3*24*2),
+      WBAD = rep(0, 2*3*24*2),
+      IBAD = rep(0, 2*3*24*2),
+      RBAD = rep(0, 2*3*24*2),
+      AMAXO = rep(6, 2*3*24*2),
+      ABAD = rep(0, 2*3*24*2),
+      SMINO = rep(2, 2*3*24*2),
+      SMAXO = rep(2, 2*3*24*2),
+      SBAD = rep(0, 2*3*24*2),
+      R05BD = rep(1, 2*3*24*2),
+      check.names = FALSE
+    ) |>
+    mesonet:::standardize_column_order()
 
-expected_avg <-
-  data.frame(
-    STID = rep(c("ACME", "ALTU"), each = 3*24*2),
-    DATE = rep(seq(as.POSIXct("1994-01-31 18:30", tz = "Etc/GMT+6"),
-                   as.POSIXct("1994-02-03 18:00", tz = "Etc/GMT+6"),
-                   by = as.difftime(30, units = "mins")), 2),
-    TMIN = units::set_units(rep(c(1:3, 1:3), each = 24*2), "°C"),
-    TAVG = units::set_units(rep(c(1:3, 1:3), each = 24*2), "°C"),
-    TMAX = units::set_units(rep(c(1:3, 1:3), each = 24*2), "°C"),
-    WSMN = units::set_units(rep(c(1:3, 1:3), each = 24*2), "m/s"),
-    WSPD = units::set_units(rep(c(1:3, 1:3), each = 24*2), "m/s"),
-    WSMX = units::set_units(rep(c(1:3, 1:3), each = 24*2), "m/s"),
-    PDIR = rep("SSW", 2*3*24*2),
-    SDIR = rep("SSW", 2*3*24*2),
-    PDFQ = units::set_units(rep(100, 2*3*24*2), "percent"),
-    SDFQ = units::set_units(rep(100, 2*3*24*2), "percent"),
-    RAIN = units::set_units(rep(c(1:3*6, 1:3*6), each = 24*2), "mm"),
-    RNUM = rep(6, 2*3*24*2),
-    RMAX = units::set_units(rep(c(1:3*12, 1:3*12), each = 24*2), "mm/hour"),
-    ATOT = units::set_units(units::set_units(rep(c(201:203, 201:203), each = 24*2), "W/m2"), "MJ/d/m2")*units::set_units(30, "min"),
-    AMAX = units::set_units(rep(c(201:203, 201:203), each = 24*2), "W/m2"),
-    SAVG = units::set_units(rep(5.5, 2*3*24*2), "°C"),
-    SMAX = units::set_units(rep(5.5, 2*3*24*2), "°C"),
-    SMIN = units::set_units(rep(5.5, 2*3*24*2), "°C"),
-    TR05 = units::set_units(rep(NA_real_, 2*3*24*2), "°C"),
-    TMINO = rep(6, 2*3*24*2),
-    TMAXO = rep(6, 2*3*24*2),
-    TBAD = rep(0, 2*3*24*2),
-    WSMNO = rep(6, 2*3*24*2),
-    WSMXO = rep(6, 2*3*24*2),
-    WBAD = rep(0, 2*3*24*2),
-    IBAD = rep(0, 2*3*24*2),
-    RBAD = rep(0, 2*3*24*2),
-    AMAXO = rep(6, 2*3*24*2),
-    ABAD = rep(0, 2*3*24*2),
-    SMINO = rep(2, 2*3*24*2),
-    SMAXO = rep(2, 2*3*24*2),
-    SBAD = rep(0, 2*3*24*2),
-    R05BD = rep(1, 2*3*24*2),
-    check.names = FALSE
-  ) |>
-  mesonet:::standardize_column_order()
+  expect_warning({
+    actual_avg <-
+      subdaily_df |>
+      subset(select = c("STID", "DATE", "TAIR", "WSPD", "WDIR", "RAIN", "SRAD",
+                        "TS10", "TR05")) |>
+      mesonet::mnet_summarize(interval = "30 min",
+                              include_qc_variables = TRUE)
+  })
 
-expect_warning({
-  actual_avg <-
-    subdaily_df |>
-    subset(select = c("STID", "DATE", "TAIR", "WSPD", "WDIR", "RAIN", "SRAD",
-                      "TS10", "TR05")) |>
-    mesonet::mnet_summarize(interval = "30 min",
-                            include_qc_variables = TRUE)
-})
+  expect_equal(colnames(actual_avg),
+               colnames(expected_avg),
+               info = "Test mnet_summarize() - 30 min interval with QC variables, check column names")
 
-expect_equal(colnames(actual_avg),
-             colnames(expected_avg),
-             info = "Test mnet_summarize() - 30 min interval with QC variables, check column names")
-
-if(ncol(actual_avg) == ncol(expected_avg) &
-   all(colnames(actual_avg) == colnames(expected_avg))){
-  expect_equal(actual_avg,
-               expected_avg,
-               info = "Test mnet_summarize() - 30 min interval with QC variables, check data frame contents")
+  if(ncol(actual_avg) == ncol(expected_avg) &
+     all(colnames(actual_avg) == colnames(expected_avg))){
+    expect_equal(actual_avg,
+                 expected_avg,
+                 info = "Test mnet_summarize() - 30 min interval with QC variables, check data frame contents")
+  }
 }
-
 
 ################################################################
 # Test mnet_summarize() for 30 min interval without QC variables
 ################################################################
+if(tinytest::at_home()){
+  expected_avg <-
+    data.frame(
+      STID = rep(c("ACME", "ALTU"), each = 3*24*2),
+      DATE = rep(seq(as.POSIXct("1994-01-31 18:30", tz = "Etc/GMT+6"),
+                     as.POSIXct("1994-02-03 18:00", tz = "Etc/GMT+6"),
+                     by = as.difftime(30, units = "mins")), 2),
+      TMIN = units::set_units(rep(c(1:3, 1:3), each = 24*2), "°C"),
+      TAVG = units::set_units(rep(c(1:3, 1:3), each = 24*2), "°C"),
+      TMAX = units::set_units(rep(c(1:3, 1:3), each = 24*2), "°C"),
+      WSMN = units::set_units(rep(c(1:3, 1:3), each = 24*2), "m/s"),
+      WSPD = units::set_units(rep(c(1:3, 1:3), each = 24*2), "m/s"),
+      WSMX = units::set_units(rep(c(1:3, 1:3), each = 24*2), "m/s"),
+      PDIR = rep("SSW", 2*3*24*2),
+      SDIR = rep("SSW", 2*3*24*2),
+      RAIN = units::set_units(rep(c(1:3*6, 1:3*6), each = 24*2), "mm"),
+      RMAX = units::set_units(rep(c(1:3*12, 1:3*12), each = 24*2), "mm/hour"),
+      ATOT = units::set_units(units::set_units(rep(c(201:203, 201:203), each = 24*2), "W/m2"), "MJ/d/m2")*units::set_units(30, "min"),
+      AMAX = units::set_units(rep(c(201:203, 201:203), each = 24*2), "W/m2"),
+      SAVG = units::set_units(rep(5.5, 2*3*24*2), "°C"),
+      SMAX = units::set_units(rep(5.5, 2*3*24*2), "°C"),
+      SMIN = units::set_units(rep(5.5, 2*3*24*2), "°C"),
+      TR05 = units::set_units(rep(NA_real_, 2*3*24*2), "°C"),
+      check.names = FALSE
+    ) |>
+    mesonet:::standardize_column_order()
 
-expected_avg <-
-  data.frame(
-    STID = rep(c("ACME", "ALTU"), each = 3*24*2),
-    DATE = rep(seq(as.POSIXct("1994-01-31 18:30", tz = "Etc/GMT+6"),
-                   as.POSIXct("1994-02-03 18:00", tz = "Etc/GMT+6"),
-                   by = as.difftime(30, units = "mins")), 2),
-    TMIN = units::set_units(rep(c(1:3, 1:3), each = 24*2), "°C"),
-    TAVG = units::set_units(rep(c(1:3, 1:3), each = 24*2), "°C"),
-    TMAX = units::set_units(rep(c(1:3, 1:3), each = 24*2), "°C"),
-    WSMN = units::set_units(rep(c(1:3, 1:3), each = 24*2), "m/s"),
-    WSPD = units::set_units(rep(c(1:3, 1:3), each = 24*2), "m/s"),
-    WSMX = units::set_units(rep(c(1:3, 1:3), each = 24*2), "m/s"),
-    PDIR = rep("SSW", 2*3*24*2),
-    SDIR = rep("SSW", 2*3*24*2),
-    RAIN = units::set_units(rep(c(1:3*6, 1:3*6), each = 24*2), "mm"),
-    RMAX = units::set_units(rep(c(1:3*12, 1:3*12), each = 24*2), "mm/hour"),
-    ATOT = units::set_units(units::set_units(rep(c(201:203, 201:203), each = 24*2), "W/m2"), "MJ/d/m2")*units::set_units(30, "min"),
-    AMAX = units::set_units(rep(c(201:203, 201:203), each = 24*2), "W/m2"),
-    SAVG = units::set_units(rep(5.5, 2*3*24*2), "°C"),
-    SMAX = units::set_units(rep(5.5, 2*3*24*2), "°C"),
-    SMIN = units::set_units(rep(5.5, 2*3*24*2), "°C"),
-    TR05 = units::set_units(rep(NA_real_, 2*3*24*2), "°C"),
-    check.names = FALSE
-  ) |>
-  mesonet:::standardize_column_order()
 
+  expect_warning({
+    actual_avg <-
+      subdaily_df |>
+      subset(select = c("STID", "DATE", "TAIR", "WSPD", "WDIR", "RAIN", "SRAD",
+                        "TS10", "TR05")) |>
+      mesonet::mnet_summarize(interval = "30 min",
+                              include_qc_variables = FALSE)
+  })
 
-expect_warning({
-  actual_avg <-
-    subdaily_df |>
-    subset(select = c("STID", "DATE", "TAIR", "WSPD", "WDIR", "RAIN", "SRAD",
-                      "TS10", "TR05")) |>
-    mesonet::mnet_summarize(interval = "30 min",
-                            include_qc_variables = FALSE)
-})
+  expect_equal(colnames(actual_avg),
+               colnames(expected_avg),
+               info = "Test mnet_summarize() - 30 min interval without QC variables, check column names")
 
-expect_equal(colnames(actual_avg),
-             colnames(expected_avg),
-             info = "Test mnet_summarize() - 30 min interval without QC variables, check column names")
-
-if(ncol(actual_avg) == ncol(expected_avg) &
-   all(colnames(actual_avg) == colnames(expected_avg))){
-  expect_equal(actual_avg,
-               expected_avg,
-               info = "Test mnet_summarize() - 30 min interval without QC variables, check data frame contents")
+  if(ncol(actual_avg) == ncol(expected_avg) &
+     all(colnames(actual_avg) == colnames(expected_avg))){
+    expect_equal(actual_avg,
+                 expected_avg,
+                 info = "Test mnet_summarize() - 30 min interval without QC variables, check data frame contents")
+  }
 }
-
