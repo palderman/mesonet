@@ -507,6 +507,67 @@ if(ncol(actual_avg) == ncol(expected_avg) &
                info = "Test mnet_summarize() - daily interval without QC variables, check data frame contents")
 }
 
+
+######################################################################################
+# Test mnet_summarize() for daily interval without QC variables - individual variables
+######################################################################################
+
+expected_avg <-
+  data.frame(
+    STNM = 89L,
+    STID = rep(c("ACME", "ALTU"), each = 4),
+    DATE = rep(as.POSIXct(c("1994-01-31", "1994-02-01", "1994-02-02", "1994-02-03"), tz = "Etc/GMT+6"), 2),
+    TMIN = units::set_units(rep(c(NA, 1, 2, NA), 2), "°C"),
+    TAVG = units::set_units(rep(c(NA, 1.25, 2.25, NA), 2), "°C"),
+    TMAX = units::set_units(rep(c(NA, 2, 3, NA), 2), "°C"),
+    HMIN = units::set_units(rep(c(NA, 31, 32, NA), 2), "percent"),
+    HAVG = units::set_units(rep(c(NA, 31.25, 32.25, NA), 2), "percent"),
+    HMAX = units::set_units(rep(c(NA, 32, 33, NA), 2), "percent"),
+    PMIN = units::set_units(rep(c(NA, 101, 102, NA), 2), "kPa"),
+    PAVG = units::set_units(rep(c(NA, 101.25, 102.25, NA), 2), "kPa"),
+    PMAX = units::set_units(rep(c(NA, 102, 103, NA), 2), "kPa"),
+    `2MIN` = units::set_units(rep(c(NA, 1, 2, NA), 2), "m/s"),
+    `2AVG` = units::set_units(rep(c(NA, 1.25, 2.25, NA), 2), "m/s"),
+    `2MAX` = units::set_units(rep(c(NA, 2, 3, NA), 2), "m/s"),
+    RAIN = units::set_units(rep(c(NA, 216*1 + 72*2, 216*2 + 72*3 , NA), 2), "mm"),
+    RMAX = units::set_units(rep(c(NA, 2, 3, NA)*60/5, 2), "mm/hour"),
+    ATOT = units::set_units(rep(c(NA, (201*18+202*6), (202*18+203*6), NA)*60*60*1e-6, 2), "MJ/d/m2")*units::set_units(1, "day"),
+    AMAX = units::set_units(rep(c(NA, 202, 203, NA), 2), "W/m2"),
+    check.names = FALSE
+  ) |>
+  mesonet:::standardize_column_order()
+
+variables <-
+  list(
+    TAIR = c("TAVG", "TMAX", "TMIN"),
+    RELH = c("HAVG", "HMAX", "HMIN"),
+    PRES = c("PAVG", "PMAX", "PMIN"),
+    WS2M = c("2AVG", "2MAX", "2MIN"),
+    RAIN = c("RAIN", "RMAX"),
+    SRAD = c("ATOT", "AMAX")
+  )
+
+for(v in names(variables)){
+  expect_warning({
+    actual_avg <-
+      subdaily_df |>
+      subset(select = c("STID", "DATE", v)) |>
+      mesonet::mnet_summarize(include_qc_variables = FALSE)
+  })
+
+  expect_equal(colnames(actual_avg),
+               c("STID", "DATE", variables[[v]]),
+               info = paste0("Test mnet_summarize() - daily interval, only ", v, " check column names"))
+
+  if(ncol(actual_avg) == length(c("STID", "DATE", variables[[v]])) &
+     all(colnames(actual_avg) == c("STID", "DATE", variables[[v]]))){
+    expect_equal(actual_avg,
+                 expected_avg[, c("STID", "DATE", variables[[v]])],
+                 info = paste0("Test mnet_summarize() - daily interval, only ", v, " check data frame contents"))
+  }
+
+}
+
 #############################################################
 # Test mnet_summarize() for hourly interval with QC variables
 #############################################################

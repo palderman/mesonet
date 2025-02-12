@@ -353,12 +353,16 @@ mnet_summarize <- function(sub_daily,
     daily |>
     do.call(cbind.data.frame, args = _) |>
     within({
-      CDEG = max(TAIR_avg - threshold_temperature,
-                 units::set_units(0, "Celsius"))
-      HDEG = max(threshold_temperature - TAIR_avg,
-                 units::set_units(0, "Celsius"))
-      # Convert mm per 5 min to mm per h
-      RAIN_max = units::set_units(units::drop_units(RAIN_max)*60/5, "mm/h")
+      if(exists("TAIR_avg", inherits = FALSE)){
+        CDEG = max(TAIR_avg - threshold_temperature,
+                   units::set_units(0, "Celsius"))
+        HDEG = max(threshold_temperature - TAIR_avg,
+                   units::set_units(0, "Celsius"))
+      }
+      if(exists("RAIN_max", inherits = FALSE)){
+        # Convert mm per 5 min to mm per h
+        RAIN_max = units::set_units(units::drop_units(RAIN_max)*60/5, "mm/h")
+      }
     }) |>
     standardize_column_names() |>
     standardize_column_order()
