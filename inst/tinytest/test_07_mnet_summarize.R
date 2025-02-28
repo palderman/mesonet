@@ -65,7 +65,7 @@ subdaily_df <- data.frame(
   ) |>
   within({
     RELH = units::set_units(rep(31:33, each = 288), "percent")
-    TAIR = units::set_units(rep(1:3, each = 288), "°C")
+    TAIR = units::set_units(rep(1:3, each = 288), "Celsius")
     WSPD = units::set_units(rep(1:3, each = 288), "m/s")
     WVEC = units::set_units(rep(1:3, each = 288), "m/s")
     WDIR = units::set_units(rep(201:203, each = 288), "degrees")
@@ -75,27 +75,27 @@ subdaily_df <- data.frame(
     RAIN = units::set_units(rep(1:3, each = 288), "mm")
     PRES = units::set_units(rep(101:103, each = 288), "kPa")
     SRAD = units::set_units(rep(201:203, each = 288), "W/m^2")
-    TA9M = units::set_units(rep(1:3, each = 288), "°C")
+    TA9M = units::set_units(rep(1:3, each = 288), "Celsius")
     WS2M = units::set_units(rep(1:3, each = 288), "m/s")
-    TS10 = units::set_units(rep(c(5.5, NA, NA), 96), "°C")
-    TB10 = units::set_units(rep(c(7.9, NA, NA), 96), "°C")
-    TS05 = units::set_units(rep(c(6.1, NA, NA), 96), "°C")
-    TB05 = units::set_units(rep(c(8.7, NA, NA), 96), "°C")
-    TS30 = units::set_units(rep(c(5.7, NA, NA), 96), "°C")
+    TS10 = units::set_units(rep(c(5.5, NA, NA), 96), "Celsius")
+    TB10 = units::set_units(rep(c(7.9, NA, NA), 96), "Celsius")
+    TS05 = units::set_units(rep(c(6.1, NA, NA), 96), "Celsius")
+    TB05 = units::set_units(rep(c(8.7, NA, NA), 96), "Celsius")
+    TS30 = units::set_units(rep(c(5.7, NA, NA), 96), "Celsius")
     STID = rep(c("ACME", "ALTU"), each = 288*3)
     STNM = 89L
-    TS25 = units::set_units(NA_real_, "°C")
-    TS60 = units::set_units(NA_real_, "°C")
-    TR05 = units::set_units(NA_real_, "°C")
-    TR25 = units::set_units(NA_real_, "°C")
-    TR60 = units::set_units(NA_real_, "°C")
-    TR75 = units::set_units(NA_real_, "°C")
-    TS45 = units::set_units(NA_real_, "°C")
+    TS25 = units::set_units(NA_real_, "Celsius")
+    TS60 = units::set_units(NA_real_, "Celsius")
+    TR05 = units::set_units(NA_real_, "Celsius")
+    TR25 = units::set_units(NA_real_, "Celsius")
+    TR60 = units::set_units(NA_real_, "Celsius")
+    TR75 = units::set_units(NA_real_, "Celsius")
+    TS45 = units::set_units(NA_real_, "Celsius")
     VW05 = units::set_units(NA_real_, "cm^3/cm^3")
     VW25 = units::set_units(NA_real_, "cm^3/cm^3")
     VW45 = units::set_units(NA_real_, "cm^3/cm^3")
     VDEF = units::set_units(NA_real_, "kPa")
-    TDEW = units::set_units(NA_real_, "°C")
+    TDEW = units::set_units(NA_real_, "Celsius")
   }) |>
   mesonet:::standardize_column_order()
 
@@ -297,9 +297,9 @@ if(tinytest::at_home()){
       STNM = 89L,
       STID = rep(c("ACME", "ALTU"), each = 4),
       DATE = rep(as.POSIXct(c("1994-01-31", "1994-02-01", "1994-02-02", "1994-02-03"), tz = "Etc/GMT+6"), 2),
-      TMIN = units::set_units(rep(c(NA, 1, 2, NA), 2), "°C"),
-      TAVG = units::set_units(rep(c(NA, 1.25, 2.25, NA), 2), "°C"),
-      TMAX = units::set_units(rep(c(NA, 2, 3, NA), 2), "°C"),
+      TMIN = units::set_units(rep(c(NA, 1, 2, NA), 2), "Celsius"),
+      TAVG = units::set_units(rep(c(NA, 1.25, 2.25, NA), 2), "Celsius"),
+      TMAX = units::set_units(rep(c(NA, 2, 3, NA), 2), "Celsius"),
       HMIN = units::set_units(rep(c(NA, 31, 32, NA), 2), "percent"),
       HAVG = units::set_units(rep(c(NA, 31.25, 32.25, NA), 2), "percent"),
       HMAX = units::set_units(rep(c(NA, 32, 33, NA), 2), "percent"),
@@ -316,42 +316,42 @@ if(tinytest::at_home()){
       `2MIN` = units::set_units(rep(c(NA, 1, 2, NA), 2), "m/s"),
       `2AVG` = units::set_units(rep(c(NA, 1.25, 2.25, NA), 2), "m/s"),
       `2MAX` = units::set_units(rep(c(NA, 2, 3, NA), 2), "m/s"),
-      DMIN = units::set_units(rep(NA_real_, 8), "°C"),
-      DAVG = units::set_units(rep(NA_real_, 8), "°C"),
-      DMAX = units::set_units(rep(NA_real_, 8), "°C"),
+      DMIN = units::set_units(rep(NA_real_, 8), "Celsius"),
+      DAVG = units::set_units(rep(NA_real_, 8), "Celsius"),
+      DMAX = units::set_units(rep(NA_real_, 8), "Celsius"),
       WMAX = units::set_units(rep(c(NA, 2:3, NA), 2), "m/s"),
       RAIN = units::set_units(rep(c(NA, 216*1 + 72*2, 216*2 + 72*3 , NA), 2), "mm"),
       RNUM = rep(c(NA, 288, 288, NA), 2),
       RMAX = units::set_units(rep(c(NA, 2, 3, NA)*60/5, 2), "mm/hour"),
       ATOT = units::set_units(rep(c(NA, (201*18+202*6), (202*18+203*6), NA)*60*60*1e-6, 2), "MJ/d/m2")*units::set_units(1, "day"),
       AMAX = units::set_units(rep(c(NA, 202, 203, NA), 2), "W/m2"),
-      `9AVG` = units::set_units(rep(c(NA, (18*1 + 6*2)/24, (18*2 + 6*3)/24, NA), 2), "°C"),
-      SAVG = units::set_units(rep(c(NA, rep(5.5, 2), NA), 2), "°C"),
-      SMAX = units::set_units(rep(c(NA, rep(5.5, 2), NA), 2), "°C"),
-      SMIN = units::set_units(rep(c(NA, rep(5.5, 2), NA), 2), "°C"),
-      BAVG = units::set_units(rep(c(NA, rep(7.9, 2), NA), 2), "°C"),
-      BMAX = units::set_units(rep(c(NA, rep(7.9, 2), NA), 2), "°C"),
-      BMIN = units::set_units(rep(c(NA, rep(7.9, 2), NA), 2), "°C"),
-      S5AV = units::set_units(rep(c(NA, rep(6.1, 2), NA), 2), "°C"),
-      S5MX = units::set_units(rep(c(NA, rep(6.1, 2), NA), 2), "°C"),
-      S5MN = units::set_units(rep(c(NA, rep(6.1, 2), NA), 2), "°C"),
-      B5AV = units::set_units(rep(c(NA, rep(8.7, 2), NA), 2), "°C"),
-      B5MX = units::set_units(rep(c(NA, rep(8.7, 2), NA), 2), "°C"),
-      B5MN = units::set_units(rep(c(NA, rep(8.7, 2), NA), 2), "°C"),
-      S3AV = units::set_units(rep(c(NA, rep(5.7, 2), NA), 2), "°C"),
-      S3MX = units::set_units(rep(c(NA, rep(5.7, 2), NA), 2), "°C"),
-      S3MN = units::set_units(rep(c(NA, rep(5.7, 2), NA), 2), "°C"),
-      S25AV = units::set_units(rep(NA_real_, 8), "°C"),
-      S25MX = units::set_units(rep(NA_real_, 8), "°C"),
-      S25MN = units::set_units(rep(NA_real_, 8), "°C"),
-      S60AV = units::set_units(rep(NA_real_, 8), "°C"),
-      S60MX = units::set_units(rep(NA_real_, 8), "°C"),
-      S60MN = units::set_units(rep(NA_real_, 8), "°C"),
-      TR05 = units::set_units(rep(NA_real_, 8), "°C"),
-      TR25 = units::set_units(rep(NA_real_, 8), "°C"),
-      TR60 = units::set_units(rep(NA_real_, 8), "°C"),
-      TR75 = units::set_units(rep(NA_real_, 8), "°C"),
-      TS45 = units::set_units(rep(NA_real_, 8), "°C"),
+      `9AVG` = units::set_units(rep(c(NA, (18*1 + 6*2)/24, (18*2 + 6*3)/24, NA), 2), "Celsius"),
+      SAVG = units::set_units(rep(c(NA, rep(5.5, 2), NA), 2), "Celsius"),
+      SMAX = units::set_units(rep(c(NA, rep(5.5, 2), NA), 2), "Celsius"),
+      SMIN = units::set_units(rep(c(NA, rep(5.5, 2), NA), 2), "Celsius"),
+      BAVG = units::set_units(rep(c(NA, rep(7.9, 2), NA), 2), "Celsius"),
+      BMAX = units::set_units(rep(c(NA, rep(7.9, 2), NA), 2), "Celsius"),
+      BMIN = units::set_units(rep(c(NA, rep(7.9, 2), NA), 2), "Celsius"),
+      S5AV = units::set_units(rep(c(NA, rep(6.1, 2), NA), 2), "Celsius"),
+      S5MX = units::set_units(rep(c(NA, rep(6.1, 2), NA), 2), "Celsius"),
+      S5MN = units::set_units(rep(c(NA, rep(6.1, 2), NA), 2), "Celsius"),
+      B5AV = units::set_units(rep(c(NA, rep(8.7, 2), NA), 2), "Celsius"),
+      B5MX = units::set_units(rep(c(NA, rep(8.7, 2), NA), 2), "Celsius"),
+      B5MN = units::set_units(rep(c(NA, rep(8.7, 2), NA), 2), "Celsius"),
+      S3AV = units::set_units(rep(c(NA, rep(5.7, 2), NA), 2), "Celsius"),
+      S3MX = units::set_units(rep(c(NA, rep(5.7, 2), NA), 2), "Celsius"),
+      S3MN = units::set_units(rep(c(NA, rep(5.7, 2), NA), 2), "Celsius"),
+      S25AV = units::set_units(rep(NA_real_, 8), "Celsius"),
+      S25MX = units::set_units(rep(NA_real_, 8), "Celsius"),
+      S25MN = units::set_units(rep(NA_real_, 8), "Celsius"),
+      S60AV = units::set_units(rep(NA_real_, 8), "Celsius"),
+      S60MX = units::set_units(rep(NA_real_, 8), "Celsius"),
+      S60MN = units::set_units(rep(NA_real_, 8), "Celsius"),
+      TR05 = units::set_units(rep(NA_real_, 8), "Celsius"),
+      TR25 = units::set_units(rep(NA_real_, 8), "Celsius"),
+      TR60 = units::set_units(rep(NA_real_, 8), "Celsius"),
+      TR75 = units::set_units(rep(NA_real_, 8), "Celsius"),
+      TS45 = units::set_units(rep(NA_real_, 8), "Celsius"),
       VW05 = units::set_units(rep(NA_real_, 8), "cm^3/cm^3"),
       VW25 = units::set_units(rep(NA_real_, 8), "cm^3/cm^3"),
       VW45 = units::set_units(rep(NA_real_, 8), "cm^3/cm^3"),
@@ -432,9 +432,9 @@ expected_avg <-
     STNM = 89L,
     STID = rep(c("ACME", "ALTU"), each = 4),
     DATE = rep(as.POSIXct(c("1994-01-31", "1994-02-01", "1994-02-02", "1994-02-03"), tz = "Etc/GMT+6"), 2),
-    TMIN = units::set_units(rep(c(NA, 1, 2, NA), 2), "°C"),
-    TAVG = units::set_units(rep(c(NA, 1.25, 2.25, NA), 2), "°C"),
-    TMAX = units::set_units(rep(c(NA, 2, 3, NA), 2), "°C"),
+    TMIN = units::set_units(rep(c(NA, 1, 2, NA), 2), "Celsius"),
+    TAVG = units::set_units(rep(c(NA, 1.25, 2.25, NA), 2), "Celsius"),
+    TMAX = units::set_units(rep(c(NA, 2, 3, NA), 2), "Celsius"),
     HMIN = units::set_units(rep(c(NA, 31, 32, NA), 2), "percent"),
     HAVG = units::set_units(rep(c(NA, 31.25, 32.25, NA), 2), "percent"),
     HMAX = units::set_units(rep(c(NA, 32, 33, NA), 2), "percent"),
@@ -449,41 +449,41 @@ expected_avg <-
     `2MIN` = units::set_units(rep(c(NA, 1, 2, NA), 2), "m/s"),
     `2AVG` = units::set_units(rep(c(NA, 1.25, 2.25, NA), 2), "m/s"),
     `2MAX` = units::set_units(rep(c(NA, 2, 3, NA), 2), "m/s"),
-    DMIN = units::set_units(rep(NA_real_, 8), "°C"),
-    DAVG = units::set_units(rep(NA_real_, 8), "°C"),
-    DMAX = units::set_units(rep(NA_real_, 8), "°C"),
+    DMIN = units::set_units(rep(NA_real_, 8), "Celsius"),
+    DAVG = units::set_units(rep(NA_real_, 8), "Celsius"),
+    DMAX = units::set_units(rep(NA_real_, 8), "Celsius"),
     WMAX = units::set_units(rep(c(NA, 2:3, NA), 2), "m/s"),
     RAIN = units::set_units(rep(c(NA, 216*1 + 72*2, 216*2 + 72*3 , NA), 2), "mm"),
     RMAX = units::set_units(rep(c(NA, 2, 3, NA)*60/5, 2), "mm/hour"),
     ATOT = units::set_units(rep(c(NA, (201*18+202*6), (202*18+203*6), NA)*60*60*1e-6, 2), "MJ/d/m2")*units::set_units(1, "day"),
     AMAX = units::set_units(rep(c(NA, 202, 203, NA), 2), "W/m2"),
-    `9AVG` = units::set_units(rep(c(NA, (18*1 + 6*2)/24, (18*2 + 6*3)/24, NA), 2), "°C"),
-    SAVG = units::set_units(rep(c(NA, rep(5.5, 2), NA), 2), "°C"),
-    SMAX = units::set_units(rep(c(NA, rep(5.5, 2), NA), 2), "°C"),
-    SMIN = units::set_units(rep(c(NA, rep(5.5, 2), NA), 2), "°C"),
-    BAVG = units::set_units(rep(c(NA, rep(7.9, 2), NA), 2), "°C"),
-    BMAX = units::set_units(rep(c(NA, rep(7.9, 2), NA), 2), "°C"),
-    BMIN = units::set_units(rep(c(NA, rep(7.9, 2), NA), 2), "°C"),
-    S5AV = units::set_units(rep(c(NA, rep(6.1, 2), NA), 2), "°C"),
-    S5MX = units::set_units(rep(c(NA, rep(6.1, 2), NA), 2), "°C"),
-    S5MN = units::set_units(rep(c(NA, rep(6.1, 2), NA), 2), "°C"),
-    B5AV = units::set_units(rep(c(NA, rep(8.7, 2), NA), 2), "°C"),
-    B5MX = units::set_units(rep(c(NA, rep(8.7, 2), NA), 2), "°C"),
-    B5MN = units::set_units(rep(c(NA, rep(8.7, 2), NA), 2), "°C"),
-    S3AV = units::set_units(rep(c(NA, rep(5.7, 2), NA), 2), "°C"),
-    S3MX = units::set_units(rep(c(NA, rep(5.7, 2), NA), 2), "°C"),
-    S3MN = units::set_units(rep(c(NA, rep(5.7, 2), NA), 2), "°C"),
-    S25AV = units::set_units(rep(NA_real_, 8), "°C"),
-    S25MX = units::set_units(rep(NA_real_, 8), "°C"),
-    S25MN = units::set_units(rep(NA_real_, 8), "°C"),
-    S60AV = units::set_units(rep(NA_real_, 8), "°C"),
-    S60MX = units::set_units(rep(NA_real_, 8), "°C"),
-    S60MN = units::set_units(rep(NA_real_, 8), "°C"),
-    TR05 = units::set_units(rep(NA_real_, 8), "°C"),
-    TR25 = units::set_units(rep(NA_real_, 8), "°C"),
-    TR60 = units::set_units(rep(NA_real_, 8), "°C"),
-    TR75 = units::set_units(rep(NA_real_, 8), "°C"),
-    TS45 = units::set_units(rep(NA_real_, 8), "°C"),
+    `9AVG` = units::set_units(rep(c(NA, (18*1 + 6*2)/24, (18*2 + 6*3)/24, NA), 2), "Celsius"),
+    SAVG = units::set_units(rep(c(NA, rep(5.5, 2), NA), 2), "Celsius"),
+    SMAX = units::set_units(rep(c(NA, rep(5.5, 2), NA), 2), "Celsius"),
+    SMIN = units::set_units(rep(c(NA, rep(5.5, 2), NA), 2), "Celsius"),
+    BAVG = units::set_units(rep(c(NA, rep(7.9, 2), NA), 2), "Celsius"),
+    BMAX = units::set_units(rep(c(NA, rep(7.9, 2), NA), 2), "Celsius"),
+    BMIN = units::set_units(rep(c(NA, rep(7.9, 2), NA), 2), "Celsius"),
+    S5AV = units::set_units(rep(c(NA, rep(6.1, 2), NA), 2), "Celsius"),
+    S5MX = units::set_units(rep(c(NA, rep(6.1, 2), NA), 2), "Celsius"),
+    S5MN = units::set_units(rep(c(NA, rep(6.1, 2), NA), 2), "Celsius"),
+    B5AV = units::set_units(rep(c(NA, rep(8.7, 2), NA), 2), "Celsius"),
+    B5MX = units::set_units(rep(c(NA, rep(8.7, 2), NA), 2), "Celsius"),
+    B5MN = units::set_units(rep(c(NA, rep(8.7, 2), NA), 2), "Celsius"),
+    S3AV = units::set_units(rep(c(NA, rep(5.7, 2), NA), 2), "Celsius"),
+    S3MX = units::set_units(rep(c(NA, rep(5.7, 2), NA), 2), "Celsius"),
+    S3MN = units::set_units(rep(c(NA, rep(5.7, 2), NA), 2), "Celsius"),
+    S25AV = units::set_units(rep(NA_real_, 8), "Celsius"),
+    S25MX = units::set_units(rep(NA_real_, 8), "Celsius"),
+    S25MN = units::set_units(rep(NA_real_, 8), "Celsius"),
+    S60AV = units::set_units(rep(NA_real_, 8), "Celsius"),
+    S60MX = units::set_units(rep(NA_real_, 8), "Celsius"),
+    S60MN = units::set_units(rep(NA_real_, 8), "Celsius"),
+    TR05 = units::set_units(rep(NA_real_, 8), "Celsius"),
+    TR25 = units::set_units(rep(NA_real_, 8), "Celsius"),
+    TR60 = units::set_units(rep(NA_real_, 8), "Celsius"),
+    TR75 = units::set_units(rep(NA_real_, 8), "Celsius"),
+    TS45 = units::set_units(rep(NA_real_, 8), "Celsius"),
     VW05 = units::set_units(rep(NA_real_, 8), "cm^3/cm^3"),
     VW25 = units::set_units(rep(NA_real_, 8), "cm^3/cm^3"),
     VW45 = units::set_units(rep(NA_real_, 8), "cm^3/cm^3"),
@@ -517,9 +517,9 @@ expected_avg <-
     STNM = 89L,
     STID = rep(c("ACME", "ALTU"), each = 4),
     DATE = rep(as.POSIXct(c("1994-01-31", "1994-02-01", "1994-02-02", "1994-02-03"), tz = "Etc/GMT+6"), 2),
-    TMIN = units::set_units(rep(c(NA, 1, 2, NA), 2), "°C"),
-    TAVG = units::set_units(rep(c(NA, 1.25, 2.25, NA), 2), "°C"),
-    TMAX = units::set_units(rep(c(NA, 2, 3, NA), 2), "°C"),
+    TMIN = units::set_units(rep(c(NA, 1, 2, NA), 2), "Celsius"),
+    TAVG = units::set_units(rep(c(NA, 1.25, 2.25, NA), 2), "Celsius"),
+    TMAX = units::set_units(rep(c(NA, 2, 3, NA), 2), "Celsius"),
     HMIN = units::set_units(rep(c(NA, 31, 32, NA), 2), "percent"),
     HAVG = units::set_units(rep(c(NA, 31.25, 32.25, NA), 2), "percent"),
     HMAX = units::set_units(rep(c(NA, 32, 33, NA), 2), "percent"),
@@ -578,9 +578,9 @@ if(tinytest::at_home()){
       DATE = rep(seq(as.POSIXct("1994-01-31 19:00", tz = "Etc/GMT+6"),
                      as.POSIXct("1994-02-03 18:00", tz = "Etc/GMT+6"),
                      by = as.difftime(1, units = "hours")), 2),
-      TMIN = units::set_units(rep(c(1:3, 1:3), each = 24), "°C"),
-      TAVG = units::set_units(rep(c(1:3, 1:3), each = 24), "°C"),
-      TMAX = units::set_units(rep(c(1:3, 1:3), each = 24), "°C"),
+      TMIN = units::set_units(rep(c(1:3, 1:3), each = 24), "Celsius"),
+      TAVG = units::set_units(rep(c(1:3, 1:3), each = 24), "Celsius"),
+      TMAX = units::set_units(rep(c(1:3, 1:3), each = 24), "Celsius"),
       WSMN = units::set_units(rep(c(1:3, 1:3), each = 24), "m/s"),
       WSPD = units::set_units(rep(c(1:3, 1:3), each = 24), "m/s"),
       WSMX = units::set_units(rep(c(1:3, 1:3), each = 24), "m/s"),
@@ -593,10 +593,10 @@ if(tinytest::at_home()){
       RMAX = units::set_units(rep(c(1:3*12, 1:3*12), each = 24), "mm/hour"),
       ATOT = units::set_units(units::set_units(rep(c(201:203, 201:203), each = 24), "W/m2"), "MJ/d/m2")*units::set_units(1, "hour"),
       AMAX = units::set_units(rep(c(201:203, 201:203), each = 24), "W/m2"),
-      SAVG = units::set_units(rep(5.5, 2*3*24), "°C"),
-      SMAX = units::set_units(rep(5.5, 2*3*24), "°C"),
-      SMIN = units::set_units(rep(5.5, 2*3*24), "°C"),
-      TR05 = units::set_units(rep(NA_real_, 2*3*24), "°C"),
+      SAVG = units::set_units(rep(5.5, 2*3*24), "Celsius"),
+      SMAX = units::set_units(rep(5.5, 2*3*24), "Celsius"),
+      SMIN = units::set_units(rep(5.5, 2*3*24), "Celsius"),
+      TR05 = units::set_units(rep(NA_real_, 2*3*24), "Celsius"),
       TMINO = rep(12, 2*3*24),
       TMAXO = rep(12, 2*3*24),
       TBAD = rep(0, 2*3*24),
@@ -645,9 +645,9 @@ expected_avg <-
     DATE = rep(seq(as.POSIXct("1994-01-31 19:00", tz = "Etc/GMT+6"),
                    as.POSIXct("1994-02-03 18:00", tz = "Etc/GMT+6"),
                    by = as.difftime(1, units = "hours")), 2),
-    TMIN = units::set_units(rep(c(1:3, 1:3), each = 24), "°C"),
-    TAVG = units::set_units(rep(c(1:3, 1:3), each = 24), "°C"),
-    TMAX = units::set_units(rep(c(1:3, 1:3), each = 24), "°C"),
+    TMIN = units::set_units(rep(c(1:3, 1:3), each = 24), "Celsius"),
+    TAVG = units::set_units(rep(c(1:3, 1:3), each = 24), "Celsius"),
+    TMAX = units::set_units(rep(c(1:3, 1:3), each = 24), "Celsius"),
     WSMN = units::set_units(rep(c(1:3, 1:3), each = 24), "m/s"),
     WSPD = units::set_units(rep(c(1:3, 1:3), each = 24), "m/s"),
     WSMX = units::set_units(rep(c(1:3, 1:3), each = 24), "m/s"),
@@ -657,10 +657,10 @@ expected_avg <-
     RMAX = units::set_units(rep(c(1:3*12, 1:3*12), each = 24), "mm/hour"),
     ATOT = units::set_units(units::set_units(rep(c(201:203, 201:203), each = 24), "W/m2"), "MJ/d/m2")*units::set_units(1, "hour"),
     AMAX = units::set_units(rep(c(201:203, 201:203), each = 24), "W/m2"),
-    SAVG = units::set_units(rep(5.5, 2*3*24), "°C"),
-    SMAX = units::set_units(rep(5.5, 2*3*24), "°C"),
-    SMIN = units::set_units(rep(5.5, 2*3*24), "°C"),
-    TR05 = units::set_units(rep(NA_real_, 2*3*24), "°C"),
+    SAVG = units::set_units(rep(5.5, 2*3*24), "Celsius"),
+    SMAX = units::set_units(rep(5.5, 2*3*24), "Celsius"),
+    SMIN = units::set_units(rep(5.5, 2*3*24), "Celsius"),
+    TR05 = units::set_units(rep(NA_real_, 2*3*24), "Celsius"),
     check.names = FALSE
   ) |>
   mesonet:::standardize_column_order()
@@ -695,9 +695,9 @@ if(tinytest::at_home()){
       DATE = rep(seq(as.POSIXct("1994-01-31 18:30", tz = "Etc/GMT+6"),
                      as.POSIXct("1994-02-03 18:00", tz = "Etc/GMT+6"),
                      by = as.difftime(30, units = "mins")), 2),
-      TMIN = units::set_units(rep(c(1:3, 1:3), each = 24*2), "°C"),
-      TAVG = units::set_units(rep(c(1:3, 1:3), each = 24*2), "°C"),
-      TMAX = units::set_units(rep(c(1:3, 1:3), each = 24*2), "°C"),
+      TMIN = units::set_units(rep(c(1:3, 1:3), each = 24*2), "Celsius"),
+      TAVG = units::set_units(rep(c(1:3, 1:3), each = 24*2), "Celsius"),
+      TMAX = units::set_units(rep(c(1:3, 1:3), each = 24*2), "Celsius"),
       WSMN = units::set_units(rep(c(1:3, 1:3), each = 24*2), "m/s"),
       WSPD = units::set_units(rep(c(1:3, 1:3), each = 24*2), "m/s"),
       WSMX = units::set_units(rep(c(1:3, 1:3), each = 24*2), "m/s"),
@@ -710,10 +710,10 @@ if(tinytest::at_home()){
       RMAX = units::set_units(rep(c(1:3*12, 1:3*12), each = 24*2), "mm/hour"),
       ATOT = units::set_units(units::set_units(rep(c(201:203, 201:203), each = 24*2), "W/m2"), "MJ/d/m2")*units::set_units(30, "min"),
       AMAX = units::set_units(rep(c(201:203, 201:203), each = 24*2), "W/m2"),
-      SAVG = units::set_units(rep(5.5, 2*3*24*2), "°C"),
-      SMAX = units::set_units(rep(5.5, 2*3*24*2), "°C"),
-      SMIN = units::set_units(rep(5.5, 2*3*24*2), "°C"),
-      TR05 = units::set_units(rep(NA_real_, 2*3*24*2), "°C"),
+      SAVG = units::set_units(rep(5.5, 2*3*24*2), "Celsius"),
+      SMAX = units::set_units(rep(5.5, 2*3*24*2), "Celsius"),
+      SMIN = units::set_units(rep(5.5, 2*3*24*2), "Celsius"),
+      TR05 = units::set_units(rep(NA_real_, 2*3*24*2), "Celsius"),
       TMINO = rep(6, 2*3*24*2),
       TMAXO = rep(6, 2*3*24*2),
       TBAD = rep(0, 2*3*24*2),
@@ -763,9 +763,9 @@ if(tinytest::at_home()){
       DATE = rep(seq(as.POSIXct("1994-01-31 18:30", tz = "Etc/GMT+6"),
                      as.POSIXct("1994-02-03 18:00", tz = "Etc/GMT+6"),
                      by = as.difftime(30, units = "mins")), 2),
-      TMIN = units::set_units(rep(c(1:3, 1:3), each = 24*2), "°C"),
-      TAVG = units::set_units(rep(c(1:3, 1:3), each = 24*2), "°C"),
-      TMAX = units::set_units(rep(c(1:3, 1:3), each = 24*2), "°C"),
+      TMIN = units::set_units(rep(c(1:3, 1:3), each = 24*2), "Celsius"),
+      TAVG = units::set_units(rep(c(1:3, 1:3), each = 24*2), "Celsius"),
+      TMAX = units::set_units(rep(c(1:3, 1:3), each = 24*2), "Celsius"),
       WSMN = units::set_units(rep(c(1:3, 1:3), each = 24*2), "m/s"),
       WSPD = units::set_units(rep(c(1:3, 1:3), each = 24*2), "m/s"),
       WSMX = units::set_units(rep(c(1:3, 1:3), each = 24*2), "m/s"),
@@ -775,10 +775,10 @@ if(tinytest::at_home()){
       RMAX = units::set_units(rep(c(1:3*12, 1:3*12), each = 24*2), "mm/hour"),
       ATOT = units::set_units(units::set_units(rep(c(201:203, 201:203), each = 24*2), "W/m2"), "MJ/d/m2")*units::set_units(30, "min"),
       AMAX = units::set_units(rep(c(201:203, 201:203), each = 24*2), "W/m2"),
-      SAVG = units::set_units(rep(5.5, 2*3*24*2), "°C"),
-      SMAX = units::set_units(rep(5.5, 2*3*24*2), "°C"),
-      SMIN = units::set_units(rep(5.5, 2*3*24*2), "°C"),
-      TR05 = units::set_units(rep(NA_real_, 2*3*24*2), "°C"),
+      SAVG = units::set_units(rep(5.5, 2*3*24*2), "Celsius"),
+      SMAX = units::set_units(rep(5.5, 2*3*24*2), "Celsius"),
+      SMIN = units::set_units(rep(5.5, 2*3*24*2), "Celsius"),
+      TR05 = units::set_units(rep(NA_real_, 2*3*24*2), "Celsius"),
       check.names = FALSE
     ) |>
     mesonet:::standardize_column_order()
