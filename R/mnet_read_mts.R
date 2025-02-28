@@ -97,7 +97,7 @@ mnet_read_mts <- function(file_path){
                       colClasses = col_classes,
                       header = FALSE) |>
     merge(expected_cols, all = TRUE) |>
-    sort_by(~TIME) |>
+    sort_df("TIME") |>
     set_missing() |>
     set_mts_units() |>
     within({

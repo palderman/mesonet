@@ -223,3 +223,7 @@ calc_tdew <- function(Tair, RH){
     units::set_units("Celsius")
   return(T_dew)
 }
+
+sort_df <- function(df, sort_vars){
+  df[do.call(order, df[sort_vars]),]
+}

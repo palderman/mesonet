@@ -60,7 +60,7 @@ mnet_concatenate <- function(stid = NULL,
     }) |>
     lapply(readRDS) |>
     do.call(rbind.data.frame, args = _) |>
-    sort_by(~list(STID, DATE))
+    sort_df(c("STID", "DATE"))
 
     row.names(rds_df) <- 1:nrow(rds_df)
 
