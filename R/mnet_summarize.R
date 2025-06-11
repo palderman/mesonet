@@ -393,54 +393,61 @@ summarize_across <- function(.data, .cols, .fns, .groups = NULL){
 
   if(length(.cols) == 0) return(NULL)
 
-  data_out <-
-    .data[, .groups] |>
-    unique()
-
-  if(nrow(data_out) == 0){
-    data_out <-
-      data.frame(.x = NA_real_) |>
-      within({.x = NULL})
-  }
-
-  row.names(data_out) <- NULL
-
   if(!is.list(.fns)) .fns <- list(fun = .fns)
 
   if(is.null(names(.fns))){
     names(.fns) <- paste0("fn", seq_along(.fns))
   }
 
-  for(.row in 1:nrow(data_out)){
-    if(is.null(.groups)){
-      .data_sub <- .data
-    }else{
-      # add logic for subsetting data based on group columns
-      .data_sub <- filter_by_groups(.data, data_out[.row, .groups])
-    }
-    for(.col in .cols){
-      for(.fn in names(.fns)){
-        .cname <- paste0(.col, "_", .fn)
-        if(!.cname %in% names(data_out)){
-          data_out[[.cname]] <- .fns[[.fn]](.data_sub[[.col]])
-        }else{
-          data_out[[.cname]][.row] <- .fns[[.fn]](.data_sub[[.col]])
-        }
-      }
+
+  if(is.null(.groups)){
+    .data_sub <-
+      list(.data)
+  }else{
+    .data_sub <-
+      rev(.groups) |>
+      paste0(collapse = "+") |>
+      paste0("~", x = _) |>
+      as.formula() |>
+      split(.data, f = _)
+  }
+
+  new_cols <- expand.grid(.fns = .fns, .cols = .cols, stringsAsFactors = FALSE) |>
+    within({
+      .cname = paste0(.cols, "_", names(.fns))
+    })
+
+  data_out <- vector("list", length = nrow(new_cols) + length(.groups))
+
+  names(data_out) <- c(.groups, new_cols$.cname)
+
+  for(.col in .groups){
+    data_out[[.col]] <-
+      .data_sub |>
+      lapply(\(.x) head(.x[[.col]], 1)) |>
+      unlist() |>
+      unname()
+    if("POSIXct" %in% class(.data_sub[[1]][[.col]])){
+      data_out[[.col]] <- as.POSIXct(data_out[[.col]],
+                                     tz = attr(.data_sub[[1]][[.col]], "tzone"))
+    }else if("Date" %in% class(.data_sub[[1]][[.col]])){
+      data_out[[.col]] <- as.Date(data_out[[.col]])
     }
   }
+
+  for(i in 1:nrow(new_cols)){
+    data_out[[new_cols[i, ".cname"]]] <-
+      .data_sub |>
+      lapply(\(.x) new_cols$.fns[[i]](.x[[new_cols[i, ".cols"]]])) |>
+      unname() |>
+      unlist_units()
+  }
+
+  data_out <- as.data.frame(data_out,
+                            check.names = FALSE,
+                            stringsAsFactors = FALSE)
 
   return(data_out)
-}
-
-filter_by_groups <- function(df, filter_df){
-  ind_list <- vector(mode = "list",
-                     length = length(filter_df))
-  names(ind_list) <- names(filter_df)
-  for(.i in names(filter_df)){
-    ind_list[[.i]] <- df[[.i]] == filter_df[[.i]]
-  }
-  df[Reduce(`&`, ind_list), ]
 }
 
 qc_summary <- function(x, FUN, min_n_obs = 260, ...){
@@ -455,6 +462,12 @@ qc_summary <- function(x, FUN, min_n_obs = 260, ...){
   }
 
   return(value)
+}
+
+unlist_units <- function(x){
+  x_out <- unlist(x)
+  if("units" %in% class(x[[1]])) units(x_out) <- units(x[[1]])
+  x_out
 }
 
 max_count <- function(x, na.rm = FALSE){

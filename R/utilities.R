@@ -227,3 +227,30 @@ calc_tdew <- function(Tair, RH){
 sort_df <- function(df, sort_vars){
   df[do.call(order, df[sort_vars]),]
 }
+
+fast_rbind <- function(df_list){
+
+  df_ncol <- ncol(df_list[[1]])
+
+  df_out <- vector("list", length = df_ncol)
+
+  names(df_out) <- names(df_list[[1]])
+
+  for(i in seq_along(df_out)){
+    df_out[[i]] <-
+      df_list |>
+      lapply(\(.x) .x[[i]]) |>
+      unlist()
+    if("units" %in% class(df_list[[1]][[i]])){
+      units(df_out[[i]]) <- units(df_list[[1]][[i]])
+    }else if("POSIXt" %in% class(df_list[[1]][[i]])){
+      df_out[[i]] <- as.POSIXct(df_out[[i]],
+                                tz = attr(df_list[[1]][[i]], "tzone"))
+    }
+  }
+
+  df_out$DATE <- as.POSIXct(df_out$DATE, tz = "UTC")
+
+  as.data.frame(df_out)
+
+}

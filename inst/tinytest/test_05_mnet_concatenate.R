@@ -101,6 +101,7 @@ expected_subdaily <-
         c(0, .x = _) |>
         diff()
     }
+    RAIN[DATE == min(DATE)] <- units::set_units(NA_real_, units = "mm")
     date = NULL
     Date = NULL
   })

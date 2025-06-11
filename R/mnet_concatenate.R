@@ -59,21 +59,12 @@ mnet_concatenate <- function(stid = NULL,
       mts_to_rds_list(mts_path)
     }) |>
     lapply(readRDS) |>
-    do.call(rbind.data.frame, args = _) |>
+    fast_rbind() |>
     sort_df(c("STID", "DATE"))
 
     row.names(rds_df) <- 1:nrow(rds_df)
 
-    Date <- as.Date(rds_df$DATE + as.difftime(-1, units = "secs"))
-
-    for(stid in unique(rds_df$STID)){
-      for(date in unique(Date)){
-        rds_df$RAIN[rds_df$STID == stid & Date == as.Date(date)] <-
-          rds_df$RAIN[rds_df$STID == stid & Date == as.Date(date)] |>
-            c(0, .x = _) |>
-            diff()
-      }
-    }
+    rds_df$RAIN <- calc_rain(rds_df)
 
   return(rds_df)
 
@@ -88,3 +79,50 @@ mts_to_rds_list <- function(mts_list){
   return(rds_list)
 
 }
+
+calc_rain <- function(rds_df, method = 2){
+
+  # Assumes that data are sorted by STID and DATE
+
+  rain <- vector(mode = "numeric", length = nrow(rds_df))
+
+  if(method == 1){
+    Date <- as.Date(rds_df$DATE + as.difftime(-1, units = "secs"))
+    for(stid in unique(rds_df$STID)){
+      for(date in unique(Date)){
+        rain[rds_df$STID == stid & Date == as.Date(date)] <-
+          rds_df$RAIN[rds_df$STID == stid & Date == as.Date(date)] |>
+          c(0, .x = _) |>
+          diff()
+      }
+    }
+  }else if(method == 2){
+    for(stid in unique(rds_df$STID)){
+      stid_index <- with(rds_df, STID == stid)
+      r_index <- with(rds_df, order(DATE[stid_index]))
+      rain[stid_index][r_index] <-
+        with(rds_df,{
+          rds_df$RAIN[stid_index][r_index] |>
+            c(rep(NA_real_, 24*60/5 - 1),
+              x = _,
+              NA_real_) |>
+            matrix(nrow = 24*60/5) |>
+            apply(2, \(.x) diff(c(0,.x))) |>
+            as.vector() |>
+            tail(-(24*60/5 - 1)) |>
+            head(-1)
+        })
+    }
+    if("STID" %in% colnames(rds_df)){
+    }else{
+      r_index <- with(rds_df, order(DATE))
+    }
+  }
+  if("units" %in% class(rds_df$RAIN)){
+    units(rain) <- units(rds_df$RAIN)
+  }
+  rain
+}
+
+
+
