@@ -117,7 +117,7 @@ ref_df <- data.frame(
     WDSD = units::set_units(12.6, "degrees")
     WSSD = units::set_units(1.3, "m/s")
     WMAX = units::set_units(8.7, "m/s")
-    RAIN = units::set_units(c(288,rep(1, 287+288*2)), "mm")
+    RAIN = units::set_units(c(NA_real_,rep(1, 287+288*2)), "mm")
     PRES = units::set_units(97.939, "kPa")
     SRAD = units::set_units(0, "W/m^2")
     TA9M = units::set_units(14.1, "Celsius")
