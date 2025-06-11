@@ -19,11 +19,17 @@
 #'
 mnet_calc_vwc <- function(data, site_info = NULL){
 
-  stopifnot(any(c("TR05", "TR25", "TR60", "TR75") %in% colnames(data)))
+  stopifnot(any(c("TR05", "TR25", "TR60", "TR75") %in% colnames(data) |
+                  c("MP05", "MP25", "MP60", "MP75") %in% colnames(data)))
 
-  stopifnot("STID" %in% colnames(data))
+  stopifnot(any(c("STID", "stid") %in% colnames(data)))
 
-  data <- mnet_calc_mp(data)
+  colnames(data) <- colnames(data) |> toupper()
+
+  if(any((! c("MP05", "MP25", "MP60", "MP75") %in% colnames(data)) &
+         c("TR05", "TR25", "TR60", "TR75") %in% colnames(data))){
+    data <- mnet_calc_mp(data)
+  }
 
   mp_cols <-
     colnames(data) |>
