@@ -7,8 +7,8 @@
 #'
 #' @inheritParams mnet_requisition_list
 #'
-##' @param delay a delay in milliseconds specifying the time interval between
-##'  file downloads so as to not overwhelm the Oklahoma Mesonet data server
+# @param delay a delay in milliseconds specifying the time interval between
+#  file downloads so as to not overwhelm the Oklahoma Mesonet data server
 #'
 #' @param root_url the root url from which to download MTS files (see
 #'  \link[mesonet]{mnet_root_url})

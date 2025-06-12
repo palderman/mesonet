@@ -45,9 +45,6 @@ if not found will prompt the user to create one.}
 
 \item{silent}{whether to suppress output to terminal (TRUE) or allow output
 to terminal (FALSE)}
-
-\item{delay}{a delay in milliseconds specifying the time interval between
-file downloads so as to not overwhelm the Oklahoma Mesonet data server}
 }
 \description{
 Downloads Mesonet Time Series (MTS) files from the Oklahoma Mesonet for
