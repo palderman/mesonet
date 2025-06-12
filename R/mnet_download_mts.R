@@ -7,8 +7,8 @@
 #'
 #' @inheritParams mnet_requisition_list
 #'
-#' @param delay a delay in milliseconds specifying the time interval between
-#'  file downloads so as to not overwhelm the Oklahoma Mesonet data server
+##' @param delay a delay in milliseconds specifying the time interval between
+##'  file downloads so as to not overwhelm the Oklahoma Mesonet data server
 #'
 #' @param root_url the root url from which to download MTS files (see
 #'  \link[mesonet]{mnet_root_url})
@@ -19,12 +19,13 @@
 mnet_download_mts <- function(stid,
                               start_date = NULL,
                               end_date = NULL,
-                              delay = 1000,
                               root_url = mnet_root_url(),
                               site_info = NULL,
                               file_cache = NULL,
                               ask = !silent,
                               silent = FALSE){
+
+  delay <- 500
 
   file_urls <-
     mnet_requisition_list(stid = stid,

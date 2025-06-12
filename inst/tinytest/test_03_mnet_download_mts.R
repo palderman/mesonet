@@ -86,7 +86,6 @@ test_scenario |>
     mesonet::mnet_download_mts(stid = stid,
                                start_date = start,
                                end_date = end,
-                               delay = 0,
                                root_url = test_root_url,
                                file_cache = test_local_cache,
                                site_info = test_site_info,
@@ -125,7 +124,7 @@ system.time({
     })
 })["elapsed"]
 
-expect_true(actual_delay > 1)
+expect_true(actual_delay > 0.5)
 
 unlink(test_remote_cache, recursive = TRUE)
 

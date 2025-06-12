@@ -8,7 +8,6 @@ mnet_download_mts(
   stid,
   start_date = NULL,
   end_date = NULL,
-  delay = 1000,
   root_url = mnet_root_url(),
   site_info = NULL,
   file_cache = NULL,
@@ -30,9 +29,6 @@ Central Standard Time (i.e. "America/Costa_Rica") zone as a Date or POSIXt
 object or a string with the format YYYY-MM-DD, where YYYY is the four-digit
 year, MM is the two-digit numeric month and DD is the two-digit day of month}
 
-\item{delay}{a delay in milliseconds specifying the time interval between
-file downloads so as to not overwhelm the Oklahoma Mesonet data server}
-
 \item{root_url}{the root url from which to download MTS files (see
 \link[mesonet]{mnet_root_url})}
 
@@ -49,6 +45,9 @@ if not found will prompt the user to create one.}
 
 \item{silent}{whether to suppress output to terminal (TRUE) or allow output
 to terminal (FALSE)}
+
+\item{delay}{a delay in milliseconds specifying the time interval between
+file downloads so as to not overwhelm the Oklahoma Mesonet data server}
 }
 \description{
 Downloads Mesonet Time Series (MTS) files from the Oklahoma Mesonet for
