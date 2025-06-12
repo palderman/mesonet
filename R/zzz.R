@@ -26,7 +26,7 @@
     "                   * #####     *",
     "                      *###  *",
     "                         * ",
-    paste0("This is version ", packageVersion(pkgname),
+    paste0("This is version ", utils::packageVersion(pkgname),
            " of ", pkgname),
     "",
     "Contact the package maintainer (Phillip Alderman <phillip.alderman@okstate.edu>) for any queries regarding the R package.",
