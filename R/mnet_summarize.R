@@ -408,7 +408,7 @@ summarize_across <- function(.data, .cols, .fns, .groups = NULL){
       rev(.groups) |>
       paste0(collapse = "+") |>
       paste0("~", x = _) |>
-      as.formula() |>
+      stats::as.formula() |>
       split(.data, f = _)
   }
 
@@ -424,7 +424,7 @@ summarize_across <- function(.data, .cols, .fns, .groups = NULL){
   for(.col in .groups){
     data_out[[.col]] <-
       .data_sub |>
-      lapply(\(.x) head(.x[[.col]], 1)) |>
+      lapply(\(.x) utils::head(.x[[.col]], 1)) |>
       unlist() |>
       unname()
     if("POSIXct" %in% class(.data_sub[[1]][[.col]])){
@@ -560,7 +560,11 @@ wdir_to_cardinal <- function(wdir){
 }
 
 calc_pdir <- function(wdir, na.rm = TRUE){
+
+  if(all(is.na(wdir))) return(NA_integer_)
+
   if(na.rm) wdir <- wdir[!is.na(wdir)]
+
   wdir_to_cardinal(wdir) |>
     table() |>
     sort(decreasing = TRUE) |>
@@ -569,6 +573,8 @@ calc_pdir <- function(wdir, na.rm = TRUE){
 }
 
 calc_pdir_freq <- function(wdir, na.rm = TRUE){
+
+  if(all(is.na(wdir))) return(NA_integer_)
 
   if(na.rm) wdir <- wdir[!is.na(wdir)]
 
@@ -581,6 +587,8 @@ calc_pdir_freq <- function(wdir, na.rm = TRUE){
 }
 
 calc_sdir_freq <- function(wdir, na.rm = TRUE){
+
+  if(all(is.na(wdir))) return(NA_integer_)
 
   if(na.rm) wdir <- wdir[!is.na(wdir)]
 
@@ -597,7 +605,11 @@ calc_sdir_freq <- function(wdir, na.rm = TRUE){
 }
 
 calc_sdir <- function(wdir, na.rm = TRUE){
+
+  if(all(is.na(wdir))) return(NA_integer_)
+
   if(na.rm) wdir <- wdir[!is.na(wdir)]
+
   wdir_to_cardinal(wdir) |>
     table() |>
     sort(decreasing = TRUE) |>
