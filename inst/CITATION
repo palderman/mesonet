@@ -19,6 +19,21 @@ bibentry(bibtype = "Manual",
          "https://CRAN.R-project.org/package=mesonet.")
 )
 
+bibentry(bibtype = "Misc",
+         title = "Standard Mesonet Observations",
+         author = c(person("Oklahoma Mesonet")),
+         year = year,
+         publisher = "The Oklahoma Mesonet",
+         doi = "10.15763/dbs.mesonet.standard",
+         url = "https://mesonet.org",
+         textVersion = paste("Oklahoma Mesonet.",
+         paste0(year, "."),
+         "Standard Mesonet Observations.",
+         "The Oklahoma Mesonet.",
+         "DOI: 10.15763/dbs.mesonet.standard.",
+         "https://mesonet.org.")
+)
+
 bibentry(bibtype = "Article",
          title = "The {Oklahoma Mesonet: A} Technical Overview",
          author = c(
@@ -80,3 +95,4 @@ bibentry(bibtype = "Article",
          " J. Atmos. Oceanic Technol., 24, 301–321,",
          " https://doi.org/10.1175/JTECH1976.1.")
 )
+
