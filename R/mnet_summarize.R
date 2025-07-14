@@ -500,9 +500,9 @@ gt0_count <- function(x, na.rm = FALSE){
 
 srad_sum <- function(x, na.rm = FALSE, interval = as.difftime(1, units = "days")){
   if(any(!is.na(x))){
-    mean(units::set_units(x, "megajoule/m2/d"), na.rm = na.rm)*units::as_units(interval)
+    mean(units::set_units(x, "megajoule/m2/d"), na.rm = na.rm)
   }else{
-    units::set_units(NA_real_, "megajoule/m2/d")*units::as_units(interval)
+    units::set_units(NA_real_, "megajoule/m2/d")
   }
 }
 
