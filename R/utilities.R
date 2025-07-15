@@ -242,7 +242,8 @@ fast_rbind <- function(df_list){
       lapply(\(.x) .x[[i]]) |>
       unlist()
     if("units" %in% class(df_list[[1]][[i]])){
-      units(df_out[[i]]) <- units(df_list[[1]][[i]])
+      attr(df_out[[i]], "units") <- attr(df_list[[1]][[i]], "units")
+      class(df_out[[i]]) <- "units"
     }else if("POSIXt" %in% class(df_list[[1]][[i]])){
       df_out[[i]] <- as.POSIXct(df_out[[i]],
                                 tz = attr(df_list[[1]][[i]], "tzone"))

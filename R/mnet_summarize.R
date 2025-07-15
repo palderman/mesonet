@@ -466,7 +466,10 @@ qc_summary <- function(x, FUN, min_n_obs = 260, ...){
 
 unlist_units <- function(x){
   x_out <- unlist(x)
-  if("units" %in% class(x[[1]])) units(x_out) <- units(x[[1]])
+  if("units" %in% class(x[[1]])){
+    attr(x_out, "units") <- attr(x[[1]], "units")
+    class(x_out) <- "units"
+  }
   x_out
 }
 

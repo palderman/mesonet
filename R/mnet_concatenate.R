@@ -119,7 +119,8 @@ calc_rain <- function(rds_df, method = 2){
     }
   }
   if("units" %in% class(rds_df$RAIN)){
-    units(rain) <- units(rds_df$RAIN)
+    attr(rain, "units") <- attr(rds_df$RAIN, "units")
+    class(rain) <- "units"
   }
   rain
 }
