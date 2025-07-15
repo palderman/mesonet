@@ -1,6 +1,6 @@
 ## Test environments
 
-* local Ubuntu 22.04.5 LTS, R 4.5.0, GCC
+* local Ubuntu 22.04.5 LTS, R 4.5.1, GCC
 * win-builder (devel and release)
 * mac-builder (release)
 
