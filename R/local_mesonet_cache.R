@@ -1,5 +1,9 @@
-local_mesonet_cache <- function(mesonet_cache_dir = NULL,
+local_mesonet_cache <- function(mesonet_cache_dir = options()[[".mesonet_cache"]],
                                 ask = TRUE){
+
+  if(is.null(mesonet_cache_dir)){
+    mesonet_cache_dir <- options()[[".mesonet_cache"]]
+  }
 
   if(is.null(mesonet_cache_dir)){
     mesonet_cache_dir <-
@@ -8,6 +12,7 @@ local_mesonet_cache <- function(mesonet_cache_dir = NULL,
   }
 
   if(dir.exists(mesonet_cache_dir)){
+    options(.mesonet_cache = mesonet_cache_dir)
     return(mesonet_cache_dir)
   }else if(ask){
     msg <- c(
@@ -31,6 +36,8 @@ local_mesonet_cache <- function(mesonet_cache_dir = NULL,
       file.path(".mesonet_cache")
     dir.create(mesonet_cache_dir, recursive = TRUE, showWarnings = FALSE)
   }
+
+  options(.mesonet_cache = mesonet_cache_dir)
 
   mesonet_cache_dir
 

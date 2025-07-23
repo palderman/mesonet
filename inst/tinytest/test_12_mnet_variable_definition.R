@@ -83,3 +83,47 @@ actual <- mesonet::mnet_variable_definition("MAX$")
 row.names(actual) <- 1:nrow(actual)
 
 expect_equal(actual, expected)
+
+
+expected <-
+  data.frame(ID = c("2AVG", "2MAX", "2MIN", "2DEV", "2BAD"),
+             `Variable Name` = c("Average Wind Speed at 2m",
+                                 "Maximum 2m Wind Speed",
+                                 "Minimum 2m Wind Speed",
+                                 "Standard Deviation of Wind Speed at 2m",
+                                 "Number of Errant 2m Wind Speed Observations"),
+             Unit = c("meters per second",
+                      "meters per second",
+                      "meters per second",
+                      "meters per second",
+                      "number of 5-minute observations"),
+             check.names = FALSE)
+
+actual <- mesonet::mnet_variable_definition("^2",
+                                            columns = c("ID", "Variable Name", "Unit"))
+
+row.names(actual) <- 1:nrow(actual)
+
+expect_equal(actual, expected)
+
+expected <-
+  data.frame(ID = c("2AVG", "2MAX", "2MIN", "2DEV", "2BAD"),
+             Unit = c("meters per second",
+                      "meters per second",
+                      "meters per second",
+                      "meters per second",
+                      "number of 5-minute observations"),
+             Description = c("Average of all 5-minute 2m wind speed observations each day.",
+                             "Highest 5-minute averaged 2m wind speed measurement each day.",
+                             "Lowest 5-minute averaged 2m wind speed measurement each day.",
+                             "Standard deviation of the wind speed at 2m during a 5-minute observation period.",
+                             "Number of errant 5-minute 2m wind speed observations each day."),
+             check.names = FALSE)
+
+actual <- mesonet::mnet_variable_definition("^2",
+                                            columns = c("ID", "Unit", "Description"))
+
+row.names(actual) <- 1:nrow(actual)
+
+expect_equal(actual, expected)
+

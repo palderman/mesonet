@@ -96,7 +96,7 @@ dir.create(test_local_cache,
            showWarnings = FALSE,
            recursive = TRUE)
 
-mesonet:::create_test_site_info(test_local_cache)
+mesonet::mnet_test_cache(test_local_cache, site_info = TRUE)
 
 #########################################
 # test mnet_retrieve() all from download

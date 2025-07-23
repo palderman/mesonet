@@ -43,6 +43,22 @@
 #' |WSSD   |Wind Speed Standard Deviation               |meters per second       |Standard deviation of wind speed during the 5-minute interval.                                                                                                                                                         |
 #' |WVEC   |Wind Vector                                 |meters per second       |5-minute averaged wind velocity (speed and direction accounted for) at 10m.                                                                                                                                            |
 #'
+#' @examples
+#'
+#' \dontshow{
+#'   mesonet_cache_dir <- mnet_test_cache(rds_files = TRUE)
+#'   previous_options <- options(.mesonet_cache = mesonet_cache_dir)
+#' }
+#'
+#' mnet_concatenate(stid = "ACME",
+#'                  start_date = "1994-01-01",
+#'                  end_date = "1994-01-05")
+#'
+#' \dontshow{
+#'   unlink(mesonet_cache_dir, recursive = TRUE)
+#'   options(previous_options)
+#' }
+#'
 mnet_concatenate <- function(stid = NULL,
                              start_date = NULL,
                              end_date = NULL,

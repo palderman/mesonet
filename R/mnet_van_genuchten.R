@@ -18,6 +18,10 @@
 #'
 #' @return a vector of volumetric soil water content values
 #'
+#' @examples
+#'
+#' mnet_van_genuchten(-100, 0.034, 0.41, 0.273, 1.39)
+#'
 mnet_van_genuchten <- function (MP, WCr, WCs, a, n){
 
   return_units <- FALSE

@@ -6,7 +6,7 @@ site_info_path <-
 
 site_info_path |>
   dirname() |>
-  mesonet:::create_test_site_info()
+  mesonet::mnet_test_cache(site_info = TRUE)
 
 file_cache <-
   tempdir() |>

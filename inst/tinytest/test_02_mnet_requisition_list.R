@@ -7,27 +7,22 @@ test_cache <-
 test_cache |>
   dir.create(recursive = TRUE, showWarnings = FALSE)
 
-site_info <-
-  data.frame(
-    stid = c("STIL", "ALTU", "LAHO"),
-    datc = as.POSIXct("1994-01-01", tz = "UTC"),
-    datd = as.POSIXct("2099-12-31", tz = "UTC")
-  )
+mesonet::mnet_test_cache(test_cache, site_info = TRUE)
 
 # one stid multiple dates
 actual_req_list <-
   mesonet::mnet_requisition_list(
-    stid = "STIL",
+    stid = "ACME",
     start_date = "1994-01-01",
     end_date = "1994-01-05",
     file_cache = test_cache)
 
 expect_equal(actual_req_list$mts_rel_path,
-             paste0("mts/1994/01/0", 1:5,"/1994010", 1:5, "stil.mts"))
+             paste0("mts/1994/01/0", 1:5,"/1994010", 1:5, "acme.mts"))
 
 
 # multiple stid single dates
-sites <- c("STIL", "LAHO", "ALTU") |>
+sites <- c("ACME", "ADAX", "ALTU") |>
   sort()
 
 actual_req_list <-
@@ -42,7 +37,7 @@ expect_equal(actual_req_list$mts_rel_path,
 
 
 # multiple stid multiple dates
-sites <- c("STIL", "LAHO", "ALTU") |>
+sites <- c("ACME", "ADAX", "ALTU") |>
   sort()
 
 start_dates <- c("1994-01-01", "1994-01-03", "1994-01-05")

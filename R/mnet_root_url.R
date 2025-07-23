@@ -7,6 +7,15 @@
 #'  Fort Cobb watershed, or "ars" for the USDA ARS station network in the
 #'  Little Washita watershed
 #'
+#' @return a character string with the root URL for the desired Mesonet data
+#'  source
+#'
+#' @examples
+#'
+#' mnet_root_url()
+#'
+#' mnet_root_url("fcars")
+#'
 mnet_root_url <- function(data_source = "mesonet"){
 
   stopifnot(data_source %in% c("mesonet", "fcars", "ars"))

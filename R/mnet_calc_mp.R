@@ -1,7 +1,7 @@
 #' Calculate soil matric potential for Oklahoma Mesonet data
 #'
 #' Calculate soil matric potential from delta-T soil temperature change data
-#'  from the Oklahoma Mesonet using the equation from Zhang et al (2019): MP = 2083/(1+ exp(-3.35*(Tref-3.17)));
+#'  from the Oklahoma Mesonet using the equation from Zhang et al (2019) <doi:10.2136/sssaj2018.12.0481>: MP = 2083/(1+ exp(-3.35*(Tref-3.17)))
 #'  where Tref is the measured delta-T data
 #'
 #' @export
@@ -11,6 +11,12 @@
 #'
 #' @return a data frame containing new columns with matric potential (kPa) for each
 #'  column of delta-T temperature change data.
+#'
+#' @examples
+#'
+#' mesonet_data <- data.frame(TR05 = 3.17, TR25 = 2.17, TR60 = 2.0, TR75 = 1.0)
+#'
+#' mnet_calc_mp(mesonet_data)
 #'
 mnet_calc_mp <- function(data){
 

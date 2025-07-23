@@ -75,3 +75,20 @@ variables including column ID, name, unit and description:\tabular{llll}{
 \description{
 Concatenate subdaily Oklahoma Mesonet records for multiple dates or stations.
 }
+\examples{
+
+\dontshow{
+  mesonet_cache_dir <- mnet_test_cache(rds_files = TRUE)
+  previous_options <- options(.mesonet_cache = mesonet_cache_dir)
+}
+
+mnet_concatenate(stid = "ACME",
+                 start_date = "1994-01-01",
+                 end_date = "1994-01-05")
+
+\dontshow{
+  unlink(mesonet_cache_dir, recursive = TRUE)
+  options(previous_options)
+}
+
+}

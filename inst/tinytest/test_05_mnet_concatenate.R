@@ -58,37 +58,7 @@ ref_df <- data.frame(
 
 # Write reference dataset to temporary .mesonet_cache
 
-test_cache <-
-  tempdir() |>
-  file.path(".mesonet_cache")
-
-test_cache |>
-  dir.create(recursive = TRUE, showWarnings = FALSE)
-
-all_dates <-
-  ref_df$DATE |>
-  as.Date() |>
-  unique()
-
-for(i in seq_along(all_dates)){
-
-  date_file_name <-
-    all_dates[i] |>
-    format("rds/%Y/%m/%d/%Y%m%dacme.rds") |>
-    paste0(test_cache, "/", .x = _) |>
-    gsub("/", .Platform$file.sep, x = _)
-
-  date_file_name |>
-    dirname() |>
-    dir.create(recursive = TRUE, showWarnings = FALSE)
-
-  ref_df |>
-    with({
-      ref_df[as.Date(DATE) == all_dates[i],]
-    }) |>
-    saveRDS(date_file_name)
-
-}
+test_cache <- mesonet::mnet_test_cache(rds_files = TRUE)
 
 # Convert reference dataset to expected concatenated
 expected_subdaily <-
@@ -107,8 +77,6 @@ expected_subdaily <-
   })
 
 # Use mnet_concatenate() to read reference data from .mesonet_cache
-mesonet:::create_test_site_info(test_cache)
-
 actual_subdaily <- mesonet::mnet_concatenate(stid = "ACME",
                                              start_date = "1994-01-01",
                                              end_date = "1994-01-05",

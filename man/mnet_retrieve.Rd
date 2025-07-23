@@ -87,3 +87,20 @@ variables including column ID, name, unit and description:\tabular{llll}{
 Retrieves data from the Oklahoma Mesonet for
  a given set of station identifiers and date range
 }
+\examples{
+
+\dontshow{
+  mesonet_cache_dir <- mnet_test_cache(rds_files = TRUE)
+  previous_options <- options(.mesonet_cache = mesonet_cache_dir)
+}
+
+mnet_retrieve(stid = "ACME",
+                 start_date = "1994-01-01",
+                 end_date = "1994-01-05")
+
+\dontshow{
+  unlink(mesonet_cache_dir, recursive = TRUE)
+  options(previous_options)
+}
+
+}

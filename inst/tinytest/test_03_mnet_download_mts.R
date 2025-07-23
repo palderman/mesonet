@@ -108,7 +108,7 @@ file_contents <-
 
 expect_equal(file_contents, test_files$rel_path)
 
-file.remove(file.path(test_local_cache, test_files$rel_path))
+unlink(file.path(test_local_cache, test_files$rel_path))
 
 actual_delay <-
 system.time({

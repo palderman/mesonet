@@ -51,3 +51,17 @@ unit and description for each column.\tabular{llll}{
 \description{
 Read an Oklahoma Mesonet time series file
 }
+\examples{
+
+# Create example file cache
+local_cache <- mnet_test_cache(mts_files = TRUE)
+
+example_file <- file.path(local_cache, "mts/1994/01/01/19940101acme.mts")
+
+# Read data from example file
+mnet_read_mts(example_file)
+
+# Clean up example file cache
+unlink(local_cache, recursive = TRUE)
+
+}

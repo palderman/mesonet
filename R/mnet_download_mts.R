@@ -16,6 +16,17 @@
 #' @param silent whether to suppress output to terminal (TRUE) or allow output
 #'  to terminal (FALSE)
 #'
+#' @return invisibly returns a character vector of the URLs for the downloaded
+#'  files
+#'
+#' @examples
+#'
+#' \dontrun{
+#' mnet_download_mts("ACME",
+#'                   start_date = "1994-01-01",
+#'                   end_date = "1994-01-05")
+#' }
+#'
 mnet_download_mts <- function(stid,
                               start_date = NULL,
                               end_date = NULL,

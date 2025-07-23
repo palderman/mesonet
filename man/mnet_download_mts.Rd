@@ -46,7 +46,20 @@ if not found will prompt the user to create one.}
 \item{silent}{whether to suppress output to terminal (TRUE) or allow output
 to terminal (FALSE)}
 }
+\value{
+invisibly returns a character vector of the URLs for the downloaded
+ files
+}
 \description{
 Downloads Mesonet Time Series (MTS) files from the Oklahoma Mesonet for
  a given set of station identifiers and date range
+}
+\examples{
+
+\dontrun{
+mnet_download_mts("ACME",
+                  start_date = "1994-01-01",
+                  end_date = "1994-01-05")
+}
+
 }

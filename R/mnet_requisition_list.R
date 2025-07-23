@@ -32,6 +32,25 @@ utils::globalVariables(c("datc", "datd"))
 #'
 #' @param ask whether or not to ask about creating a local Mesonet file cache
 #'
+#' @return a data frame containing paths for the MTS files required for the
+#'  requested stations and dates
+#'
+#' @examples
+#'
+#' \dontshow{
+#' test_cache <- mnet_test_cache()
+#' previous_options <- options(.mesonet_cache = test_cache)
+#' }
+#'
+#' mnet_requisition_list("ACME",
+#'                       start_date = "1994-01-01",
+#'                       end_date = "1994-01-05")
+#'
+#' \dontshow{
+#' unlink(test_cache)
+#' options(previous_options)
+#' }
+#'
 mnet_requisition_list <- function(stid = NULL,
                                   start_date = NULL,
                                   end_date = NULL,

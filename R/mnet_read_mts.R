@@ -48,6 +48,19 @@ utils::globalVariables(c("RELH", "TAIR"))
 #' |WSSD   |Wind Speed Standard Deviation               |meters per second       |Standard deviation of wind speed during the 5-minute interval.                                                                                                                                            |
 #' |WVEC   |Wind Vector                                 |meters per second       |5-minute averaged wind velocity (speed and direction accounted for) at 10m.                                                                                                                               |
 #'
+#' @examples
+#'
+#' # Create example file cache
+#' local_cache <- mnet_test_cache(mts_files = TRUE)
+#'
+#' example_file <- file.path(local_cache, "mts/1994/01/01/19940101acme.mts")
+#'
+#' # Read data from example file
+#' mnet_read_mts(example_file)
+#'
+#' # Clean up example file cache
+#' unlink(local_cache, recursive = TRUE)
+#'
 mnet_read_mts <- function(file_path){
 
   expected_cols <- data.frame(

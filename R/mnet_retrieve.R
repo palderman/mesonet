@@ -12,6 +12,22 @@ utils::globalVariables(c("mts_path", "mts_rel_path"))
 #'
 #' @inherit mnet_concatenate
 #'
+#' @examples
+#'
+#' \dontshow{
+#'   mesonet_cache_dir <- mnet_test_cache(rds_files = TRUE)
+#'   previous_options <- options(.mesonet_cache = mesonet_cache_dir)
+#' }
+#'
+#' mnet_retrieve(stid = "ACME",
+#'                  start_date = "1994-01-01",
+#'                  end_date = "1994-01-05")
+#'
+#' \dontshow{
+#'   unlink(mesonet_cache_dir, recursive = TRUE)
+#'   options(previous_options)
+#' }
+#'
 mnet_retrieve <- function(stid,
                           start_date = NULL,
                           end_date = NULL,

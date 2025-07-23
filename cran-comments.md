@@ -1,3 +1,9 @@
+## Changes in response to feedback from previous CRAN review:
+
+* Added url for Oklahoma Mesonet <https://mesonet.org/> in DESCRIPTION
+* Confirmed/added \value{} and \examples{} for all exported functions
+* Created new function to generate example data for running tests/examples
+
 ## Test environments
 
 * local Ubuntu 22.04.5 LTS, R 4.5.1, GCC

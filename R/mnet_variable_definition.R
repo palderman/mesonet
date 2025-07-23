@@ -5,12 +5,24 @@
 #' Provide definition of a requested set of Mesonet variables including (by
 #'  default) the standard variable identifier (ID), name, unit, and description.
 #'
-#' @param id a string or regular expression to use for retrieving definitions
+#' @param id a string or \link[base]{regular expression} to use for retrieving definitions
 #'   of Mesonet variables
 #'
 #' @param columns a character vector of columns to include in the
 #'  output. Possible values include any combination of "ID", "Variable Name",
-#'   "Unit" or "Description"
+#'  "Unit" or "Description"
+#'
+#' @returns a data frame with Mesonet variable definintions filtered by the \code{id}
+#'  argument
+#'
+#' @examples
+#'
+#' mnet_variable_definition("RAIN")
+#'
+#' mnet_variable_definition("^2")
+#'
+#' mnet_variable_definition("^2",
+#'                          columns = c("ID", "Variable Name", "Unit"))
 #'
 #' @export
 #'

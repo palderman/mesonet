@@ -27,3 +27,22 @@ Calculate soil volumetric water content from delta-T soil temperature change dat
  corresponding volumetric water content using parameters provided by
  \link[mesonet]{mnet_site_info}.
 }
+\examples{
+
+\dontshow{
+  mesonet_cache_dir <- mnet_test_cache(site_info = TRUE)
+  previous_options <- options(.mesonet_cache = mesonet_cache_dir)
+}
+
+# Create example dataset
+mesonet_data <- data.frame(STID = "ACME", DATE = as.POSIXct("2025-01-01"),
+                           TR05 = 3.17, TR25 = 2.17, TR60 = 2.0, TR75 = 1.0)
+
+mnet_calc_vwc(mesonet_data)
+
+\dontshow{
+  unlink(mesonet_cache_dir, recursive = TRUE)
+  options(previous_options)
+}
+
+}

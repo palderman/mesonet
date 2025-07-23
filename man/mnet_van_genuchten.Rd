@@ -25,3 +25,8 @@ a vector of volumetric soil water content values
 \description{
 Calculate volumetric soil water content using the van Genuchten curve
 }
+\examples{
+
+mnet_van_genuchten(-100, 0.034, 0.41, 0.273, 1.39)
+
+}

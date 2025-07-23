@@ -82,6 +82,20 @@ utils::globalVariables("stid")
 #' |datc     |Date Commissioned                      |
 #' |datd     |Date De-Commissioned                   |
 #'
+#' @examples
+#'
+#' \dontshow{
+#'   mesonet_cache_dir <- mnet_test_cache(site_info = TRUE)
+#'   previous_options <- options(.mesonet_cache = mesonet_cache_dir)
+#' }
+#'
+#' mnet_site_info()
+#'
+#' \dontshow{
+#'   unlink(mesonet_cache_dir, recursive = TRUE)
+#'   options(previous_options)
+#' }
+#'
 mnet_site_info <- function(url = "https://api.mesonet.org/index.php/export/station_location_soil_information",
                            file_cache = NULL,
                            clear_cache = FALSE){

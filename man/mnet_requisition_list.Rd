@@ -38,7 +38,28 @@ if not found will prompt the user to create one.}
 
 \item{ask}{whether or not to ask about creating a local Mesonet file cache}
 }
+\value{
+a data frame containing paths for the MTS files required for the
+ requested stations and dates
+}
 \description{
 Calculate a requisition list of Mesonet Time Series (MTS) files from the
   Oklahoma Mesonet for given stations and dates
+}
+\examples{
+
+\dontshow{
+test_cache <- mnet_test_cache()
+previous_options <- options(.mesonet_cache = test_cache)
+}
+
+mnet_requisition_list("ACME",
+                      start_date = "1994-01-01",
+                      end_date = "1994-01-05")
+
+\dontshow{
+unlink(test_cache)
+options(previous_options)
+}
+
 }

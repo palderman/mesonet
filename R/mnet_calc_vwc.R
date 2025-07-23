@@ -17,6 +17,24 @@
 #' @return a data frame containing new columns with volumetric water content for
 #'  each column of delta-T temperature change data.
 #'
+#' @examples
+#'
+#' \dontshow{
+#'   mesonet_cache_dir <- mnet_test_cache(site_info = TRUE)
+#'   previous_options <- options(.mesonet_cache = mesonet_cache_dir)
+#' }
+#'
+#' # Create example dataset
+#' mesonet_data <- data.frame(STID = "ACME", DATE = as.POSIXct("2025-01-01"),
+#'                            TR05 = 3.17, TR25 = 2.17, TR60 = 2.0, TR75 = 1.0)
+#'
+#' mnet_calc_vwc(mesonet_data)
+#'
+#' \dontshow{
+#'   unlink(mesonet_cache_dir, recursive = TRUE)
+#'   options(previous_options)
+#' }
+#'
 mnet_calc_vwc <- function(data, site_info = NULL){
 
   stopifnot(any(c("TR05", "TR25", "TR60", "TR75") %in% colnames(data) |

@@ -12,6 +12,17 @@ for the Oklahoma Mesonet, "fcars" for the USDA ARS station network in the
 Fort Cobb watershed, or "ars" for the USDA ARS station network in the
 Little Washita watershed}
 }
+\value{
+a character string with the root URL for the desired Mesonet data
+ source
+}
 \description{
 Root url for Oklahoma Mesonet Time Series files
+}
+\examples{
+
+mnet_root_url()
+
+mnet_root_url("fcars")
+
 }

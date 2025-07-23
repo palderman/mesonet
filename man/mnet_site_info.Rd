@@ -88,3 +88,18 @@ Variable descriptions for Mesonet site and soil information.\tabular{ll}{
    datd \tab Date De-Commissioned \cr
 }
 }
+\examples{
+
+\dontshow{
+  mesonet_cache_dir <- mnet_test_cache(site_info = TRUE)
+  previous_options <- options(.mesonet_cache = mesonet_cache_dir)
+}
+
+mnet_site_info()
+
+\dontshow{
+  unlink(mesonet_cache_dir, recursive = TRUE)
+  options(previous_options)
+}
+
+}

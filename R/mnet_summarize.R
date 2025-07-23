@@ -142,6 +142,30 @@ utils::globalVariables("TAIR_avg")
 #' |WSMXO  |Maximum Wind Speed Observation Number                                     |5-minute observation number      |Daily 5-minute observation number that measured maximum wind speed at 10m each day.                                                                                                                                      |
 #' |WSPD   |Average Wind Speed                                                        |meters per second                |Average of all 5-minute wind speed observations each day.                                                                                                                                                                |
 #'
+#' @examples
+#'
+#' \dontshow{
+#'   mesonet_cache_dir <- mnet_test_cache(rds_files = TRUE)
+#'   previous_options <- options(.mesonet_cache = mesonet_cache_dir)
+#' }
+#'
+#' # Retrieve some data to summarize:
+#' mesonet_data <- mnet_retrieve(stid = "ACME",
+#'                               start_date = "1994-01-01",
+#'                               end_date = "1994-01-05")
+#'
+#' # Interval is 1 day by default:
+#' mnet_summarize(mesonet_data)
+#'
+#' # Summarize to hourly:
+#' mnet_summarize(mesonet_data,
+#'                interval = "1 hour")
+#'
+#' \dontshow{
+#'   unlink(mesonet_cache_dir, recursive = TRUE)
+#'   options(previous_options)
+#' }
+#'
 #' @export
 #'
 mnet_summarize <- function(sub_daily,
