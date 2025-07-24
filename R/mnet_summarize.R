@@ -151,8 +151,8 @@ utils::globalVariables("TAIR_avg")
 #'
 #' # Retrieve some data to summarize:
 #' mesonet_data <- mnet_retrieve(stid = "ACME",
-#'                               start_date = "1994-01-01",
-#'                               end_date = "1994-01-05")
+#'                               start_date = "1994-01-02",
+#'                               end_date = "1994-01-03")
 #'
 #' # Interval is 1 day by default:
 #' mnet_summarize(mesonet_data)

@@ -20,8 +20,8 @@ utils::globalVariables(c("mts_path", "mts_rel_path"))
 #' }
 #'
 #' mnet_retrieve(stid = "ACME",
-#'                  start_date = "1994-01-01",
-#'                  end_date = "1994-01-05")
+#'                  start_date = "1994-01-02",
+#'                  end_date = "1994-01-03")
 #'
 #' \dontshow{
 #'   unlink(mesonet_cache_dir, recursive = TRUE)
