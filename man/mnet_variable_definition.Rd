@@ -18,7 +18,7 @@ output. Possible values include any combination of "ID", "Variable Name",
 "Unit" or "Description"}
 }
 \value{
-a data frame with Mesonet variable definintions filtered by the \code{id}
+a data frame with Mesonet variable definitions filtered by the \code{id}
  argument
 }
 \description{
