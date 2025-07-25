@@ -21,7 +21,7 @@
 #'
 #' @examples
 #'
-#' \dontrun{
+#' \donttest{
 #' mnet_download_mts("ACME",
 #'                   start_date = "1994-01-01",
 #'                   end_date = "1994-01-05")
