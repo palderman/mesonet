@@ -1,11 +1,7 @@
 ## Changes in response to feedback from previous CRAN review:
 
-* Added url for Oklahoma Mesonet <https://mesonet.org/> in DESCRIPTION
-* Confirmed/added \value{} and \examples{} for all exported functions
-* Created new function to generate example data for running tests/examples
-* A final comment by the reviewer mentioned not writing in the users HOME
-  directory by default. All tests/examples clean up after themselves and any
-  function that writes to disk only does so after asking the user. 
+* Replaced \dontrun{} with \donttest{} for the examples in mnet_download_mts.Rd
+  per CRAN reviewer feedback
 
 ## Test environments
 
