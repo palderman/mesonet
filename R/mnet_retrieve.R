@@ -15,7 +15,9 @@ utils::globalVariables(c("mts_path", "mts_rel_path"))
 #' @examples
 #'
 #' \dontshow{
-#'   mesonet_cache_dir <- mnet_test_cache(rds_files = TRUE)
+#'   mesonet_cache_dir <- mnet_test_cache(site_info = TRUE,
+#'                                        mts_files = TRUE,
+#'                                        rds_files = TRUE)
 #'   previous_options <- options(.mesonet_cache = mesonet_cache_dir)
 #' }
 #'

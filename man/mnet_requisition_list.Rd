@@ -49,7 +49,7 @@ Calculate a requisition list of Mesonet Time Series (MTS) files from the
 \examples{
 
 \dontshow{
-test_cache <- mnet_test_cache()
+test_cache <- mnet_test_cache(site_info = TRUE)
 previous_options <- options(.mesonet_cache = test_cache)
 }
 

@@ -38,7 +38,7 @@ utils::globalVariables(c("datc", "datd"))
 #' @examples
 #'
 #' \dontshow{
-#' test_cache <- mnet_test_cache()
+#' test_cache <- mnet_test_cache(site_info = TRUE)
 #' previous_options <- options(.mesonet_cache = test_cache)
 #' }
 #'
@@ -96,7 +96,7 @@ mnet_requisition_list <- function(stid = NULL,
   }
 
   if(is.null(site_info)){
-    site_info <- mnet_site_info() |>
+    site_info <- mnet_site_info(file_cache = mesonet_cache) |>
       with({
         data.frame(stid = stid,
                    datc = datc,

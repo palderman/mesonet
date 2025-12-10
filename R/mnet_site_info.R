@@ -103,7 +103,7 @@ mnet_site_info <- function(url = "https://api.mesonet.org/index.php/export/stati
   mesonet_cache <- local_mesonet_cache(file_cache, ask = FALSE)
 
   csv_file_name <- mesonet_cache |>
-    file.path("station_location_soil_information.csv")
+    file.path("site_info.csv")
 
   rds_file_name <-
     csv_file_name |>
@@ -122,7 +122,10 @@ mnet_site_info <- function(url = "https://api.mesonet.org/index.php/export/stati
   }else{
 
     if(!file.exists(csv_file_name)){
-      utils::download.file(url, csv_file_name, quiet = TRUE)
+      tryCatch(
+        utils::download.file(url, csv_file_name, quiet = TRUE),
+        error = function(e) conditionMessage(e),
+        warning = function(w) conditionMessage(w))
     }
 
     sta_info <- utils::read.csv(csv_file_name, stringsAsFactors = FALSE)

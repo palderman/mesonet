@@ -78,7 +78,8 @@ Concatenate subdaily Oklahoma Mesonet records for multiple dates or stations.
 \examples{
 
 \dontshow{
-  mesonet_cache_dir <- mnet_test_cache(rds_files = TRUE)
+  mesonet_cache_dir <- mnet_test_cache(site_info = TRUE,
+                                       rds_files = TRUE)
   previous_options <- options(.mesonet_cache = mesonet_cache_dir)
 }
 

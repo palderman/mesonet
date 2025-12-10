@@ -20,7 +20,12 @@
 #'  files
 #'
 #' @examples
-#'
+
+#' \dontshow{
+#'   mesonet_cache_dir <- mnet_test_cache(site_info = TRUE)
+#'   previous_options <- options(.mesonet_cache = mesonet_cache_dir)
+#' }
+#'#'
 #' \donttest{
 #' mnet_download_mts("ACME",
 #'                   start_date = "1994-01-01",
@@ -63,7 +68,10 @@ mnet_download_mts <- function(stid,
       }
       for(.i in seq_along(url)){
         if(!file.exists(mts_path[.i])){
-          utils::download.file(url[.i], mts_path[.i], quiet = TRUE)
+          tryCatch(
+            utils::download.file(url[.i], mts_path[.i], quiet = TRUE),
+            error = function(e) conditionMessage(e),
+            warning = function(w) conditionMessage(w))
           Sys.sleep(delay/1000)
         }
         if(!silent) setTxtProgressBar(pb, .i/length(url))

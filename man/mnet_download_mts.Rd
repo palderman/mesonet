@@ -55,7 +55,11 @@ Downloads Mesonet Time Series (MTS) files from the Oklahoma Mesonet for
  a given set of station identifiers and date range
 }
 \examples{
-
+\dontshow{
+  mesonet_cache_dir <- mnet_test_cache(site_info = TRUE)
+  previous_options <- options(.mesonet_cache = mesonet_cache_dir)
+}
+#'
 \donttest{
 mnet_download_mts("ACME",
                   start_date = "1994-01-01",

@@ -145,7 +145,9 @@ utils::globalVariables("TAIR_avg")
 #' @examples
 #'
 #' \dontshow{
-#'   mesonet_cache_dir <- mnet_test_cache(rds_files = TRUE)
+#'   mesonet_cache_dir <- mnet_test_cache(site_info = TRUE,
+#'                                        mts_files = TRUE,
+#'                                        rds_files = TRUE)
 #'   previous_options <- options(.mesonet_cache = mesonet_cache_dir)
 #' }
 #'
@@ -579,7 +581,12 @@ wdir_to_cardinal <- function(wdir){
 
   increment <- 360/length(cdir)
 
-  wdir_tmp <- units::drop_units(wdir) + increment/2
+  if("units" %in% class(wdir)){
+    wdir_tmp <- units::drop_units(wdir)
+  }else{
+    wdir_tmp <- wdir
+  }
+  wdir_tmp <- wdir_tmp + increment/2
   wdir_tmp[wdir_tmp >= 360] <- wdir_tmp[wdir_tmp >= 360] - 360
 
   cdir[floor(wdir_tmp / increment + 1)]

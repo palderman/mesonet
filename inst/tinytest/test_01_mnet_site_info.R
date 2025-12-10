@@ -99,7 +99,7 @@ expect_equal(actual, expected)
 
 cached_csv_path <-
   tempdir() |>
-  file.path(".mesonet_cache", "station_location_soil_information.csv")
+  file.path(".mesonet_cache", "site_info.csv")
 
 expect_true(file.exists(cached_csv_path))
 
