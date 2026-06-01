@@ -1,3 +1,11 @@
+# mesonet 0.0.2.9001
+
+- Bugfixes to mnet_requisition_list() including:
+    - Assigning time zone properly for start_date and end_date when specified
+      as Date objects
+    - Adjusting end_date forward to the following day for character and Date
+      inputs to account for UTC/CST time zone offset
+
 # mesonet 0.0.2
 
 - Bugfixes including:

@@ -1,7 +1,7 @@
 Package: mesonet
 Type: Package
 Title: Download and Process Oklahoma Mesonet Data 
-Version: 0.0.2
+Version: 0.0.2.9001
 Date: 2025-12-10
 Authors@R: person(given = c("Phillip", "D."),
                   family = "Alderman",
