@@ -69,9 +69,16 @@ mnet_requisition_list <- function(stid = NULL,
   }else if(length(start_date) != length(stid) & length(start_date) != 1){
     stop("`start_date` must be of length one or match the length of `stid`.")
   }else{
+    if("Date" %in% class(start_date)){
+      start <- as.character(start_date)
+    }else{
+      start <- start_date
+    }
+    if(!"POSIXt" %in% class(start)){
+      start <- as.POSIXct(start, tz = "America/Costa_Rica")
+    }
     start <-
-      start_date |>
-      as.POSIXct(tz = "America/Costa_Rica") |>
+      start |>
       trunc("days") |>
       as.POSIXct(tz = "UTC") |>
       trunc("days")
@@ -85,9 +92,18 @@ mnet_requisition_list <- function(stid = NULL,
   }else if(length(end_date) != length(stid) & length(end_date) != 1){
     stop("`end_date` must be of length one or match the length of `stid`.")
   }else{
+    if("Date" %in% class(end_date)){
+      end <- as.character(end_date)
+    }else{
+      end <- end_date
+    }
+    if(!"POSIXt" %in% class(end)){
+      end <- {as.Date(end) + as.difftime(1, units = "days")} |>
+        as.character() |>
+        as.POSIXct(tz = "America/Costa_Rica")
+    }
     end <-
-      end_date |>
-      as.POSIXct(tz = "America/Costa_Rica") |>
+      end |>
       trunc("days") |>
       as.POSIXct(tz = "UTC") |>
       trunc("days") |>

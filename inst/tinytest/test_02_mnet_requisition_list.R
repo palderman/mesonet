@@ -14,7 +14,7 @@ actual_req_list <-
   mesonet::mnet_requisition_list(
     stid = "ACME",
     start_date = "1994-01-01",
-    end_date = "1994-01-05",
+    end_date = "1994-01-04",
     file_cache = test_cache)
 
 expect_equal(actual_req_list$mts_rel_path,
@@ -32,9 +32,14 @@ actual_req_list <-
     end_date = "1994-01-01",
     file_cache = test_cache)
 
-expect_equal(actual_req_list$mts_rel_path,
-             paste0("mts/1994/01/01/19940101", tolower(sites),".mts"))
 
+expected <-
+  paste0("mts/1994/01/0", rep(1:2, times = length(sites)),
+         "/1994010", rep(1:2, times = length(sites)),
+         rep(tolower(sites), each = 2),".mts")
+
+expect_equal(actual_req_list$mts_rel_path,
+             expected)
 
 # multiple stid multiple dates
 sites <- c("ACME", "ADAX", "ALTU") |>
@@ -51,7 +56,52 @@ actual_req_list <-
     file_cache = test_cache)
 
 expected <-
-  paste0("mts/1994/01/0", 1:6, "/1994010", 1:6, rep(tolower(sites), each = 2),".mts")
+  paste0("mts/1994/01/0", c(1:3, 3:5, 5:7),
+         "/1994010", c(1:3, 3:5, 5:7), rep(tolower(sites), each = 3),".mts")
+
+expect_equal(actual_req_list$mts_rel_path,
+             expected)
+
+###################
+# with Date inputs:
+###################
+
+start_dates <- as.Date(c("1994-01-01", "1994-01-03", "1994-01-05"))
+end_dates <- as.Date(c("1994-01-02", "1994-01-04", "1994-01-06"))
+
+actual_req_list <-
+  mesonet::mnet_requisition_list(
+    stid = sites,
+    start_date = start_dates,
+    end_date = end_dates,
+    file_cache = test_cache)
+
+
+expected <-
+  paste0("mts/1994/01/0", c(1:3, 3:5, 5:7),
+         "/1994010", c(1:3, 3:5, 5:7), rep(tolower(sites), each = 3),".mts")
+
+expect_equal(actual_req_list$mts_rel_path,
+             expected)
+
+######################
+# with POSIXct inputs:
+######################
+
+start_dates <- as.POSIXct(c("1994-01-01", "1994-01-03", "1994-01-05"))
+end_dates <- as.POSIXct(c("1994-01-02", "1994-01-04", "1994-01-06"))
+
+actual_req_list <-
+  mesonet::mnet_requisition_list(
+    stid = sites,
+    start_date = start_dates,
+    end_date = end_dates,
+    file_cache = test_cache)
+
+
+expected <-
+  paste0("mts/1994/01/0", c(1:2, 3:4, 5:6),
+         "/1994010", c(1:2, 3:4, 5:6), rep(tolower(sites), each = 2),".mts")
 
 expect_equal(actual_req_list$mts_rel_path,
              expected)
@@ -73,3 +123,5 @@ expect_error(
 )
 
 unlink(test_cache, recursive = TRUE)
+
+

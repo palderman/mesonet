@@ -80,7 +80,7 @@ expected_subdaily <-
 # Use mnet_concatenate() to read reference data from .mesonet_cache
 actual_subdaily <- mesonet::mnet_concatenate(stid = "ACME",
                                              start_date = "1994-01-01",
-                                             end_date = "1994-01-05",
+                                             end_date = "1994-01-04",
                                              file_cache = test_cache)
 
 expect_equal(actual_subdaily,
@@ -135,7 +135,7 @@ row.names(expected_subdaily) <- 1:nrow(expected_subdaily)
 
 actual_subdaily <- mesonet::mnet_concatenate(stid = c("ACME", "ALTU"),
                                              start_date = c("1994-01-01","1994-01-06"),
-                                             end_date = c("1994-01-05","1994-01-10"),
+                                             end_date = c("1994-01-04","1994-01-09"),
                                              file_cache = test_cache)
 
 expect_equal(actual_subdaily,

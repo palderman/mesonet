@@ -16,11 +16,11 @@ mnet_summarize(
 such as that produced by \code{\link[=mnet_read_mts]{mnet_read_mts()}}.}
 
 \item{tz}{a length-one character vector specifying which time zone to use for daily summary. Use
-\code{\link[base:timezones]{base::OlsonNames()}} to obtain a listing of valid available time zones.}
+\code{\link[base:OlsonNames]{base::OlsonNames()}} to obtain a listing of valid available time zones.}
 
 \item{interval}{the interval over which to summarize data. May be defined as
 a difftime object (see \code{\link[base:difftime]{base::difftime()}}) or a character value compatible
-with \code{\link[units:units]{units::as_units()}}. Tested intervals include "1 day" (the default),
+with \code{\link[units:as_units]{units::as_units()}}. Tested intervals include "1 day" (the default),
 "30 min", and "1 hour", although other intervals may work (e.g. "3 hours").}
 
 \item{include_qc_variables}{a length-one logical vector specifying whether or

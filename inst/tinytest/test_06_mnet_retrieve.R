@@ -156,6 +156,10 @@ row.names(expected_subdaily) <- 1:nrow(expected_subdaily)
 
 actual_subdaily <-
   test_scenario |>
+  within({
+    end = {as.Date(end) - as.difftime(1, units = "days")} |>
+      as.character()
+  }) |>
   with({
     mesonet::mnet_retrieve(stid = stid,
                            start_date = start,
@@ -181,6 +185,10 @@ unlink(test_remote_cache, recursive = TRUE)
 
 # Delete local rds files
 test_scenario |>
+  within({
+    end = {as.Date(end) - as.difftime(1, units = "days")} |>
+      as.character()
+  }) |>
   with({
     mesonet::mnet_requisition_list(stid = stid,
                                    start_date = start,
@@ -193,6 +201,10 @@ test_scenario |>
 
 actual_subdaily <-
   test_scenario |>
+  within({
+    end = {as.Date(end) - as.difftime(1, units = "days")} |>
+      as.character()
+  }) |>
   with({
     mesonet::mnet_retrieve(stid = stid,
                            start_date = start,
@@ -209,3 +221,4 @@ expect_equal(actual_subdaily,
              expected_subdaily)
 
 unlink(test_local_cache, recursive = TRUE)
+
