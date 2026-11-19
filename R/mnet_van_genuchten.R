@@ -1,5 +1,3 @@
-#' Calculate volumetric soil water content with van Genuchten curve
-#'
 #' Calculate volumetric soil water content using the van Genuchten curve
 #'
 #' @export

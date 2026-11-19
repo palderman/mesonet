@@ -1,8 +1,8 @@
 Package: mesonet
 Type: Package
 Title: Download and Process Oklahoma Mesonet Data 
-Version: 0.0.2.9001
-Date: 2025-12-10
+Version: 0.0.2.9002
+Date: 2026-11-17
 Authors@R: person(given = c("Phillip", "D."),
                   family = "Alderman",
                   role = c("aut", "cre"),
@@ -22,4 +22,4 @@ Imports:
     units
 Depends: 
     R (>= 4.2.0)
-Config/roxygen2/version: 8.0.0
+Config/roxygen2/version: 8.1.0

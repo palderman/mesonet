@@ -123,7 +123,11 @@ mnet_site_info <- function(url = "https://api.mesonet.org/index.php/export/stati
 
     if(!file.exists(csv_file_name)){
       tryCatch(
-        utils::download.file(url, csv_file_name, quiet = TRUE),
+        utils::download.file(url,
+                             csv_file_name,
+                             method = "curl",
+                             extra = "-L",
+                             quiet = TRUE),
         error = function(e) conditionMessage(e),
         warning = function(w) conditionMessage(w))
     }

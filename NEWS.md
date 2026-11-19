@@ -1,3 +1,7 @@
+# mesonet 0.0.2.9002
+
+- Bugfix to mnet_site_info() to handle mesonet page's php redirect
+
 # mesonet 0.0.2.9001
 
 - Bugfixes to mnet_requisition_list() including:
