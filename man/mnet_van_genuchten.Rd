@@ -2,7 +2,7 @@
 % Please edit documentation in R/mnet_van_genuchten.R
 \name{mnet_van_genuchten}
 \alias{mnet_van_genuchten}
-\title{Calculate volumetric soil water content with van Genuchten curve}
+\title{Calculate volumetric soil water content using the van Genuchten curve}
 \usage{
 mnet_van_genuchten(MP, WCr, WCs, a, n)
 }
