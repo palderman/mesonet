@@ -1,3 +1,7 @@
+# mesonet 0.0.2.9003
+
+- Code to speed up mnet_summarize() excluding QC variables
+
 # mesonet 0.0.2.9002
 
 - Bugfix to mnet_site_info() to handle mesonet page's php redirect

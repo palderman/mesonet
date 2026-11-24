@@ -3,7 +3,7 @@ utils::globalVariables("TAIR_avg")
 
 #' Produce a daily summary of Oklahoma Mesonet subdaily data
 #'
-#' @param sub_daily a data frame with subdaily measurements from the Oklahoma Mesonet
+#' @param orig_df a data frame with original measurements from the Oklahoma Mesonet
 #' such as that produced by [mnet_read_mts()].
 #'
 #' @param tz a length-one character vector specifying which time zone to use for daily summary. Use
@@ -17,6 +17,9 @@ utils::globalVariables("TAIR_avg")
 #' @param include_qc_variables a length-one logical vector specifying whether or
 #'  or not to include quality control variables (e.g. number of errant
 #'  observations) in the output
+#'
+#'  @param warn a logical value indicating whether to issue warnings for missing
+#'  variables
 #'
 #' @md
 #'
@@ -170,10 +173,11 @@ utils::globalVariables("TAIR_avg")
 #'
 #' @export
 #'
-mnet_summarize <- function(sub_daily,
+mnet_summarize <- function(orig_df,
                            tz = "Etc/GMT+6",
                            interval = "1 day",
-                           include_qc_variables = FALSE){
+                           include_qc_variables = FALSE,
+                           warn = TRUE){
 
   stopifnot(any(c("character", "difftime") %in% class(interval)))
 
@@ -206,178 +210,186 @@ mnet_summarize <- function(sub_daily,
     units::set_units(65, "Fahrenheit") |>
     units::set_units("Celsius")
 
-  sub_daily <-
-    sub_daily |>
+  orig_df <-
+    orig_df |>
     within({
       DATE = round_date(DATE, interval, tz)
     })
 
-  daily <- list(
-    # TAIR to TDEW
-    summarize_across(
-      .data = sub_daily,
-      .cols = c("TAIR", "RELH", "WSPD", "PRES", "WS2M", "TDEW"),
-      .fns = list(
-        # 260 is at least 90% of the 288 5-minute observations per day
-        min = \(.x) qc_summary(.x, min, thrsh["obs"]),
-        avg = \(.x) qc_summary(.x, mean, thrsh["obs"]),
-        max = \(.x) qc_summary(.x, max, thrsh["obs"])),
-      .groups = c("STNM", "STID", "DATE")),
+  key <- do.call(paste, c(orig_df[,.groups],sep = "\r"))
+  g_id <- match(key, unique(key))
 
-    # WDIR
-    summarize_across(
-      .data = sub_daily,
-      .cols = c("WDIR"),
-      .fns = list(
-        # 260 is at least 90% of the 288 5-minute observations per day
-        pdir = \(.x) qc_summary(.x, calc_pdir, thrsh["obs"]),
-        sdir = \(.x) qc_summary(.x, calc_sdir, thrsh["obs"])),
-      .groups = c("STNM", "STID", "DATE")),
+  W_to_MJ <- {units::set_units(1, "W/m2") * units::as_units(interval)} |>
+    units::set_units("MJ/m2")
 
-    # RAIN
-    summarize_across(
-      .data = sub_daily,
-      .cols = c("RAIN"),
-      .fns = list(
-        # 260 is at least 90% of the 288 5-minute observations per day
-        sum = \(.x) qc_summary(.x, sum, thrsh["obs"]),
-        max = \(.x) qc_summary(.x, max, thrsh["obs"])),
-      .groups = c("STNM", "STID", "DATE")),
+  .groups <- c("STNM", "STID", "DATE")
+  .groups <- .groups[.groups %in% colnames(orig_df)]
 
-    # SRAD sum
-    summarize_across(
-      .data = sub_daily,
-      .cols = c("SRAD"),
-      .fns = list(
-        # 260 is at least 90% of the 288 5-minute observations per day
-        sum = \(.x) qc_summary(.x, srad_sum, thrsh["srad"], interval = interval)),
-      .groups = c("STNM", "STID", "DATE")),
-
-    # WMAX and SRAD max and max_count
-    summarize_across(
-      .data = sub_daily,
-      .cols = c("WMAX", "SRAD"),
-      .fns = list(
-        # 260 is at least 90% of the 288 5-minute observations per day
-        max = \(.x) qc_summary(.x, max, thrsh["obs"])),
-      .groups = c("STNM", "STID", "DATE")),
-
-    # TA9M and VDEF avg
-    summarize_across(
-      .data = sub_daily,
-      .cols = c("TA9M", "VDEF"),
-      .fns = list(
-        # 260 is at least 90% of the 288 5-minute observations per day
-        avg = \(.x) qc_summary(.x, mean, thrsh["obs"])),
-      .groups = c("STNM", "STID", "DATE")),
-
-    # Soil temperature
-    summarize_across(
-      .data = sub_daily,
-      .cols = c("TS05", "TS10", "TS25", "TS30", "TS60", "TB05", "TB10"),
-      .fns = list(# 87 is at least 90% of the 96 15-minute observations per day
-        min = \(.x) qc_summary(.x, min, thrsh["stemp"]),
-        avg = \(.x) qc_summary(.x, mean, thrsh["stemp"]),
-        max = \(.x) qc_summary(.x, max, thrsh["stemp"])),
-      .groups = c("STNM", "STID", "DATE")),
-
-    # Soil moisture
-    summarize_across(
-      .data = sub_daily,
-      .cols = c("TR05", "TR25", "TR60", "TR75", "VW05", "VW25", "VW45"),
-      .fns = list(# 44 is at least 90% of the 48 30-minute observations per day
-        avg = \(.x) qc_summary(.x, mean, thrsh["smoist"])),
-      .groups = c("STNM", "STID", "DATE"))
+  summary_variables <- list(
+    list(.cols = c("TAIR", "RELH", "WSPD", "PRES", "WS2M", "TDEW"),
+         .fns = c("min", "mean", "max"),
+         .thrsh = thrsh["obs"]),
+    list(.cols = c("WDIR"),
+         .fns = c("pdir", "sdir"),
+         .thrsh = thrsh["obs"]),
+    list(.cols = c("RAIN"),
+         .fns = c("sum", "max"),
+         .thrsh = thrsh["obs"]),
+    list(.cols = c("SRAD"),
+         .fns = c("srad_sum"),
+         .thrsh = thrsh["srad"]),
+    list(.cols = c("WMAX", "SRAD"),
+         .fns = c("max"),
+         .thrsh = thrsh["obs"]),
+    list(.cols = c("TA9M", "VDEF"),
+         .fns = c("mean"),
+         .thrsh = thrsh["obs"]),
+    list(.cols = c("TS05", "TS10", "TS25", "TS30", "TS60", "TB05", "TB10"),
+         .fns = c("min", "mean", "max"),
+         .thrsh = thrsh["stemp"]),
+    list(.cols = c("TR05", "TR25", "TR60", "TR75", "VW05", "VW25", "VW45"),
+         .fns = c("mean"),
+         .thrsh = thrsh["smoist"])
   )
-  if(include_qc_variables){
-    daily_qc <- list(
 
-      # TAIR to TDEW
-      summarize_across(
-        .data = sub_daily,
-        .cols = c("TAIR", "RELH", "WSPD", "PRES"),
-        .fns = list(
-          # 260 is at least 90% of the 288 5-minute observations per day
-          maxo = \(.x) qc_summary(.x, max_count, thrsh["obs"]),
-          mino = \(.x) qc_summary(.x, min_count, thrsh["obs"])),
-        .groups = c("STNM", "STID", "DATE")),
-
-      # WMAX and SRAD max and max_count
-      summarize_across(
-        .data = sub_daily,
-        .cols = c("WMAX", "SRAD"),
-        .fns = list(
-          # 260 is at least 90% of the 288 5-minute observations per day
-          max_count = \(.x) qc_summary(.x, max_count, thrsh["obs"])),
-        .groups = c("STNM", "STID", "DATE")),
-
-      # PDFQ and SDFQ
-      summarize_across(
-        .data = sub_daily,
-        .cols = c("WDIR"),
-        .fns = list(
-          # 260 is at least 90% of the 288 5-minute observations per day
-          pdfq = \(.x) qc_summary(.x, calc_pdir_freq, thrsh["obs"]),
-          sdfq = \(.x) qc_summary(.x, calc_sdir_freq, thrsh["obs"])),
-        .groups = c("STNM", "STID", "DATE")),
-
-      # RAIN
-      summarize_across(
-        .data = sub_daily,
-        .cols = c("RAIN"),
-        .fns = list(
-          # 260 is at least 90% of the 288 5-minute observations per day
-          gt0 = \(.x) qc_summary(.x, gt0_count, thrsh["obs"])),
-        .groups = c("STNM", "STID", "DATE")),
-
-      # Number of bad/missing observations for TAIR through SRAD
-      summarize_across(
-        .data = sub_daily,
-        .cols = c("TAIR", "RELH", "WSPD", "WDIR", "PRES", "WS2M",
-                  "TDEW", "TA9M", "RAIN", "SRAD"),
-        .fns = list(bad = \(.x) num["obs"] - sum(!is.na(.x))),
-        .groups = c("STNM", "STID", "DATE")),
-
-      # Number of bad/missing observations for soil temperature
-      summarize_across(
-        .data = sub_daily,
-        .cols = c("TS05", "TS10", "TS25", "TS30", "TS60", "TB05", "TB10"),
-        .fns = list(# Soil temperature are 15-min observations so 96 would be
-          #  no missing data, 87 would be > 90% complete data:
-          bad = \(.x) num["stemp"] - sum(!is.na(.x)),
-          maxo = \(.x) qc_summary(.x, max_count, thrsh["stemp"]),
-          mino = \(.x) qc_summary(.x, min_count, thrsh["stemp"])),
-        .groups = c("STNM", "STID", "DATE")),
-
-      # Number of bad/missing observations for soil moisture
-      summarize_across(
-        .data = sub_daily,
-        .cols = c("TR05", "TR25", "TR60", "TR75"),
-        .fns = list(# Soil moisture are 30-min observations so 48 would be
-          #  no missing data
-          bad = \(.x) num["smoist"] - sum(!is.na(.x))),
-        .groups = c("STNM", "STID", "DATE"))
-    )
-
-    daily <- c(daily, daily_qc)
-
+  if(warn){
+    summary_variables |>
+      lapply(\(.x) with(.x,{
+        if(any(!.cols %in% colnames(orig_df))){
+          .cols[!.cols %in% colnames(orig_df)] |>
+            paste0(collapse = ", ") |>
+            paste0("The following variables were missing from dataset and will not be summarized:\n  ", .x = _) |>
+            warning()
+        }
+        if(any(!.groups %in% colnames(orig_df))){
+          .groups[!.groups %in% colnames(orig_df)] |>
+            paste0(collapse = ", ") |>
+            paste0("The following grouping variables were missing from dataset and will not be used:\n  ", .x = _) |>
+            warning()
+        }
+      }))
   }
 
-  daily <- daily[!sapply(daily, is.null)]
+  summary_variables <-
+    summary_variables |>
+    lapply(\(.x) within(.x,{
+      .cols = .cols[.cols %in% names(orig_df)]
+    }))
 
-  # Drop STNM, STID, and DATE to avoid column name duplication
-  if(length(daily) > 1){
-    for(i in 2:length(daily)){
-      keep_cols <- grep("(^STNM$)|(^STID$)|(^DATE$)",
-                        colnames(daily[[i]]),
-                        invert = TRUE)
-      daily[[i]] <- daily[[i]][, keep_cols, drop = FALSE]
+  summarized_df <-
+    summary_variables |>
+    summarize_cpp(groups = .groups,
+                  df_in = orig_df,
+                  group_index = g_id,
+                  thrsh = thrsh,
+                  W_to_MJ_interval = W_to_MJ)
+
+  if(any(c("WDIR_pdir", "WDIR_sdir") %in% names(summarized_df))){
+    if("WDIR_pdir" %in% names(summarized_df)){
+      summarized_df[["WDIR_pdir"]] <-
+        get_cardinal(summarized_df[["WDIR_pdir"]])
+    }
+    if("WDIR_sdir" %in% names(summarized_df)){
+      summarized_df[["WDIR_sdir"]] <-
+        get_cardinal(summarized_df[["WDIR_sdir"]])
     }
   }
 
-  daily <-
-    daily |>
-    do.call(cbind.data.frame, args = _) |>
+  # if(include_qc_variables){
+  #   daily_qc <- list(
+  #
+  #     # TAIR to TDEW
+  #     summarize_across(
+  #       .data = sub_daily,
+  #       .cols = c("TAIR", "RELH", "WSPD", "PRES"),
+  #       .fns = list(
+  #         # 260 is at least 90% of the 288 5-minute observations per day
+  #         maxo = \(.x) qc_summary(.x, max_count, thrsh["obs"]),
+  #         mino = \(.x) qc_summary(.x, min_count, thrsh["obs"])),
+  #       .groups = c("STNM", "STID", "DATE"),
+  #       .fast = .fast),
+  #
+  #     # WMAX and SRAD max and max_count
+  #     summarize_across(
+  #       .data = sub_daily,
+  #       .cols = c("WMAX", "SRAD"),
+  #       .fns = list(
+  #         # 260 is at least 90% of the 288 5-minute observations per day
+  #         max_count = \(.x) qc_summary(.x, max_count, thrsh["obs"])),
+  #       .groups = c("STNM", "STID", "DATE"),
+  #       .fast = .fast),
+  #
+  #     # PDFQ and SDFQ
+  #     summarize_across(
+  #       .data = sub_daily,
+  #       .cols = c("WDIR"),
+  #       .fns = list(
+  #         # 260 is at least 90% of the 288 5-minute observations per day
+  #         pdfq = \(.x) qc_summary(.x, calc_pdir_freq, thrsh["obs"]),
+  #         sdfq = \(.x) qc_summary(.x, calc_sdir_freq, thrsh["obs"])),
+  #       .groups = c("STNM", "STID", "DATE"),
+  #       .fast = .fast),
+  #
+  #     # RAIN
+  #     summarize_across(
+  #       .data = sub_daily,
+  #       .cols = c("RAIN"),
+  #       .fns = list(
+  #         # 260 is at least 90% of the 288 5-minute observations per day
+  #         gt0 = \(.x) qc_summary(.x, gt0_count, thrsh["obs"])),
+  #       .groups = c("STNM", "STID", "DATE"),
+  #       .fast = .fast),
+  #
+  #     # Number of bad/missing observations for TAIR through SRAD
+  #     summarize_across(
+  #       .data = sub_daily,
+  #       .cols = c("TAIR", "RELH", "WSPD", "WDIR", "PRES", "WS2M",
+  #                 "TDEW", "TA9M", "RAIN", "SRAD"),
+  #       .fns = list(bad = \(.x) num["obs"] - sum(!is.na(.x))),
+  #       .groups = c("STNM", "STID", "DATE"),
+  #       .fast = .fast),
+  #
+  #     # Number of bad/missing observations for soil temperature
+  #     summarize_across(
+  #       .data = sub_daily,
+  #       .cols = c("TS05", "TS10", "TS25", "TS30", "TS60", "TB05", "TB10"),
+  #       .fns = list(# Soil temperature are 15-min observations so 96 would be
+  #         #  no missing data, 87 would be > 90% complete data:
+  #         bad = \(.x) num["stemp"] - sum(!is.na(.x)),
+  #         maxo = \(.x) qc_summary(.x, max_count, thrsh["stemp"]),
+  #         mino = \(.x) qc_summary(.x, min_count, thrsh["stemp"])),
+  #       .groups = c("STNM", "STID", "DATE"),
+  #       .fast = .fast),
+  #
+  #     # Number of bad/missing observations for soil moisture
+  #     summarize_across(
+  #       .data = sub_daily,
+  #       .cols = c("TR05", "TR25", "TR60", "TR75"),
+  #       .fns = list(# Soil moisture are 30-min observations so 48 would be
+  #         #  no missing data
+  #         bad = \(.x) num["smoist"] - sum(!is.na(.x))),
+  #       .groups = c("STNM", "STID", "DATE"),
+  #       .fast = .fast)
+  #   )
+  #
+  #   daily <- c(daily, daily_qc)
+  #
+  # }
+  #
+  # daily <- daily[!sapply(daily, is.null)]
+
+  # Drop STNM, STID, and DATE to avoid column name duplication
+  # if(length(daily) > 1){
+  #   for(i in 2:length(daily)){
+  #     keep_cols <- grep("(^STNM$)|(^STID$)|(^DATE$)",
+  #                       colnames(daily[[i]]),
+  #                       invert = TRUE)
+  #     daily[[i]] <- daily[[i]][, keep_cols, drop = FALSE]
+  #   }
+  # }
+
+  summarized_df <-
+    summarized_df |>
     within({
       if(exists("TAIR_avg", inherits = FALSE)){
         CDEG = max(TAIR_avg - threshold_temperature,
@@ -393,11 +405,11 @@ mnet_summarize <- function(sub_daily,
     standardize_column_names() |>
     standardize_column_order()
 
-  return(daily)
+  return(summarized_df)
 
 }
 
-summarize_across <- function(.data, .cols, .fns, .groups = NULL){
+summarize_across <- function(.data, .cols, .fns, .groups = NULL, .fast = FALSE){
 
   if(any(!.cols %in% colnames(.data))){
     .cols[!.cols %in% colnames(.data)] |>
@@ -430,12 +442,21 @@ summarize_across <- function(.data, .cols, .fns, .groups = NULL){
     .data_sub <-
       list(.data)
   }else{
-    .data_sub <-
-      rev(.groups) |>
-      paste0(collapse = "+") |>
-      paste0("~", x = _) |>
-      stats::as.formula() |>
-      split(.data, f = _)
+    if(.fast){
+      key <- do.call(paste, c(.data[,.groups],sep = "\r"))
+      g_id <- match(key, unique(key))
+      g_index <- max(g_id) |>
+        seq_len() |>
+        lapply(\(.g) which(g_id == .g))
+      not_duplicated <- !duplicated(g_id)
+    }else{
+      .data_sub <-
+        rev(.groups) |>
+        paste0(collapse = "+") |>
+        paste0("~", x = _) |>
+        stats::as.formula() |>
+        split(.data, f = _)
+    }
   }
 
   new_cols <- expand.grid(.fns = .fns, .cols = .cols, stringsAsFactors = FALSE) |>
@@ -448,25 +469,44 @@ summarize_across <- function(.data, .cols, .fns, .groups = NULL){
   names(data_out) <- c(.groups, new_cols$.cname)
 
   for(.col in .groups){
-    data_out[[.col]] <-
-      .data_sub |>
-      lapply(\(.x) utils::head(.x[[.col]], 1)) |>
-      unlist() |>
-      unname()
-    if("POSIXct" %in% class(.data_sub[[1]][[.col]])){
-      data_out[[.col]] <- as.POSIXct(data_out[[.col]],
-                                     tz = attr(.data_sub[[1]][[.col]], "tzone"))
-    }else if("Date" %in% class(.data_sub[[1]][[.col]])){
-      data_out[[.col]] <- as.Date(data_out[[.col]])
+    if(.fast){
+      data_out[[.col]] <- .data[[.col]][not_duplicated]
+    }else{
+      data_out[[.col]] <-
+        .data_sub |>
+        lapply(\(.x) utils::head(.x[[.col]], 1)) |>
+        unlist() |>
+        unname()
+      if("POSIXct" %in% class(.data_sub[[1]][[.col]])){
+        data_out[[.col]] <- as.POSIXct(data_out[[.col]],
+                                       tz = attr(.data_sub[[1]][[.col]], "tzone"))
+      }else if("Date" %in% class(.data_sub[[1]][[.col]])){
+        data_out[[.col]] <- as.Date(data_out[[.col]])
+      }
     }
   }
 
   for(i in 1:nrow(new_cols)){
-    data_out[[new_cols[i, ".cname"]]] <-
-      .data_sub |>
-      lapply(\(.x) new_cols$.fns[[i]](.x[[new_cols[i, ".cols"]]])) |>
-      unname() |>
-      unlist_units()
+    if(.fast){
+      data_out[[new_cols[i, ".cname"]]] <-
+        vector(mode = mode(.data[[new_cols[i, ".cols"]]]),
+               length = length(g_index))
+      if("units" %in% class(.data[[new_cols[i, ".cols"]]])){
+        attr(data_out[[new_cols[i, ".cname"]]], "units") <-
+          attr(.data[[new_cols[i, ".cols"]]], "units")
+        class(data_out[[new_cols[i, ".cname"]]]) <- "units"
+      }
+      for(j in seq_along(g_index)){
+        data_out[[new_cols[i, ".cname"]]][j] <-
+          new_cols$.fns[[i]](.data[[new_cols[i, ".cols"]]][g_index[[j]]])
+      }
+    }else{
+      data_out[[new_cols[i, ".cname"]]] <-
+        .data_sub |>
+        lapply(\(.x) new_cols$.fns[[i]](.x[[new_cols[i, ".cols"]]])) |>
+        unname() |>
+        unlist_units()
+    }
   }
 
   data_out <- as.data.frame(data_out,
@@ -551,6 +591,7 @@ rename_daily_columns <- function(col_names){
                     "WSPD_avg" = "WSPD",
                     "WDIR_bad" = "IBAD",
                     "RAIN_" = "R",
+                    "SRAD_srad_" = "A",
                     "SRAD_" = "A",
                     "TB05_avg" = "B5AV",
                     "TB05_(.).(.)" = "B5\\1\\2",
@@ -572,12 +613,17 @@ rename_daily_columns <- function(col_names){
     toupper()
 }
 
-wdir_to_cardinal <- function(wdir){
-
+get_cardinal <- function(levels){
   cdir <- c("N", "NNE", "NE", "ENE",
             "E", "ESE", "SE", "SSE",
             "S", "SSW", "SW", "WSW",
             "W", "WNW", "NW", "NNW")
+  cdir[levels]
+}
+
+wdir_to_cardinal <- function(wdir){
+
+  cdir <- get_cardinal(1:16)
 
   increment <- 360/length(cdir)
 

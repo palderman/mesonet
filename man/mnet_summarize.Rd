@@ -5,14 +5,15 @@
 \title{Produce a daily summary of Oklahoma Mesonet subdaily data}
 \usage{
 mnet_summarize(
-  sub_daily,
+  orig_df,
   tz = "Etc/GMT+6",
   interval = "1 day",
-  include_qc_variables = FALSE
+  include_qc_variables = FALSE,
+  .fast = TRUE
 )
 }
 \arguments{
-\item{sub_daily}{a data frame with subdaily measurements from the Oklahoma Mesonet
+\item{orig_df}{a data frame with original measurements from the Oklahoma Mesonet
 such as that produced by \code{\link[=mnet_read_mts]{mnet_read_mts()}}.}
 
 \item{tz}{a length-one character vector specifying which time zone to use for daily summary. Use

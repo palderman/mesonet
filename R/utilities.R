@@ -9,7 +9,7 @@ make_date <- function(date_chr){
 standardize_column_names <- function(df){
   cnames <- colnames(df)
   replacement <- c(
-    "_avg$" = "AVG",
+    "_mean$" = "AVG",
     "_max$" = "MAX",
     "_max_count$" = "MAXO",
     "_min$" = "MIN",
@@ -21,7 +21,7 @@ standardize_column_names <- function(df){
     "^RELH" = "H",
     "^TAIR" = "T",
     "^TDEW" = "D",
-    "^SRAD_sum$" = "ATOT",
+    "^SRAD_srad_sum$" = "ATOT",
     "^SRAD" = "A",
     "^RAIN" = "R",
     "^PRES" = "P",

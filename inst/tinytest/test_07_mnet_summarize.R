@@ -323,7 +323,8 @@ if(tinytest::at_home()){
       RAIN = units::set_units(rep(c(NA, 216*1 + 72*2, 216*2 + 72*3 , NA), 2), "mm"),
       RNUM = rep(c(NA, 288, 288, NA), 2),
       RMAX = units::set_units(rep(c(NA, 2, 3, NA)*60/5, 2), "mm/hour"),
-      ATOT = units::set_units(rep(c(NA, (201*18+202*6), (202*18+203*6), NA)*60*60*1e-6, 2), "MJ/d/m2"),
+      ATOT = rep(c(NA, (201*18+202*6), (202*18+203*6), NA)*60*60*1e-6, 2) |>
+        units::set_units("MJ/m2"),
       AMAX = units::set_units(rep(c(NA, 202, 203, NA), 2), "W/m2"),
       `9AVG` = units::set_units(rep(c(NA, (18*1 + 6*2)/24, (18*2 + 6*3)/24, NA), 2), "Celsius"),
       SAVG = units::set_units(rep(c(NA, rep(5.5, 2), NA), 2), "Celsius"),
@@ -455,7 +456,8 @@ expected_avg <-
     WMAX = units::set_units(rep(c(NA, 2:3, NA), 2), "m/s"),
     RAIN = units::set_units(rep(c(NA, 216*1 + 72*2, 216*2 + 72*3 , NA), 2), "mm"),
     RMAX = units::set_units(rep(c(NA, 2, 3, NA)*60/5, 2), "mm/hour"),
-    ATOT = units::set_units(rep(c(NA, (201*18+202*6), (202*18+203*6), NA)*60*60*1e-6, 2), "MJ/d/m2"),
+    ATOT = rep(c(NA, (201*18+202*6), (202*18+203*6), NA)*60*60*1e-6, 2) |>
+      units::set_units("MJ/m2"),
     AMAX = units::set_units(rep(c(NA, 202, 203, NA), 2), "W/m2"),
     `9AVG` = units::set_units(rep(c(NA, (18*1 + 6*2)/24, (18*2 + 6*3)/24, NA), 2), "Celsius"),
     SAVG = units::set_units(rep(c(NA, rep(5.5, 2), NA), 2), "Celsius"),
@@ -531,7 +533,8 @@ expected_avg <-
     `2MAX` = units::set_units(rep(c(NA, 2, 3, NA), 2), "m/s"),
     RAIN = units::set_units(rep(c(NA, 216*1 + 72*2, 216*2 + 72*3 , NA), 2), "mm"),
     RMAX = units::set_units(rep(c(NA, 2, 3, NA)*60/5, 2), "mm/hour"),
-    ATOT = units::set_units(rep(c(NA, (201*18+202*6), (202*18+203*6), NA)*60*60*1e-6, 2), "MJ/d/m2"),
+    ATOT = rep(c(NA, (201*18+202*6), (202*18+203*6), NA)*60*60*1e-6, 2) |>
+      units::set_units("MJ/m2"),
     AMAX = units::set_units(rep(c(NA, 202, 203, NA), 2), "W/m2"),
     check.names = FALSE
   ) |>
@@ -591,7 +594,11 @@ if(tinytest::at_home()){
       RAIN = units::set_units(rep(c(1:3*12, 1:3*12), each = 24), "mm"),
       RNUM = rep(12, 2*3*24),
       RMAX = units::set_units(rep(c(1:3*12, 1:3*12), each = 24), "mm/hour"),
-      ATOT = units::set_units(units::set_units(rep(c(201:203, 201:203), each = 24), "W/m2"), "MJ/d/m2"),
+      ATOT = rep(c(201:203, 201:203), each = 24) |>
+        units::set_units("W/m2") |>
+        units::set_units("MJ/d/m2") |>
+        units::drop_units() |>
+        units::set_units("MJ/m2"),
       AMAX = units::set_units(rep(c(201:203, 201:203), each = 24), "W/m2"),
       SAVG = units::set_units(rep(5.5, 2*3*24), "Celsius"),
       SMAX = units::set_units(rep(5.5, 2*3*24), "Celsius"),
@@ -655,7 +662,11 @@ expected_avg <-
     SDIR = rep("SSW", 2*3*24),
     RAIN = units::set_units(rep(c(1:3*12, 1:3*12), each = 24), "mm"),
     RMAX = units::set_units(rep(c(1:3*12, 1:3*12), each = 24), "mm/hour"),
-    ATOT = units::set_units(units::set_units(rep(c(201:203, 201:203), each = 24), "W/m2"), "MJ/d/m2"),
+    ATOT = rep(c(201:203, 201:203), each = 24) |>
+      units::set_units("W/m2") |>
+      units::set_units("MJ/hour/m2") |>
+      units::drop_units() |>
+      units::set_units("MJ/m2"),
     AMAX = units::set_units(rep(c(201:203, 201:203), each = 24), "W/m2"),
     SAVG = units::set_units(rep(5.5, 2*3*24), "Celsius"),
     SMAX = units::set_units(rep(5.5, 2*3*24), "Celsius"),
@@ -708,7 +719,11 @@ if(tinytest::at_home()){
       RAIN = units::set_units(rep(c(1:3*6, 1:3*6), each = 24*2), "mm"),
       RNUM = rep(6, 2*3*24*2),
       RMAX = units::set_units(rep(c(1:3*12, 1:3*12), each = 24*2), "mm/hour"),
-      ATOT = units::set_units(units::set_units(rep(c(201:203, 201:203), each = 24*2), "W/m2"), "MJ/d/m2"),
+      ATOT = rep(c(201:203, 201:203), each = 24*2) |>
+        units::set_units("W/m2") |>
+        units::set_units("MJ/30 minutes/m2") |>
+        units::drop_units() |>
+        units::set_units("MJ/m2"),
       AMAX = units::set_units(rep(c(201:203, 201:203), each = 24*2), "W/m2"),
       SAVG = units::set_units(rep(5.5, 2*3*24*2), "Celsius"),
       SMAX = units::set_units(rep(5.5, 2*3*24*2), "Celsius"),
@@ -773,7 +788,11 @@ if(tinytest::at_home()){
       SDIR = rep("SSW", 2*3*24*2),
       RAIN = units::set_units(rep(c(1:3*6, 1:3*6), each = 24*2), "mm"),
       RMAX = units::set_units(rep(c(1:3*12, 1:3*12), each = 24*2), "mm/hour"),
-      ATOT = units::set_units(units::set_units(rep(c(201:203, 201:203), each = 24*2), "W/m2"), "MJ/d/m2"),
+      ATOT = rep(c(201:203, 201:203), each = 24*2) |>
+        units::set_units("W/m2") |>
+        units::set_units("MJ/30 minutes/m2") |>
+        units::drop_units() |>
+        units::set_units("MJ/m2"),
       AMAX = units::set_units(rep(c(201:203, 201:203), each = 24*2), "W/m2"),
       SAVG = units::set_units(rep(5.5, 2*3*24*2), "Celsius"),
       SMAX = units::set_units(rep(5.5, 2*3*24*2), "Celsius"),
